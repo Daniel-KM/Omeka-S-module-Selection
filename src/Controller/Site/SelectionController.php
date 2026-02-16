@@ -14,7 +14,7 @@ class SelectionController extends AbstractSelectionController
     }
 
     /**
-     * Show a published selection.
+     * Show a published selection with paginated resources.
      */
     public function showAction()
     {
@@ -44,24 +44,42 @@ class SelectionController extends AbstractSelectionController
             }
         }
 
-        // Fill selection from session.
-        /** @var \Laminas\Session\Container $selectionContainer */
-        $selectionContainer = $this->selectionContainer();
-
+        // Pagination similar to omeka resource Controller::browseAction().
         $query = $this->params()->fromQuery();
+        $page = (int) ($query['page'] ?? 1);
+        $perPage = (int) ($query['per_page'] ?? (int) $this->siteSettings()->get('pagination_per_page', 25));
+
+        // Search selection resources for this selection with pagination.
+        $searchQuery = [
+            'selection_id' => $selection->id(),
+            'page' => $page,
+            'per_page' => $perPage,
+        ];
+        $response = $this->api()->search('selection_resources', $searchQuery);
+        /** @var \Selection\Api\Representation\SelectionResourceRepresentation[] $selectionResources */
+        $selectionResources = $response->getContent();
+        $totalResults = $response->getTotalResults();
+
+        // Configure paginator for the view.
+        $this->paginator($totalResults, $page, $perPage);
+
         $disposition = $this->currentDisposition($query);
         $allowIndividualSelect = $this->allowIndividualSelect();
         $selectionShare = $this->siteSettings()->get('selection_share');
 
-        // TODO Simplify view: only selection is needed here.
         return new ViewModel([
             'site' => $this->currentSite(),
             'user' => $user,
             'selection' => $selection,
             'resource' => $selection,
+            // Show multiple resources by page.
+            'resources' => $selectionResources,
+            'totalResults' => $totalResults,
+            'page' => $page,
+            'perPage' => $perPage,
+            // Parameters for compatibility with other views.
+            // TODO Remove variables that are useless here.
             'selectionId' => $selection->id(),
-            // 'selections' => $selectionContainer->selections,
-            // 'records' => $selectionContainer->records,
             'isGuestActive' => $this->isGuestActive,
             'isSession' => false,
             'mode' => $this->settings()->get('selection_mode'),
