@@ -298,7 +298,7 @@ Copyright
 ---------
 
 * Copyright Biblibre, 2016-2017 (see [Biblibre])
-* Copyright Daniel Berthereau, 2017-2025 (see [Daniel-KM] on GitLab)
+* Copyright Daniel Berthereau, 2017-2026 (see [Daniel-KM] on GitLab)
 
 This module was initially based on the fork of the module [Basket] from BibLibre
 and restructured and improved for various projects, like [Collections de la Maison de Salins],

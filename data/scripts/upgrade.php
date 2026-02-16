@@ -33,7 +33,8 @@ if (!method_exists($this, 'checkModuleActiveVersion') || !$this->checkModuleActi
         $translate('The module %1$s should be upgraded to version %2$s or later.'), // @translate
         'Common', '3.4.79'
     );
-    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+    $messenger->addError($message);
+    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $translate('Missing requirement. Unable to upgrade.')); // @translate
 }
 
 if (version_compare($oldVersion, '3.3.4.1', '<')) {
@@ -502,4 +503,52 @@ if (version_compare($oldVersion, '3.4.15', '<')) {
         'It is now possible to display a flat list of named selections of resources.' // @translate
     );
     $messenger->addSuccess($message);
+}
+
+if (version_compare($oldVersion, '3.4.16', '<')) {
+    $sql = <<<'SQL'
+        ALTER TABLE `selection`
+        ADD `is_validated` TINYINT(1) NULL AFTER `is_public`,
+        ADD INDEX `is_public` (`is_public`),
+        ADD INDEX `is_validated` (`is_validated`);
+        SQL;
+    try {
+        $connection->executeStatement($sql);
+    } catch (\Exception $e) {
+        // Skip.
+    }
+
+    // Just a move of columns.
+    $sql = <<<'SQL'
+        ALTER TABLE `selection_resource`
+        CHANGE `selection_id` `selection_id` int(11) NULL AFTER `id`,
+        CHANGE `owner_id` `owner_id` int(11) NOT NULL AFTER `resource_id`;
+        SQL;
+    try {
+        $connection->executeStatement($sql);
+    } catch (\Exception $e) {
+        // Skip.
+    }
+
+    $siteIds = $api->search('sites', [], ['returnScalar' => 'id'])->getContent();
+    foreach ($siteIds as $siteId) {
+        $siteSettings->set('selection_mode', 'single', $siteId);
+        $siteSettings->set('selection_disposition', $siteSettings->get('selection_browse_disposition', 'flat', $siteId) ?: 'hierarchy', $siteId);
+        $siteSettings->delete('selection_browse_disposition', $siteId);
+    }
+
+    $message = new PsrMessage(
+        'It is now possible to define the main mode of process by site: the user can manage a single selection or multiple selections.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $message = new PsrMessage(
+        'It is now possible to publish selection and to moderate them.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $message = new PsrMessage(
+        'Many urls for selections was modified, so check the menu and the theme if customized.' // @translate
+    );
+    $messenger->addWarning($message);
 }
