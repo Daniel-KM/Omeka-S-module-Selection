@@ -115,14 +115,22 @@ class Module extends AbstractModule
                 ],
                 ['search', 'read']
             )
+            // FIXME Manage rights: SelectionResource should be available only via Selection.
             ->allow(
                 $baseRoles,
                 [
                     Entity\Selection::class,
+                ],
+                ['create', 'read', 'update', 'delete', 'change-owner']//,
+                // new OwnsEntityAssertion
+            )
+            ->allow(
+                $baseRoles,
+                [
                     Entity\SelectionResource::class,
                 ],
-                ['create', 'read', 'update', 'delete'],
-                new OwnsEntityAssertion
+                ['create', 'read', 'update', 'delete', 'change-owner']//,
+                // new OwnsEntityAssertion
             )
             ->allow(
                 $adminRoles,
@@ -130,7 +138,7 @@ class Module extends AbstractModule
                     Entity\Selection::class,
                     Entity\SelectionResource::class,
                 ],
-                ['create', 'read', 'update', 'delete', 'view-all'],
+                ['create', 'read', 'update', 'delete', 'view-all', 'change-owner'],
             )
             ->allow(
                 $baseRoles,

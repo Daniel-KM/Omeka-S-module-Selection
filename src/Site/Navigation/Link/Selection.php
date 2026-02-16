@@ -51,6 +51,7 @@ class Selection implements LinkInterface
                     'site-slug' => $site->slug(),
                 ],
                 'resource' => 'Selection\Controller\Site\Guest',
+                'privilege' => 'browse',
             ];
         }
         return [
@@ -61,6 +62,7 @@ class Selection implements LinkInterface
                 'site-slug' => $site->slug(),
             ],
             'resource' => 'Selection\Controller\Site\Selection',
+            'privilege' => 'browse',
         ];
     }
 

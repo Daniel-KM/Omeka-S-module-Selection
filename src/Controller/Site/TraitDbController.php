@@ -877,7 +877,10 @@ trait TraitDbController
                 try {
                     $api->update('selections', $selectionId, ['o:structure' => $structure], [], ['isPartial' => true]);
                 } catch (Exception $e) {
-                    $this->logger()->err($e);
+                    $this->logger()->err(
+                        'Error when updating selection: {exception}', // @translate
+                        ['exception' => $e]
+                    );
                     return $this->jsonInternalError();
                 }
 
@@ -892,7 +895,10 @@ trait TraitDbController
                                 'o:selection' => ['o:id' => $selectionId],
                             ])->getContent();
                         } catch (Exception $e) {
-                            $this->logger()->err($e);
+                            $this->logger()->err(
+                                'Error when adding resource to selection: {exception}', // @translate
+                                ['exception' => $e]
+                            );
                             return $this->jsonInternalError();
                         }
                     }
