@@ -18,6 +18,17 @@
         });
 
         /**
+         * Close other selection details when opening a new one.
+         */
+        $(document).on('click', 'details.selection-groups > summary', function() {
+            var currentDetails = $(this).parent()[0];
+            $('details.selection-groups').not(currentDetails).each(function() {
+                $(this).removeAttr('open');
+                $(this).find('select.chosen-select').trigger('chosen:close');
+            });
+        });
+
+        /**
          * Handle login button click when selection is disabled for anonymous.
          */
         $(document).on('click', '.selection-button.selection-login', function(e) {
@@ -578,7 +589,6 @@
                                         sel.find('option.selection-action').first().before(newOption);
                                         sel.trigger('chosen:updated');
                                     });
-                                    select.prop('disabled', false);
                                 }
                                 $(document).trigger('o:selection-updated', data);
                             })
@@ -587,6 +597,7 @@
                             })
                             .always(function () {
                                 CommonDialog.spinnerDisable(select[0]);
+                                select.trigger('chosen:updated');
                             });
                         }
                     });
@@ -625,38 +636,36 @@
                             })
                             .always(function () {
                                 CommonDialog.spinnerDisable(select[0]);
+                                select.trigger('chosen:updated');
                             });
                         }
                     });
             } else if (action === 'exclude' || !selecteds || !selecteds.length) {
-                CommonDialog.dialogConfirm({ message: Omeka.jsTranslate('Remove from selection?') })
-                    .then(function(confirmed) {
-                        if (confirmed) {
-                            const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/exclude';
-                            $.ajax({
-                                url: url,
-                                method: 'POST',
-                                data: {
-                                    id: resourceId,
-                                },
-                               beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
-                            })
-                            .done(function() {
-                                select.find('option:selected').prop('selected', false);
-                                select.prop('disabled', false);
-                                select.trigger('chosen:updated');
-                                $(document).trigger('o:selection-updated');
-                            })
-                            .fail(CommonDialog.jSendFail)
-                            .always(function () {
-                                CommonDialog.spinnerDisable(select[0]);
-                            });
-                        }
-                    });
+                const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/exclude';
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        id: resourceId,
+                    },
+                    beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
+                })
+                .done(function() {
+                    select.find('option:selected').prop('selected', false);
+                    select.prop('disabled', false);
+                    select.trigger('chosen:updated');
+                    $(document).trigger('o:selection-updated');
+                })
+                .fail(CommonDialog.jSendFail)
+                .always(function () {
+                    CommonDialog.spinnerDisable(select[0]);
+                    select.trigger('chosen:updated');
+                });
             } else {
                 // The resource is included in one or multiple groups or selections.
                 // All groups or selections are sent, so it is update, because
                 // there may be excluded too.
+                // No spinner/chosen:updated to keep the dropdown open.
                 const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/update';
                 $.ajax({
                     url: url,
@@ -666,20 +675,11 @@
                         // Selected may be selections or groups or selection:groups).
                         selecteds: selecteds,
                     },
-                    beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
                 })
                 .done(function(data) {
-                    // Optionally update UI or show a success dialog
-                    CommonDialog.dialogAlert({
-                        message: Omeka.jsTranslate('Resource updated for selections.'),
-                        nl2br: true
-                    });
                     $(document).trigger('o:selection-updated', data);
                 })
-                .fail(CommonDialog.jSendFail)
-                .always(function () {
-                    CommonDialog.spinnerDisable(select[0]);
-                });
+                .fail(CommonDialog.jSendFail);
             }
         });
 
@@ -751,7 +751,74 @@
          */
         if ($.fn.chosen) {
             $('select.chosen-select').chosen();
+            // Keep dropdown open after selecting in selection dropdowns
+            // and preserve scroll position when results are redrawn.
+            $('.selector-group select.chosen-select').each(function() {
+                var chosen = $(this).data('chosen');
+                if (chosen) {
+                    chosen.hide_results_on_select = false;
+                    // Wrap winnow_results to preserve scroll position
+                    // after selecting/deselecting an item.
+                    var originalWinnow = chosen.winnow_results;
+                    chosen.winnow_results = function(options) {
+                        var scrollTop = this.search_results ? this.search_results.scrollTop() : 0;
+                        originalWinnow.call(this, options);
+                        if (this.search_results && scrollTop > 0) {
+                            this.search_results.scrollTop(scrollTop);
+                        }
+                    };
+                }
+            });
         }
+
+        /**
+         * Allow clicking on a selected result in the dropdown to deselect it.
+         *
+         * By default, Chosen marks selected items as "result-selected" and
+         * makes them non-clickable. This handler deselects the option using
+         * Chosen internals (without triggering change, to avoid spinner and
+         * chosen:updated that would close the dropdown), then sends the
+         * AJAX update directly.
+         */
+        $(document).on('click', '.selector-group .chosen-results .result-selected', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            var resultItem = $(this);
+            var chosenContainer = resultItem.closest('.chosen-container');
+            var select = chosenContainer.prev('select');
+            var optionArrayIndex = resultItem.data('option-array-index');
+            var chosen = select.data('chosen');
+            if (!chosen || !chosen.results_data || !chosen.results_data[optionArrayIndex]) {
+                return;
+            }
+            // Deselect internally without triggering change.
+            var resultData = chosen.results_data[optionArrayIndex];
+            resultData.selected = false;
+            chosen.form_field.options[resultData.options_index].selected = false;
+            chosen.selected_option_count = null;
+            chosen.result_clear_highlight();
+            chosen.winnow_results();
+            chosen.search_field_scale();
+            // Remove hidden search-choice tag.
+            chosenContainer.find('.search-choice-close[data-option-array-index="' + optionArrayIndex + '"]')
+                .parents('li').first().remove();
+            // Send the AJAX update directly (no spinner, no chosen:updated).
+            var selector = select.closest('.selector-group');
+            var resourceId = selector.data('resource-id');
+            var selectionId = selector.data('id') && selector.data('id') !== '' ? selector.data('id') : null;
+            var selecteds = select.val() || [];
+            if (!selecteds.length) {
+                var url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/exclude';
+                $.ajax({ url: url, method: 'POST', data: { id: resourceId } })
+                    .done(function() { $(document).trigger('o:selection-updated'); })
+                    .fail(CommonDialog.jSendFail);
+            } else {
+                var url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/update';
+                $.ajax({ url: url, method: 'POST', data: { id: [resourceId], selecteds: selecteds } })
+                    .done(function(data) { $(document).trigger('o:selection-updated', data); })
+                    .fail(CommonDialog.jSendFail);
+            }
+        });
 
     });
 })();
