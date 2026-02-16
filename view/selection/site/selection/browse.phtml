@@ -56,6 +56,8 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 </nav>
 <?php endif; ?>
 
+<?= $this->messages() ?>
+
 <?= $pageTitle($siteSetting('selection_label', $translate('Selections')), 2) ?>
 
 <?php if ($maxResources): ?>
