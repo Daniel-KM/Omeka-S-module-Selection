@@ -102,6 +102,7 @@ return  [
                 // Class can be star, list-alt, basket, but bookmark for now.
                 'class' => 'o-icon- selections fa-bookmark',
                 'route' => 'admin/selection',
+                'admin_section' => 'users',
                 'pages' => [
                     [
                         'route' => 'admin/selection/default',
