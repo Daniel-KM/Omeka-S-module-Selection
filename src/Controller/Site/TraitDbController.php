@@ -410,7 +410,8 @@ trait TraitDbController
     protected function excludeDb(array $resources, bool $isMultiple, User $user)
     {
         // If the route is without id, remove from all selections of the user.
-        $isMultipleSelections = $this->status()->getRouteMatch()->getMatchedRouteName() === 'site/selection';
+        $matchedRouteName = $this->status()->getRouteMatch()->getMatchedRouteName();
+        $isMultipleSelections = $matchedRouteName === 'site/selection' || $matchedRouteName === 'top/selection';
         if ($isMultipleSelections) {
             return $this->excludeDbAll($resources, $user);
         }
@@ -684,7 +685,8 @@ trait TraitDbController
     protected function updateDb(array $resources, bool $isMultiple, array $selecteds, User $user)
     {
         // If the route is without id, update specified selections of the user.
-        $isMultipleSelections = $this->status()->getRouteMatch()->getMatchedRouteName() === 'site/selection';
+        $matchedRouteName = $this->status()->getRouteMatch()->getMatchedRouteName();
+        $isMultipleSelections = $matchedRouteName === 'site/selection' || $matchedRouteName === 'top/selection';
         if ($isMultipleSelections) {
             return $this->updateDbAll($resources, $selecteds, $user);
         }
