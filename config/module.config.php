@@ -31,6 +31,7 @@ return  [
     ],
     'view_helpers' => [
         'invokables' => [
+            'selectionBrowse' => View\Helper\SelectionBrowse::class,
             'selectionButton' => View\Helper\SelectionButton::class,
             'selectionButtonToGroup' => View\Helper\SelectionButtonToGroup::class,
             'selectionButtonToSelect' => View\Helper\SelectionButtonToSelect::class,

@@ -1,0 +1,89 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $selections
+ * @var array $query
+ * @var string $heading
+ * @var array $components
+ * @var string $linkText
+ * @var \Omeka\Entity\User $user
+ * @var bool $linkToSearch
+ * @var \AdvancedSearch\Api\Representation\SearchConfigRepresentation|null $searchConfig
+ * @var bool $isGuestActive
+ * @var bool $isSession
+ */
+
+// Adapted from browse preview.
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$escape = $plugins->get('escapeHtml');
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$hyperlink = $plugins->get('hyperlink');
+$thumbnail = $this->plugin('thumbnail');
+
+$siteSlug = $site->slug();
+
+$showThumbnail = in_array('thumbnail', $components);
+$showHeading = in_array('resource-heading', $components);
+$showBody = in_array('resource-body', $components);
+$showOwner = in_array('resource-owner', $components);
+
+$defaultThumbnail = sprintf('<img loading="lazy" src="%1$s" title="%2$s"/>', $assetUrl('thumbnails/default.png', 'Omeka', true), $translate('No media'));
+?>
+
+<div class="block-selection-browse">
+
+    <?php if (!empty($heading)): ?>
+    <h2><?= $escape($heading) ?></h2>
+    <?php endif; ?>
+
+    <?php if (count($selections)): ?>
+
+    <ul>
+        <?php
+        foreach ($selections as $selection):
+            if ($linkToSearch) {
+                $resourceUrl = $searchConfig
+                    ? $searchConfig->siteUrl($siteSlug, false, ['selection_id' => $selection->id()])
+                    : $url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => ['selection_id' => $selection->id()]], true);
+            } else {
+                $resourceUrl = $selection->siteUrl($siteSlug);
+            }
+            $heading = $selection->label();
+            $body = (string) $selection->comment();
+            $media = $selection->primaryMedia();
+            $owner = $selection->owner();
+            $linkContent = '';
+            if ($showThumbnail) {
+                $linkContent .= $media ? $thumbnail($media, 'medium') : $defaultThumbnail;
+            }
+            if ($showHeading) {
+                $linkContent .= '<span class="resource-name">' . $escape($heading) . '</span>';
+            }
+            ?>
+        <li class="resource selection">
+            <?= $hyperlink->raw($linkContent, $resourceUrl, ['class' => 'resource-link selection-link']) ?>
+            <?php if ($body && $showBody): ?>
+            <div class="description">
+                <?= $escape($body) ?>
+            </div>
+            <?php endif; ?>
+            <?php if ($showOwner): ?>
+            <div class="description selection-owner">
+                <?= $escape($owner ? $owner->name() : $translate('[anonymous]')) ?>
+            </div>
+            <?php endif; ?>
+        </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <?php endif; ?>
+
+    <?php if ($linkText): ?>
+        <?= $hyperlink($linkText, $url('site/selection', ['action' => 'index'], ['query' => $query], true)) ?>
+    <?php endif; ?>
+
+</div>
