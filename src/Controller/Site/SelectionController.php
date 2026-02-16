@@ -28,13 +28,20 @@ class SelectionController extends AbstractSelectionController
         $selection = $this->api()->read('selections', ['id' => $id])->getContent();
 
         // TODO Manage rights via acl. Allow moderation.
+        // Visibility rules:
+        // - Admins: can view all.
+        // - Anonymous: only public and validated.
+        // - Authenticated non-admin: own or public+validated.
         $user = $this->identity();
-        $isOwner = $user && $selection->owner() && $selection->owner()->id() === $user->getId();
-        $isPublic = $selection->isPublic();
         $canViewAll = $user && $this->userIsAllowed(\Selection\Entity\Selection::class, 'view-all');
-
-        if (!$canViewAll && !$isPublic && !$isOwner) {
-            throw new PermissionDeniedException('Selection not accessible.'); // @translate
+        if (!$canViewAll) {
+            $isOwner = $user
+                && $selection->owner()
+                && $selection->owner()->id() === $user->getId();
+            $isPublicAndValidated = $selection->isPublicAndValidated();
+            if (!$isOwner && !$isPublicAndValidated) {
+                throw new PermissionDeniedException('Selection not accessible.'); // @translate
+            }
         }
 
         // Fill selection from session.
@@ -44,6 +51,7 @@ class SelectionController extends AbstractSelectionController
         $query = $this->params()->fromQuery();
         $disposition = $this->currentDisposition($query);
         $allowIndividualSelect = $this->allowIndividualSelect();
+        $selectionShare = $this->siteSettings()->get('selection_share');
 
         // TODO Simplify view: only selection is needed here.
         return new ViewModel([
@@ -59,6 +67,9 @@ class SelectionController extends AbstractSelectionController
             'mode' => $this->settings()->get('selection_mode'),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
+            'selectionShare' => $selectionShare,
+            'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
+            'canValidateAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate'),
         ]);
     }
 }

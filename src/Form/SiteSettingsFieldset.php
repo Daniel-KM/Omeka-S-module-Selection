@@ -9,6 +9,11 @@ use Laminas\Form\Fieldset;
 class SiteSettingsFieldset extends Fieldset
 {
     /**
+     * @var array
+     */
+    protected $searchConfigs = [];
+
+    /**
      * @var string
      */
     protected $label = 'Selection module'; // @translate
@@ -58,6 +63,40 @@ class SiteSettingsFieldset extends Fieldset
             ])
 
             ->add([
+                'name' => 'selection_share',
+                'type' => CommonElement\OptionalRadio::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Allow users to share their own selections', // @translate
+                    'value_options' => [
+                        '' => 'Only admins', // @translate
+                        'moderate' => 'Any user with moderation', // @translate
+                        'open' => 'Any user without moderation', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection_share',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_share_redirect',
+                'type' => CommonElement\OptionalSelect::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Redirect public selection page', // @translate
+                    'value_options' => [
+                        '' => 'Default selection page', // @translate
+                        'items_browse' => 'Items browse page', // @translate
+                        'advanced_search_site' => 'Advanced search page of the site', // @translate
+                    ] + $this->searchConfigs,
+                    'empty_option' => '',
+                ],
+                'attributes' => [
+                    'id' => 'selection_share_redirect',
+                ],
+            ])
+
+            ->add([
                 'name' => 'selection_disable_anonymous',
                 'type' => Element\Checkbox::class,
                 'options' => [
@@ -68,6 +107,7 @@ class SiteSettingsFieldset extends Fieldset
                     'id' => 'selection_disable_anonymous',
                 ],
             ])
+
             ->add([
                 'name' => 'selection_hide_login',
                 'type' => Element\Checkbox::class,
@@ -98,6 +138,7 @@ class SiteSettingsFieldset extends Fieldset
                     'id' => 'selection_selectable_resources',
                 ],
             ])
+
             ->add([
                 'name' => 'selection_placement_button',
                 'type' => CommonElement\OptionalMultiCheckbox::class,
@@ -222,5 +263,11 @@ class SiteSettingsFieldset extends Fieldset
                 ],
             ])
         ;
+    }
+
+    public function setSearchConfigs(array $searchConfigs): self
+    {
+        $this->searchConfigs = $searchConfigs;
+        return $this;
     }
 }

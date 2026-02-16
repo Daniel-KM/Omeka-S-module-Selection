@@ -1,0 +1,78 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Selection\Api\Representation\SelectionRepresentation $selection
+ * @var \Omeka\Entity\User $user
+ * @var string $selectionShare Default is empty; may be "", "moderate", "open".
+ * @var bool $canPublishAll
+ * @var bool $canValidateAll
+ * @var array|null $msgs
+ */
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$escape = $plugins->get('escapeHtml');
+$translate = $plugins->get('translate');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
+
+if (empty($msgs)) {
+    $msgs = [];
+    $msgs['visible'] = $translate('Visible to the public');
+    $msgs['invisible'] = $translate('Invisible to the public');
+    $msgs['validated-true'] = $translate('Is validated');
+    $msgs['validated-false'] = $translate('Is rejected');
+    $msgs['validated-not-yet'] = $translate('Validation in progress');
+    $msgs['publish'] = $translate('Publish');
+    $msgs['unpublish'] = $translate('Unpublish');
+    $msgs['publish-confirm']  = $selectionShare === 'moderate' && !$canValidateAll
+        ? $translate('Do you want to make this selection visible to the public? It will be moderated.')
+        : $translate('Do you want to make this selection visible to the public?');
+    $msgs['unpublish-confirm'] = $translate('Do you want to make this selection invisible to the public?');
+}
+
+$siteSlug = $site->slug();
+$baseUrl = $selection->siteUrl($siteSlug);
+
+$owner = $selection->owner();
+$canPublish = $canPublishAll
+    || ($user && $owner && in_array($selectionShare, ['moderate', 'open']) && $user->getId() === $owner->getId());
+$requireModeration = $selectionShare === 'moderate';
+
+$isPublic = $selection->isPublic();
+$isValidated = $selection->isValidated();
+$isPublic = $selection->isPublic();
+$isValidated = $selection->isValidated();
+$isValidatedClass = $isValidated === null ? 'validated-not-yet' : ($isValidated ? 'validated-true' : 'validated-false');
+?>
+
+<details class="action-details">
+    <summary class="selection-summary group-name" aria-expanded="false"><?= $escape($translate('Actions')) ?></summary>
+    <ul class="actions">
+        <?php // TODO Fixme Add actions for grouped and hierarchy. ?>
+        <?php if ($selection->userIsAllowed('update')): ?>
+        <li><button type="button" class="button rename" data-url="<?= $baseUrl ?>/edit" data-msg="<?= $escapeAttr($translate('Set the new name of the selection')) ?>"><?= $escape($translate('Rename')) ?></button></li>
+            <?php if ($canPublish): ?>
+        <li><button type="button" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $baseUrl  ?>/edit" data-msg-publish="<?= $escapeAttr($msgs['publish']) ?>" data-msg-unpublish="<?= $escapeAttr($msgs['unpublish']) ?>" data-msg-publish-confirm="<?= $escapeAttr($msgs['publish-confirm']) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($msgs['unpublish-confirm']) ?>"><?= $escape($isPublic ? $msgs['unpublish'] : $msgs['publish']) ?></button></li>
+            <?php endif; ?>
+            <?php if ($requireModeration && $canValidateAll): ?>
+        <li><button type="button" class="button <?= $isValidatedClass ?>" data-url="<?= $baseUrl  ?>/validate" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($msgs[$isValidatedClass]) ?></button></li>
+            <?php endif; ?>
+        <?php endif; ?>
+        <?php if (!empty($bulkExporters)): ?>
+        <li><button type="button" class="button export" data-url="<?= $baseUrl ?>/export"><?= $escape($translate('Export resources')) ?></button>
+            <ul>
+                <?php
+                foreach ($bulkExporters as $format => $label):
+                    $urlFormat = $url('site/resource/output', ['site-slug' => $siteSlug, 'controller' => 'resource', 'action' => 'browse', 'format' => $format], ['id' => array_keys($selection->resources())]);
+                    ?>
+                <li><a class="download-file download-id" href="<?= $urlFormat ?>" download="download" target="_self"><button type="button" class="export-group download-<?= $format ?>" data-url="<?= $urlFormat ?>"><?= $escape($label) ?></button></a></li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+        </li>
+        <?php if ($selection->userIsAllowed('delete')): ?>
+        <li><button type="button" class="button delete selection-delete" data-url="<?= $baseUrl ?>/delete" data-msg="<?= $escapeAttr($translate('Delete this selection')) ?>"><?= $escape($translate('Delete selection')) ?></button></li>
+        <?php endif; ?>
+    </ul>
+</details>

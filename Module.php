@@ -124,7 +124,7 @@ class Module extends AbstractModule
                     Api\Adapter\SelectionAdapter::class,
                     Api\Adapter\SelectionResourceAdapter::class,
                 ],
-                ['create', 'search', 'read', 'update', 'delete', 'view-all'],
+                ['create', 'search', 'read', 'update', 'delete', 'view-all', 'validate'],
             )
             // Controller.
             ->allow(
@@ -164,6 +164,15 @@ class Module extends AbstractModule
                     'rename-group',
                     'move-group',
                     'delete-group',
+                ]
+            )
+            ->allow(
+                $adminRoles,
+                [
+                    'Selection\Controller\Site\Selection',
+                ],
+                [
+                    'validate',
                 ]
             )
         ;

@@ -142,6 +142,11 @@ class SelectionAdapter extends AbstractEntityAdapter
     ): void {
         /** @var \Selection\Entity\Selection $entity */
 
+        // Check if current user can validate.
+        $services = $this->getServiceLocator();
+        $acl = $services->get('Omeka\Acl');
+        $canValidate = $acl->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate');
+
         $this->hydrateOwner($request, $entity);
 
         $wasPublic = $entity->isPublic();
@@ -153,9 +158,17 @@ class SelectionAdapter extends AbstractEntityAdapter
         // Reinitialize the validation when a resource visibility is changing.
         // TODO Manage the case where the user modify the list of resources or changes the label.
         $isPublic = $entity->isPublic();
+        $wasValidated = $entity->isValidated();
         if ($this->shouldHydrate($request, 'o:is_validated')) {
             $entity->setisValidated($isPublic ? $request->getValue('o:is_validated') : null);
         } elseif ($wasPublic !== $isPublic) {
+            $entity->setisValidated(null);
+        }
+
+        // Only admins can validate a selection.
+        // This is a check for direct api call.
+        $isValidated = $entity->isValidated();
+        if (!$canValidate && $isValidated && $wasValidated !== $isValidated) {
             $entity->setisValidated(null);
         }
 

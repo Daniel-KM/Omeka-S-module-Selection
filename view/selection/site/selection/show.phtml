@@ -13,6 +13,9 @@
  * @var string $mode
  * @var string $disposition
  * @var bool $allowIndividualSelect
+ * @var string $selectionShare Default is empty; may be "", "moderate", "open".
+ * @var bool $canPublishAll
+ * @var bool $canValidateAll
  */
 
 // Display the list of resources for the selection publicly.
@@ -22,6 +25,7 @@ $partial = $plugins->get('partial');
 $escape = $plugins->get('escapeHtml');
 $assetUrl = $plugins->get('assetUrl');
 $translate = $plugins->get('translate');
+
 $breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
 
 // May be included in main layout.
@@ -50,5 +54,9 @@ $owner = $selection->owner();
 <?= $this->pageTitle($selection->label() ?: $translate('[Selection without title]'), 2) ?>
 
 <h3><?= $escape($owner ? $owner->name() : $translate('[Anonymous]')) ?></h3>
+
+<?php if ($user && ($canValidateAll || ($owner && $user->getId() === $owner->getId()))): // Display the actions button only when useful. ?>
+<?= $partial('selection/site/selection/actions') ?>
+<?php endif; ?>
 
 <?= $partial('selection/site/selection/list-' . $disposition) ?>

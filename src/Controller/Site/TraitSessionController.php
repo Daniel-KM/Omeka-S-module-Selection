@@ -47,6 +47,7 @@ trait TraitSessionController
 
         $disposition = $this->currentDisposition($query);
         $allowIndividualSelect = $this->allowIndividualSelect();
+        $selectionShare = $this->siteSettings()->get('selection_share');
 
         $view = new ViewModel([
             'site' => $this->currentSite(),
@@ -61,6 +62,9 @@ trait TraitSessionController
             'mode' => $this->settings()->get('selection_mode'),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
+            'selectionShare' => $selectionShare,
+            'canPublishAll' => false,
+            'canValidateAll' => false,
         ]);
         return $view
             ->setTemplate('selection/site/selection/view');

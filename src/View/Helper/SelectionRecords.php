@@ -9,9 +9,11 @@ use Selection\Api\Representation\SelectionResourceRepresentation;
 class SelectionRecords extends AbstractHelper
 {
     /**
-     * Format all resources to be stored or displayed.
+     * Format all resources to be stored or displayed (for user or anonymous).
      *
-     * @todo Use this helper only for container.
+     * This method works for anonymous local container and for db selections.
+     *
+     * @todo Do not returns records but resources (except for anonymous local records, so separate helpers?).
      */
     public function __invoke(?SelectionRepresentation $selection, ?array $selectionResources = null, bool $isSelected = false): array
     {
@@ -21,6 +23,7 @@ class SelectionRecords extends AbstractHelper
         static $bodyTerm;
         static $url;
         static $user;
+        static $canViewAll;
 
         if (!$selection && !$selectionResources) {
             return [];
@@ -44,21 +47,49 @@ class SelectionRecords extends AbstractHelper
             $defaultLang = $filterLocale ? [$lang, ''] : null;
             $url = $plugins->get('url');
             $user = $plugins->get('identity')();
+            $canViewAll = $user && $view->userIsAllowed(\Selection\Entity\Selection::class, 'view-all');
         }
 
-        if (!$user) {
+        // Locally stored selection for anonymous: visible only to anonymous.
+        if (!$selection && $user) {
             return [];
+        }
+
+        // Visibility rules for db selections:
+        // - Admins: can view all.
+        // - Anonymous: only public and validated.
+        // - Authenticated non-admin: own or public+validated.
+        if ($selection && !$canViewAll) {
+            $isPublicAndValidated = $selection->isPublicAndValidated();
+            if ($user) {
+                $isOwner = $selection->owner()
+                    && $selection->owner()->id() === $user->getId();
+                if (!$isOwner && !$isPublicAndValidated) {
+                    return [];
+                }
+            } else {
+                if (!$isPublicAndValidated) {
+                    return [];
+                }
+            }
         }
 
          $records = [];
 
         foreach ($selectionResources as $selectionResource) {
-            $resource = $selectionResource instanceof SelectionResourceRepresentation ? $selectionResource->resource() : $selectionResource->resource;
+            $resource = $selectionResource instanceof SelectionResourceRepresentation
+                ? $selectionResource->resource()
+                : $selectionResource->resource;
             if (!$resource) {
                 continue;
             }
-            $selection = $selectionResource instanceof SelectionResourceRepresentation ? $selectionResource->selection() : $selectionResource->selection;
-            $selectionId = $selection ? $selection->id() : 0;
+
+            $sel = $selectionResource instanceof SelectionResourceRepresentation
+                ? $selectionResource->selection()
+                : $selectionResource->selection;
+
+            // For local selections, there is no db id, so use 0.
+            $selectionId = $sel ? $sel->id() : ($selection ? $selection->id() : 0);
             $resourceId = $resource->id();
             // String is required to avoid error in container when the title is
             // a resource.
@@ -66,6 +97,7 @@ class SelectionRecords extends AbstractHelper
             $description = (string) $resource->displayDescription(null, $defaultLang);
             $heading = $headingTerm ? (string) $resource->value($headingTerm, ['default' => $title]) : $title;
             $body = $bodyTerm ? (string) $resource->value($bodyTerm, ['default' => $description]) : $description;
+
             $records[$selectionId][$resourceId] = [
                 'id' => $resourceId,
                 'type' => $resource->getControllerName(),

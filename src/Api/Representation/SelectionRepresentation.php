@@ -118,6 +118,12 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return $this->resource->isValidated();
     }
 
+    public function isPublicAndValidated(): bool
+    {
+        return $this->resource->isPublic()
+            && $this->resource->isValidated();
+    }
+
     public function isDynamic(): bool
     {
         return $this->resource->isDynamic();

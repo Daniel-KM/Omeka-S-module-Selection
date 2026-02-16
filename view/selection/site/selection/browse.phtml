@@ -10,6 +10,9 @@
  * @var string $mode
  * @var string $disposition
  * @var bool $allowIndividualSelect
+ * @var string $selectionShare Default is empty; may be "", "moderate", "open".
+ * @var bool $canPublishAll
+ * @var bool $canValidateAll
  */
 
 // Browse the list of selections (of the current user for guest).
@@ -22,7 +25,9 @@ $assetUrl = $plugins->get('assetUrl');
 $translate = $plugins->get('translate');
 $pageTitle = $plugins->get('pageTitle');
 $siteSetting = $plugins->get('siteSetting');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
 $translatePlural = $plugins->get('translatePlural');
+
 $guestNavigation = $user && $plugins->has('guestNavigation') ? $plugins->get('guestNavigation')() : null;
 $breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
 
@@ -38,9 +43,6 @@ $this->headScript()
     ->appendFile($assetUrl('js/selection.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
 
 $this->htmlElement('body')->appendAttribute('class', 'selection resource browse');
-
-$siteSlug = $site->slug();
-$bulkExporters = null;
 ?>
 
 <?php if ($breadcrumbs && !$hasGuestNav): ?>
@@ -88,20 +90,28 @@ $bulkExporters = null;
     $msgs = [];
     $msgs['visible'] = $translate('Visible to the public');
     $msgs['invisible'] = $translate('Invisible to the public');
+    $msgs['validated-true'] = $translate('Is validated');
+    $msgs['validated-false'] = $translate('Is rejected');
+    $msgs['validated-not-yet'] = $translate('Validation in progress');
     $msgs['publish'] = $translate('Publish');
     $msgs['unpublish'] = $translate('Unpublish');
-    $msgs['publish-confirm'] = $translate('Do you want to make this selection visible to the public?');
+    $msgs['publish-confirm']  = $selectionShare === 'moderate'
+        ? $translate('Do you want to make this selection visible to the public? It will be moderated.')
+        : $translate('Do you want to make this selection visible to the public?');
     $msgs['unpublish-confirm'] = $translate('Do you want to make this selection invisible to the public?');
+    $vars->offsetSet('msgs', $msgs);
     foreach ($selections as $selection):
         $heading = $selection->label();
         $resourceCount = $selection->resourceCount();
         $total = sprintf($translatePlural('%d resource', '%d resources', $resourceCount), $resourceCount);
         $isPublic = $selection->isPublic();
         $visibility = $isPublic ? $msgs['visible'] : $msgs['invisible'];
-        $baseUrl = $selection->siteUrl($siteSlug);
+        $isValidated = $selection->isValidated();
+        $isValidatedClass = $isValidated === null ? 'validated-not-yet' : ($isValidated ? 'validated-true' : 'validated-false');
+        $validated = $msgs[$isValidatedClass];
         $vars->offsetSet('selection', $selection);
         ?>
-    <li class="selection resource selection-<?= $isPublic ? 'public' : 'private' ?>" data-id="<?= $selection->id() ?>">
+    <li class="selection resource selection-<?= $isPublic ? 'public' : 'private' ?> selection-<?= $isValidatedClass ?>" data-id="<?= $selection->id() ?>">
         <?php
         $linkContent = sprintf('%s<span class="resource-name">%s</span>',
             $selection->thumbnail('medium'),
@@ -110,31 +120,11 @@ $bulkExporters = null;
         ?>
         <div class="description total-resources"><?= $escape($total) ?></div>
         <div class="description visibility <?= $isPublic ? 'visibility-public' : 'visibility-private' ?>" data-msg-visible="<?= $msgs['visible'] ?>" data-msg-invisible="<?= $msgs['invisible'] ?>"><?= $escape($visibility) ?></div>
-       <details class="action-details">
-            <summary class="selection-summary group-name" aria-expanded="false"><?= $translate('Actions') ?></summary>
-            <ul class="actions">
-                <?php // TODO Fixme Add actions for grouped and hierarchy. ?>
-                <?php if ($selection->userIsAllowed('update')): ?>
-                <li><button type="button" class="button rename" data-url="<?= $baseUrl ?>/edit" data-msg="<?= $translate('Set the new name of the selection') ?>"><?= $escape($translate('Rename')) ?></button></li>
-                <li><button type="button" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $baseUrl  ?>/edit" data-msg-publish="<?= $msgs['publish'] ?>" data-msg-unpublish="<?= $msgs['unpublish'] ?>" data-msg-publish-confirm="<?= $msgs['publish-confirm'] ?>" data-msg-unpublish-confirm="<?= $msgs['unpublish-confirm'] ?>"><?= $escape($isPublic ? $msgs['unpublish'] : $msgs['publish']) ?></button></li>
-                <?php endif; ?>
-                <?php if ($bulkExporters): ?>
-                <li><button type="button" class="button export" data-url="<?= $baseUrl ?>/export"><?= $escape($translate('Export resources')) ?></button>
-                    <ul>
-                        <?php
-                        foreach ($bulkExporters as $format => $label):
-                            $urlFormat = $url('site/resource/output', ['site-slug' => $siteSlug, 'controller' => 'resource', 'action' => 'browse', 'format' => $format], ['id' => array_keys($selection->resources())]);
-                            ?>
-                        <li><a class="download-file download-id" href="<?= $urlFormat ?>" download="download" target="_self"><button type="button" class="export-group download-<?= $format ?>" data-url="<?= $urlFormat ?>"><?= $escape($label) ?></button></a></li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-                </li>
-                <?php if ($selection->userIsAllowed('delete')): ?>
-                <li><button type="button" class="button delete selection-delete" data-url="<?= $baseUrl ?>/delete" data-msg="<?= $translate('Delete this selection') ?>"><?= $escape($translate('Delete selection')) ?></button></li>
-                <?php endif; ?>
-            </ul>
-        </details>
+        <?php if ($requireModeration): ?>
+        <div class="description validation <?= $isValidatedClass ?>" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($validated) ?></div>
+        <?php endif; ?>
+
+        <?= $partial('selection/site/selection/actions') ?>
 
         <?= $partial('selection/site/selection/list-' . $disposition) ?>
 

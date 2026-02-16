@@ -21,6 +21,14 @@ return  [
             'selection_visibility' => Db\Filter\SelectionVisibilityFilter::class,
         ],
     ],
+    'service_manager' => [
+        'invokables' => [
+            Mvc\MvcListeners::class => Mvc\MvcListeners::class,
+        ],
+    ],
+    'listeners' => [
+        Mvc\MvcListeners::class,
+    ],
     'view_manager' => [
         'template_path_stack' => [
             dirname(__DIR__) . '/view',
@@ -47,7 +55,9 @@ return  [
     'form_elements' => [
         'invokables' => [
             Form\SelectionFieldset::class => Form\SelectionFieldset::class,
-            Form\SiteSettingsFieldset::class => Form\SiteSettingsFieldset::class,
+        ],
+        'factories' => [
+            Form\SiteSettingsFieldset::class => Service\Form\SiteSettingsFieldsetFactory::class,
         ],
     ],
     'block_layouts' => [
@@ -102,6 +112,7 @@ return  [
                     // When the visitor is anonymous, the url is /selection/xxx/view.
                     // When the user is logged, the url is /guest/selection/xxx/view (view can be omitted).
                     // When the selection is published, the url is /selection/xxx/show (show can be omitted).
+                    // The publication is done via edit. The moderation is done via validate.
                     'selection' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
@@ -125,7 +136,7 @@ return  [
                                 // "show" is used for public display of a selection.
                                 // "view" is used for internal display when the
                                 // selection is not public.
-                                'action' => 'browse|delete|edit|show|view|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
+                                'action' => 'browse|delete|edit|show|view|validate|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
                                 'id' => '\d+',
                             ],
                             'defaults' => [
@@ -192,9 +203,13 @@ return  [
         ],
     ],
     'selection' => [
+        // TODO Move "selection_share" to main settings?
         'site_settings' => [
             'selection_mode' => 'single',
             'selection_disposition' => 'flat',
+            'selection_share' => '',
+            'selection_share_redirect' => '',
+            'selection_share_redirect_search' => '',
             'selection_disable_anonymous' => false,
             'selection_hide_login' => false,
             'selection_selectable_resources' => [

@@ -13,6 +13,9 @@
  * @var string $mode
  * @var string $disposition
  * @var bool $allowIndividualSelect
+ * @var string $selectionShare Default is empty; may be "", "moderate", "open".
+ * @var bool $canPublishAll
+ * @var bool $canValidateAll
  */
 
 // Display the list of resources for the selection.
@@ -23,6 +26,7 @@ $escape = $plugins->get('escapeHtml');
 $assetUrl = $plugins->get('assetUrl');
 $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
+
 $guestNavigation = $user && $plugins->has('guestNavigation') ? $plugins->get('guestNavigation')() : null;
 $breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
 
@@ -40,9 +44,13 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 
 if (isset($selection) && is_object($selection)) {
     $selectionId = $selection->id();
+    $owner = $selection->owner();
 } else {
     $selection = $selections[$selectionId];
+    $owner = null;
 }
+
+$owner = $selection->owner();
 
 $labelSelection = $siteSetting('selection_label', $translate('Selection'));
 ?>
@@ -65,6 +73,10 @@ $labelSelection = $siteSetting('selection_label', $translate('Selection'));
     <strong><?= $translate('Warning') ?></strong>
     <?= $escape($labelWarning) ?>
 </p>
+<?php endif; ?>
+
+<?php if (is_object($selection) && $user && ($canValidateAll || ($owner && $user->getId() === $owner->getId()))): // Display the actions button only when useful. ?>
+<?= $partial('selection/site/selection/actions') ?>
 <?php endif; ?>
 
 <?= $partial('selection/site/selection/list-' . $disposition) ?>

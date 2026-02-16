@@ -47,6 +47,8 @@ trait TraitDbController
         $this->paginator($response->getTotalResults());
         $selections = $response->getContent();
 
+        $selectionShare = $this->siteSettings()->get('selection_share');
+
         // TODO Records are loaded dynamically?
 
         $view = new ViewModel([
@@ -59,6 +61,9 @@ trait TraitDbController
             'mode' => $this->settings()->get('selection_mode'),
             'disposition' => $this->currentDisposition($query),
             'allowIndividualSelect' => $this->allowIndividualSelect(),
+            'selectionShare' => $selectionShare,
+            'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
+            'canValidateAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate'),
         ]);
 
         return $view
@@ -87,6 +92,7 @@ trait TraitDbController
 
         $disposition = $this->currentDisposition($query);
         $allowIndividualSelect = $this->allowIndividualSelect();
+        $selectionShare = $this->siteSettings()->get('selection_share');
 
         $view = new ViewModel([
             'site' => $this->currentSite(),
@@ -101,6 +107,9 @@ trait TraitDbController
             'mode' => $this->settings()->get('selection_mode'),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
+            'selectionShare' => $selectionShare,
+            'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
+            'canValidateAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate'),
         ]);
         return $view
             ->setTemplate($this->isGuestActive
