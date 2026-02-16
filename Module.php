@@ -448,6 +448,8 @@ class Module extends AbstractModule
             return;
         }
 
+        // TODO Manage selection paths.
+
         $services = $this->getServiceLocator();
         $translator = $services->get('MvcTranslator');
         $filterLabel = $translator->translate('Selection'); // @translate
@@ -459,7 +461,9 @@ class Module extends AbstractModule
             $filters[$filterLabel][] = $translator->translate('No selection'); // @translate
             $event->setParam('filters', $filters);
         } elseif ($selectionIds) {
-            $filters[$filterLabel] = $selectionIds;
+            $api = $services->get('Omeka\ApiManager');
+            $selectionLabels = $api->search('selections', ['id' => $selectionIds], ['returnScalar' => 'label'])->getContent();
+            $filters[$filterLabel] = array_replace(array_combine($selectionIds, $selectionIds), $selectionLabels);
             $event->setParam('filters', $filters);
         }
     }
