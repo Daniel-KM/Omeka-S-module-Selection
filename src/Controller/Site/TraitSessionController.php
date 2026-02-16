@@ -26,9 +26,9 @@ trait TraitSessionController
         throw new RuntimeException($this->translate('It is not possible to browse multiple selections without an account for now.')); // @translate
     }
 
-    protected function showSession()
+    protected function viewSession()
     {
-        // Show the current selection.
+        // Display the current selection.
 
         // TODO Query in session is used only for pagination, not implemented yet.
         $query = $this->params()->fromQuery();
@@ -63,7 +63,7 @@ trait TraitSessionController
             'allowIndividualSelect' => $allowIndividualSelect,
         ]);
         return $view
-            ->setTemplate('selection/site/selection/selection-show');
+            ->setTemplate('selection/site/selection/view');
     }
 
     protected function addSession()

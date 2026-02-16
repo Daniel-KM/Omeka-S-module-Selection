@@ -64,13 +64,13 @@ trait TraitDbController
         return $view
             ->setTemplate($this->isGuestActive
                 ? 'guest/site/guest/selection-browse'
-                : 'selection/site/selection/selection-browse'
+                : 'selection/site/selection/browse'
             );
     }
 
-    protected function showDb(User $user)
+    protected function viewDb(User $user)
     {
-        // Show the current selection.
+        // Display the current selection.
 
         $query = $this->params()->fromQuery();
         // $query['owner_id'] = $user->getId();
@@ -104,8 +104,8 @@ trait TraitDbController
         ]);
         return $view
             ->setTemplate($this->isGuestActive
-                ? 'guest/site/guest/selection-show'
-                : 'selection/site/selection/selection-show'
+                ? 'guest/site/guest/selection-view'
+                : 'selection/site/selection/view'
             );
     }
 

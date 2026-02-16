@@ -86,7 +86,8 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
-     * Browse means browse own selections. Use "index" to browse all selections.
+     * Browse means to browse own selections.
+     * Use "index" and "show" to browse all selections.
      */
     public function browseAction()
     {
@@ -98,7 +99,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         $mode = $this->siteSettings()->get('selection_mode', 'single');
         if ($mode === 'single') {
             $params = $this->params()->fromRoute();
-            $params['action'] = 'show';
+            $params['action'] = 'view';
             // TODO For now, there is always a user.
             return $user
                 ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
@@ -110,17 +111,33 @@ abstract class AbstractSelectionController extends AbstractActionController
             : $this->browseSession();
     }
 
+    /**
+     * Show a published selection.
+     * Use view to show own selections.
+     * A published selection means user, so an anonymous cannot publish one.
+     * This method is overridden in SelectionController to publish a selection.
+     */
     public function showAction()
+    {
+        $params = $this->params()->fromRoute();
+        $params['action'] = 'view';
+        $user = $this->identity();
+        return $user
+            ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
+            : $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
+    }
+
+    public function viewAction()
     {
         $user = $this->identity();
         if (!$user) {
             if ($this->siteSettings()->get('selection_disable_anonymous')) {
                 throw new \Omeka\Api\Exception\PermissionDeniedException();
             }
-            return $this->showSession();
+            return $this->viewSession();
         }
 
-        return $this->showDb($user);
+        return $this->viewDb($user);
     }
 
     /**

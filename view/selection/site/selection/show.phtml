@@ -1,0 +1,54 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Omeka\Entity\User $user
+ * @var \Selection\Api\Representation\SelectionRepresentation $selection
+ * @var \Selection\Api\Representation\SelectionRepresentation $resource
+ * @var int $selectionId
+ * @var array $selections
+ * @var array $records
+ * @var bool $isGuestActive
+ * @var bool $isSession
+ * @var string $mode
+ * @var string $disposition
+ * @var bool $allowIndividualSelect
+ */
+
+// Display the list of resources for the selection publicly.
+
+$plugins = $this->getHelperPluginManager();
+$partial = $plugins->get('partial');
+$escape = $plugins->get('escapeHtml');
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
+
+// May be included in main layout.
+$this->headLink()
+    ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/selection.css', 'Selection'));
+$this->headScript()
+    ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/selection.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
+
+$this->htmlElement('body')->appendAttribute('class', 'selection resource show selection-public');
+
+if (isset($selection) && is_object($selection)) {
+    $selectionId = $selection->id();
+} else {
+    $selection = $selections[$selectionId];
+}
+
+$owner = $selection->owner();
+?>
+
+<?php if ($breadcrumbs): ?>
+<?= $breadcrumbs() ?>
+<?php endif; ?>
+
+<?= $this->pageTitle($selection->label() ?: $translate('[Selection without title]'), 2) ?>
+
+<h3><?= $escape($owner ? $owner->name() : $translate('[Anonymous]')) ?></h3>
+
+<?= $partial('selection/site/selection/list-' . $disposition) ?>

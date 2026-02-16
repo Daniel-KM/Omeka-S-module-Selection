@@ -137,6 +137,7 @@ class Module extends AbstractModule
                     'index',
                     'browse',
                     'show',
+                    'view',
                 ]
             )
             ->allow(
@@ -149,6 +150,7 @@ class Module extends AbstractModule
                     'index',
                     'browse',
                     'show',
+                    'view',
                     'add',
                     'edit',
                     'delete',

@@ -99,6 +99,9 @@ return  [
             'site' => [
                 'child_routes' => [
                     // TODO Clarify routes.
+                    // When the visitor is anonymous, the url is /selection/xxx/view.
+                    // When the user is logged, the url is /guest/selection/xxx/view (view can be omitted).
+                    // When the selection is published, the url is /selection/xxx/show (show can be omitted).
                     'selection' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
@@ -119,7 +122,10 @@ return  [
                         'options' => [
                             'route' => '/selection/:id[/:action]',
                             'constraints' => [
-                                'action' => 'browse|edit|delete|show|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
+                                // "show" is used for public display of a selection.
+                                // "view" is used for internal display when the
+                                // selection is not public.
+                                'action' => 'browse|delete|edit|show|view|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
                                 'id' => '\d+',
                             ],
                             'defaults' => [
@@ -145,7 +151,7 @@ return  [
                                 'options' => [
                                     'route' => '/selection[/:action]',
                                     'constraints' => [
-                                        'action' => 'browse|reset|show',
+                                        'action' => 'browse|reset|view',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -159,13 +165,13 @@ return  [
                                 'options' => [
                                     'route' => '/selection/:id[/:action]',
                                     'constraints' => [
-                                        'action' => 'browse|reset|show',
+                                        'action' => 'browse|reset|view',
                                         'id' => '\d+',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'Selection\Controller\Site',
                                         'controller' => 'Guest',
-                                        'action' => 'show',
+                                        'action' => 'view',
                                     ],
                                 ],
                             ],

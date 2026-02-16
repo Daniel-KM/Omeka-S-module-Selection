@@ -18,6 +18,6 @@ $partial = $plugins->get('partial');
 
 <div class="block block-selection">
     <?= $isGuestActive
-        ? $partial("guest/site/guest/selection-show-$disposition")
-        : $partial("selection/site/selection/selection-show-$disposition") ?>
+        ? $partial("guest/site/guest/selection-list-$disposition")
+        : $partial("selection/site/selection/list-$disposition") ?>
 </div>

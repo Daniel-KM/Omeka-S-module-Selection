@@ -108,7 +108,7 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
     <?php $this->trigger('view.browse.before'); ?>
 
     <?php // Groups and selected resources inside them. ?>
-    <?php $templateGroup = $partial('selection/site/selection/selection-group'); ?>
+    <?php $templateGroup = $partial('selection/site/selection/group'); ?>
     <ul class="resource-list selection-resources selection-structure selection-structure-nested" data-msg-add-group="<?= $translate('Set selection name') ?>" data-template-group="<?= $escapeAttr($templateGroup) ?>">
         <?php
         foreach ($selection['structure'] ?? [] as $groupFullPath => $group):
@@ -127,7 +127,7 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
                 '__GROUP_PATH__' => $escapeAttr($groupFullPath),
                 '__GROUP_NAME__' => '<span>' . strtr(ltrim($groupFullPath, '/'), ['/' => '</span><span>']) . '</span>',
                 '__GROUP_RESOURCES__' => $selectedRecordModels
-                    ? $partialLoop('selection/site/selection/selection-group-resource', $selectedRecordModels)
+                    ? $partialLoop('selection/site/selection/group-resource', $selectedRecordModels)
                     : '',
             ]; ?>
         <?= strtr($templateGroup, $replace) ?>
@@ -143,7 +143,7 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
             $selectedRecordModel['record'] = $record;
             $selectedRecordModels[] = $selectedRecordModel;
         } ?>
-        <?= $partialLoop('selection/site/selection/selection-group-resource', $selectedRecordModels) ?>
+        <?= $partialLoop('selection/site/selection/group-resource', $selectedRecordModels) ?>
     </ul>
     <?php endif; ?>
 
