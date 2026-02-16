@@ -18,6 +18,21 @@
         });
 
         /**
+         * Handle login button click when selection is disabled for anonymous.
+         */
+        $(document).on('click', '.selection-button.selection-login', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = $(this);
+            const loginButton = $('.button-login[data-url]');
+            if (loginButton.length) {
+                loginButton.trigger('click');
+            } else {
+                window.location.href = button.data('url');
+            }
+        });
+
+        /**
          * Hide details summary on outside click.
          * @todo Find a better way to manage only selection details.
          */

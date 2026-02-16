@@ -34,6 +34,19 @@ class SiteSettingsFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'selection_hide_login',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Display a login button when selection is disabled for anonymous', // @translate
+                    'info' => 'When selection is disabled for anonymous visitors, display a login button instead of hiding the selection.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_hide_login',
+                ],
+            ])
+
+            ->add([
                 'name' => 'selection_selectable_resources',
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [

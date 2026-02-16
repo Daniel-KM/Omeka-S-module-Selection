@@ -163,6 +163,7 @@ return  [
     'selection' => [
         'site_settings' => [
             'selection_disable_anonymous' => false,
+            'selection_hide_login' => false,
             'selection_selectable_resources' => [
                 'items',
             ],

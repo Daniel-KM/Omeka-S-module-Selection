@@ -10,11 +10,17 @@
  */
 
 $plugins = $this->getHelperPluginManager();
+$translate = $plugins->get('translate');
+$siteSetting = $plugins->get('siteSetting');
 
-if (!$user && $plugins->get('siteSetting')('selection_disable_anonymous')) return;
+if (!$user && $siteSetting('selection_disable_anonymous')) {
+    if (!$siteSetting('selection_hide_login')): ?>
+        <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
+    <?php endif;
+    return;
+}
 
 $escape = $plugins->get('escapeHtml');
-$translate = $plugins->get('translate');
 $escapeAttr = $plugins->get('escapeHtmlAttr');
 ?>
 

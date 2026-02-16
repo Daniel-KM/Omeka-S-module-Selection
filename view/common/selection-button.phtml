@@ -18,10 +18,16 @@
  */
 
 $plugins = $this->getHelperPluginManager();
-
-if (!$user && $plugins->get('siteSetting')('selection_disable_anonymous')) return;
-
 $translate = $plugins->get('translate');
+$siteSetting = $plugins->get('siteSetting');
+
+if (!$user && $siteSetting('selection_disable_anonymous')) {
+    if (!$siteSetting('selection_hide_login')): ?>
+        <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
+    <?php endif;
+    return;
+}
+
 $escapeAttr = $plugins->get('escapeHtmlAttr');
 
 $textSelect['unselected'] = $translate('Add to selection');
