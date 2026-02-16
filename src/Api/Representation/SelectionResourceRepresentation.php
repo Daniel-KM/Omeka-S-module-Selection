@@ -55,9 +55,9 @@ class SelectionResourceRepresentation extends AbstractEntityRepresentation
         $selection = $this->selection();
 
         return [
-            'o:owner' => $owner ? $owner->getReference()->jsonSerialize() : null,
-            'o:resource' => $linkedResource ? $linkedResource->getReference()->jsonSerialize() : null,
             'o:selection' => $selection ? $selection->getReference()->jsonSerialize() : null,
+            'o:resource' => $linkedResource ? $linkedResource->getReference()->jsonSerialize() : null,
+            'o:owner' => $owner ? $owner->getReference()->jsonSerialize() : null,
             'o:created' => [
                 '@value' => $this->getDateTime($this->created()),
                 '@type' => 'http://www.w3.org/2001/XMLSchema#dateTime',
@@ -65,15 +65,11 @@ class SelectionResourceRepresentation extends AbstractEntityRepresentation
         ];
     }
 
-    /**
-     * Get the owner associated to the selection, if allowed.
-     */
-    public function owner(): ?UserRepresentation
+    public function selection(): ?SelectionRepresentation
     {
-        $adapter = $this->getAdapter('users');
-        $owner = $this->resource->getOwner();
-        return $owner
-            ? $adapter->getRepresentation($owner)
+        $selection = $this->resource->getSelection();
+        return $selection
+            ? $this->getAdapter('selections')->getRepresentation($selection)
             : null;
     }
 
@@ -91,11 +87,15 @@ class SelectionResourceRepresentation extends AbstractEntityRepresentation
             : null;
     }
 
-    public function selection(): ?SelectionRepresentation
+    /**
+     * Get the owner associated to the selection, if allowed.
+     */
+    public function owner(): ?UserRepresentation
     {
-        $selection = $this->resource->getSelection();
-        return $selection
-            ? $this->getAdapter('selections')->getRepresentation($selection)
+        $adapter = $this->getAdapter('users');
+        $owner = $this->resource->getOwner();
+        return $owner
+            ? $adapter->getRepresentation($owner)
             : null;
     }
 

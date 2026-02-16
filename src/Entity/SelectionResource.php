@@ -40,6 +40,8 @@ use Omeka\Entity\User;
  * unique for the owner when there is no selection. So this is managed only
  * during hydration: @UniqueConstraint(columns={"resource_id","owner_id"},options={"where": "selection_id IS NULL"}).
  *
+ * @fixme Make selection not nullable.
+ *
  * @Entity
  * @Table(
  *     uniqueConstraints={
@@ -66,20 +68,20 @@ class SelectionResource extends AbstractEntity
     protected $id;
 
     /**
-     * @var User
+     * @var Selection
      *
-     * Denormalized from Selection to allow to select resources without selection.
-     * @todo Remove field "user" from SelectionResource.
+     * TODO For now, nullable when there is no selection on mode single selection. Remove nullable.
      *
      * @ManyToOne(
-     *      targetEntity="\Omeka\Entity\User"
+     *      targetEntity="Selection",
+     *      inversedBy="selectionResources"
      * )
      * @JoinColumn(
-     *      nullable=false,
+     *      nullable=true,
      *      onDelete="CASCADE"
      * )
      */
-    protected $owner;
+    protected $selection;
 
     /**
      * @var \Omeka\Entity\Resource
@@ -95,20 +97,20 @@ class SelectionResource extends AbstractEntity
     protected $resource;
 
     /**
-     * @var Selection
+     * @var User
      *
-     * TODO For now, nullable when there is no selection on mode single selection. Remove nullable.
+     * Denormalized from Selection to allow to select resources without selection.
+     * @todo Remove field "user" from SelectionResource.
      *
      * @ManyToOne(
-     *      targetEntity="Selection",
-     *      inversedBy="selectionResources"
+     *      targetEntity="\Omeka\Entity\User"
      * )
      * @JoinColumn(
-     *      nullable=true,
+     *      nullable=false,
      *      onDelete="CASCADE"
      * )
      */
-    protected $selection;
+    protected $owner;
 
     /**
      * @var DateTime
@@ -128,19 +130,15 @@ class SelectionResource extends AbstractEntity
         return $this->id;
     }
 
-    public function setOwner(User $owner): self
+    public function setSelection(?Selection $selection): self
     {
-        $this->owner = $owner;
+        $this->selection = $selection;
         return $this;
     }
 
-    /**
-     * The output may be null, because the adapter check it before filling it.
-     * @see \Omeka\Api\Adapter\AbstractEntityAdapter::hydrateOwner()
-     */
-    public function getOwner(): ?User
+    public function getSelection(): ?Selection
     {
-        return $this->owner;
+        return $this->selection;
     }
 
     public function setResource(Resource $resource): self
@@ -157,15 +155,19 @@ class SelectionResource extends AbstractEntity
         return $this->resource;
     }
 
-    public function setSelection(?Selection $selection): self
+    public function setOwner(User $owner): self
     {
-        $this->selection = $selection;
+        $this->owner = $owner;
         return $this;
     }
 
-    public function getSelection(): ?Selection
+    /**
+     * The output may be null, because the adapter check it before filling it.
+     * @see \Omeka\Api\Adapter\AbstractEntityAdapter::hydrateOwner()
+     */
+    public function getOwner(): ?User
     {
-        return $this->selection;
+        return $this->owner;
     }
 
     public function setCreated(DateTime $dateTime): self
