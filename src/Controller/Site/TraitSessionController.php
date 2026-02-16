@@ -108,6 +108,13 @@ trait TraitSessionController
 
         $selectedRecords = $selectionContainer->records[$selectionId] ?? [];
 
+        // Check selection limit before adding.
+        $currentCount = count($selectedRecords);
+        $newResourceCount = count(array_diff_key($resources, $selectedRecords));
+        if ($newResourceCount > 0 && !$this->checkSelectionLimit($currentCount, $newResourceCount)) {
+            return $this->jsonSelectionLimitExceeded();
+        }
+
         $newResources = [];
         foreach ($resources as $resourceId => $resource) {
             if (isset($selectedRecords[$resourceId])) {
@@ -265,6 +272,15 @@ trait TraitSessionController
             }
         }
 
+        // Check selection limit before adding.
+        if (count($add) > 0) {
+            $currentCount = count($selectedRecords);
+            $netAddCount = count($add) - count($delete);
+            if ($netAddCount > 0 && !$this->checkSelectionLimit($currentCount, $netAddCount)) {
+                return $this->jsonSelectionLimitExceeded();
+            }
+        }
+
         /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation[] $add */
         foreach ($add as $resourceId => $resource) {
             $data = $this->normalizeResource($resource, true, $selectionId);
@@ -333,6 +349,13 @@ trait TraitSessionController
             return $this->jSend(JSend::FAIL, null, (new PsrMessage(
                 'The destination group is not in the list of groups.', // @translate
             ))->setTranslator($this->translator()));
+        }
+
+        // Check selection limit before adding new resources.
+        $selectedRecords = $selectionContainer->records[$selectionId] ?? [];
+        $newResourceCount = count(array_diff_key($resources, $selectedRecords));
+        if ($newResourceCount > 0 && !$this->checkSelectionLimit(count($selectedRecords), $newResourceCount)) {
+            return $this->jsonSelectionLimitExceeded();
         }
 
         // Remove resources from all groups.

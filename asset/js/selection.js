@@ -220,6 +220,15 @@
             e.preventDefault();
             e.stopPropagation();
             const button = $(this);
+
+            // Check limit only when adding (not when removing or when already selected).
+            const action = button.data('action');
+            const isSelected = button.hasClass('selected');
+            const isAdding = action === 'include' || (action === 'toggle' && !isSelected);
+            if (isAdding && !checkSelectionLimit(button, 1)) {
+                return;
+            }
+
             const selectionResource = button.closest('.selection-resource');
             const url = button.attr('data-url');
             const id = selectionResource.length ? selectionResource.data('id') : button.attr('data-id');
@@ -236,6 +245,12 @@
                 if (selectionResource.status === 'success') {
                     updateSelectionButton(selectionResource);
                     updateSelectionList(selectionResource);
+                    // Update the count based on action result.
+                    if (selectionResource.value === 'selected') {
+                        updateSelectionCount(1);
+                    } else if (selectionResource.value === 'unselected') {
+                        updateSelectionCount(-1);
+                    }
                     button.closest('body.selection.browse .selection-list .resource').remove();
                     $(document).trigger('o:selection-updated', data);
                 }
@@ -267,6 +282,7 @@
                 if (selectionResource.status === 'success' && selectionResource.value === 'unselected') {
                     updateSelectionButton(selectionResource);
                     updateSelectionList(selectionResource);
+                    updateSelectionCount(-1);
                     $(document).trigger('o:selection-updated', data);
                 }
             })
@@ -520,6 +536,35 @@
                 $('.selection-empty').removeClass('inactive').show();
             }
         }
+
+        /**
+         * Check if adding resources would exceed the max limit.
+         */
+        const checkSelectionLimit = function(button, addCount = 1) {
+            const maxResources = parseInt(button.data('max-resources'), 10) || 0;
+            const currentCount = parseInt(button.data('current-count'), 10) || 0;
+            // 0 means unlimited.
+            if (maxResources === 0) {
+                return true;
+            }
+            if (currentCount + addCount > maxResources) {
+                const msg = Omeka.jsTranslate('Selection limit reached. Maximum %d resources allowed.').replace('%d', maxResources);
+                CommonDialog.dialogAlert({ message: msg });
+                return false;
+            }
+            return true;
+        };
+
+        /**
+         * Update the current count on all selection buttons.
+         */
+        const updateSelectionCount = function(delta) {
+            $('.selection-button[data-current-count]').each(function() {
+                const button = $(this);
+                const currentCount = parseInt(button.data('current-count'), 10) || 0;
+                button.data('current-count', Math.max(0, currentCount + delta));
+            });
+        };
 
         const getQueryParameter = function(url, param) {
             const urlSplit = url.split('?', 2);

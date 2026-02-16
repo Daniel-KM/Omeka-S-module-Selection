@@ -13,6 +13,7 @@
  * @var string $selectionShare Default is empty; may be "", "moderate", "open".
  * @var bool $canPublishAll
  * @var bool $canValidateAll
+ * @var int $maxResources
  */
 
 // Browse the list of selections (of the current user for guest).
@@ -56,6 +57,11 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 <?php endif; ?>
 
 <?= $pageTitle($siteSetting('selection_label', $translate('Selections')), 2) ?>
+
+<?php if ($maxResources): ?>
+<div class="warning-max-resources">
+	<p><?= $escape(sprintf($translate('(%d resources max by selection)'), $maxResources)) ?></p>
+</div>
 
 <?php if ($this->userIsAllowed(\Selection\Entity\Selection::class, 'create')): ?>
 <div class="selection-list-actions">

@@ -64,6 +64,7 @@ trait TraitDbController
             'selectionShare' => $selectionShare,
             'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
             'canValidateAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate'),
+            'maxResources' => (int) $this->siteSettings()->get('selection_max_resources'),
         ]);
 
         return $view
@@ -338,6 +339,13 @@ trait TraitDbController
             'selection_id' => $selectionId,
         ], ['returnScalar' => 'resource'])->getContent();
 
+        // Check selection limit before adding.
+        $currentCount = count($selectedResourceIds);
+        $newResourceCount = count(array_diff(array_keys($resources), $selectedResourceIds));
+        if ($newResourceCount > 0 && !$this->checkSelectionLimit($currentCount, $newResourceCount)) {
+            return $this->jsonSelectionLimitExceeded();
+        }
+
         // A check is needed for resources at root that may not be in structure.
         $inStructure = $this->resourceIdsFromStructure($selection->structure());
 
@@ -599,6 +607,15 @@ trait TraitDbController
             }
         }
 
+        // Check selection limit before adding.
+        if (count($add) > 0) {
+            $currentCount = count($selectedResourceIds);
+            $netAddCount = count($add) - count($delete);
+            if ($netAddCount > 0 && !$this->checkSelectionLimit($currentCount, $netAddCount)) {
+                return $this->jsonSelectionLimitExceeded();
+            }
+        }
+
         /** @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation[] $add */
         foreach ($add as $resourceId => $resource) {
             try {
@@ -701,6 +718,12 @@ trait TraitDbController
             'owner_id' => $userId,
             'selection_id' => $selectionId,
         ], ['returnScalar' => 'resource'])->getContent();
+
+        // Check selection limit before adding new resources.
+        $newResourceCount = count(array_diff(array_keys($resources), $selectedResourceIds));
+        if ($newResourceCount > 0 && !$this->checkSelectionLimit(count($selectedResourceIds), $newResourceCount)) {
+            return $this->jsonSelectionLimitExceeded();
+        }
 
         // Remove resources from all groups.
         foreach ($structure as &$leaf) {
@@ -827,7 +850,7 @@ trait TraitDbController
             $selectionId = $selection->id();
             $structure = $selection->structure();
 
-            // Add resources that are not in the seloection to the root group
+            // Add resources that are not in the selection to the root group
             // or first group.
             $newResourcesInSelection = [];
             foreach ($resources as $resourceId => $resource) {
@@ -837,6 +860,14 @@ trait TraitDbController
             }
 
             if ($newResourcesInSelection) {
+                // Check selection limit before adding new resources.
+                $currentSelectionCount = $api->search('selection_resources', [
+                    'owner_id' => $userId,
+                    'selection_id' => $selectionId,
+                ], ['returnScalar' => 'id'])->getTotalResults();
+                if (!$this->checkSelectionLimit($currentSelectionCount, count($newResourcesInSelection))) {
+                    return $this->jsonSelectionLimitExceeded();
+                }
                 $group = key($structure);
                 $structure[$group]['resources'] = array_values(array_unique(array_merge(
                     $structure[$group]['resources'] ?? [],

@@ -138,6 +138,20 @@ class SiteSettingsFieldset extends Fieldset
                     'id' => 'selection_selectable_resources',
                 ],
             ])
+            ->add([
+                'name' => 'selection_max_resources',
+                'type' => Element\Number::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Maximum resources per selection', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_max_resources',
+                    'min' => 0,
+                    'step' => 1,
+                    'placeholder' => 50,
+                ],
+            ])
 
             ->add([
                 'name' => 'selection_placement_button',

@@ -938,4 +938,38 @@ abstract class AbstractSelectionController extends AbstractActionController
             HttpResponse::STATUS_CODE_403
         );
     }
+
+    /**
+     * Check if adding resources would exceed the maximum limit.
+     *
+     * @param int $currentCount Current number of resources in the selection.
+     * @param int $addCount Number of resources to add.
+     * @return bool True if within limit, false if would exceed.
+     */
+    protected function checkSelectionLimit(int $currentCount, int $addCount = 1): bool
+    {
+        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 50);
+        // 0 means unlimited.
+        if ($maxResources === 0) {
+            return true;
+        }
+        return ($currentCount + $addCount) <= $maxResources;
+    }
+
+    /**
+     * Return a json error response for selection limit exceeded.
+     */
+    protected function jsonSelectionLimitExceeded(): JsonModel
+    {
+        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 50);
+        return $this->jSend(
+            JSend::FAIL,
+            ['max_resources' => $maxResources],
+            (new PsrMessage(
+                'Selection limit reached. Maximum {max} resources allowed.', // @translate
+                ['max' => $maxResources]
+            ))->setTranslator($this->translator()),
+            HttpResponse::STATUS_CODE_400
+        );
+    }
 }

@@ -61,6 +61,8 @@ class SelectionButton extends AbstractHelper
 
         $resourceId = $resource->id();
 
+        $currentCount = isset($selectionContainer->records[$selectionId]) ? count($selectionContainer->records[$selectionId]) : 0;
+
         $defaultOptions = [
             'site' => $site,
             'resource' => $resource,
@@ -76,6 +78,8 @@ class SelectionButton extends AbstractHelper
             'urlButton' => $selectionId
                 ? $url('site/selection-id', ['site-slug' => $siteSlug, 'action' => $options['action'] ?? 'toggle', 'id' => $selectionId], ['query' => ['id' => $resourceId]])
                 : $url('site/selection', ['site-slug' => $siteSlug, 'action' => $options['action'] ?? 'toggle'], ['query' => ['id' => $resourceId]]),
+            'maxResources' => (int) $siteSetting('selection_max_resources', 50),
+            'currentCount' => $currentCount,
             'template' => self::PARTIAL_NAME,
         ];
         $options += $defaultOptions;

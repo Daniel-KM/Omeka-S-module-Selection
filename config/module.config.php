@@ -202,6 +202,14 @@ return  [
             ],
         ],
     ],
+    'js_translate_strings' => [
+        'Are you sure you want to delete this group?', // @translate
+        'Enter new group name', // @translate
+        'Enter new selection name', // @translate
+        'Remove from selection?', // @translate
+        'Resource updated for selections.', // @translate
+        'Selection limit reached. Maximum %d resources allowed.', // @translate
+    ],
     'selection' => [
         // TODO Move "selection_share" to main settings?
         'site_settings' => [
@@ -215,6 +223,7 @@ return  [
             'selection_selectable_resources' => [
                 'items',
             ],
+            'selection_max_resources' => 50,
             'selection_placement_button' => [],
             'selection_placement_list' => [],
             'selection_resource_show_open' => true,
