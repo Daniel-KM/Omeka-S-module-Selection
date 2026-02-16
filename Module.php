@@ -29,6 +29,11 @@ class Module extends AbstractModule
 
     const NAMESPACE = __NAMESPACE__;
 
+    /**
+     * @var array|null
+     */
+    protected $selectionResourceToReindex;
+
     public function onBootstrap(MvcEvent $event): void
     {
         parent::onBootstrap($event);
@@ -224,6 +229,27 @@ class Module extends AbstractModule
                 [$this, 'handleSearchFilters']
             );
         }
+
+        // Add events in order to index selections in solr.
+        $sharedEventManager->attach(
+            \Selection\Api\Adapter\SelectionResourceAdapter::class,
+            'api.create.post',
+            [$this, 'reindexResourceFromSelectionChange'],
+            -100
+        );
+        // Remember target resource before deletion of selection entry.
+        $sharedEventManager->attach(
+            \Selection\Api\Adapter\SelectionResourceAdapter::class,
+            'api.delete.pre',
+            [$this, 'rememberSelectionResourceBeforeDelete'],
+            -100
+        );
+        $sharedEventManager->attach(
+            \Selection\Api\Adapter\SelectionResourceAdapter::class,
+            'api.delete.post',
+            [$this, 'reindexResourceFromSelectionChange'],
+            -100
+        );
 
         // Display block in resources pages for old themes.
         // The site is not set yet, so checks are done in method.
@@ -435,6 +461,139 @@ class Module extends AbstractModule
         } elseif ($selectionIds) {
             $filters[$filterLabel] = $selectionIds;
             $event->setParam('filters', $filters);
+        }
+    }
+
+    /**
+     * Store the underlying resource info before selection entry removal.
+     */
+    public function rememberSelectionResourceBeforeDelete(Event $event): void
+    {
+        $services = $this->getServiceLocator();
+        $api = $services->get('Omeka\ApiManager');
+
+        $request = $event->getParam('request');
+        $selectionEntryId = $request ? (int) $request->getId() : 0;
+        if (!$selectionEntryId) {
+            $this->selectionResourceToReindex = null;
+            return;
+        }
+
+        try {
+            // Read the selection entry to capture its target resource.
+            $selectionEntry = $api->read('selection_resources', ['id' => $selectionEntryId])->getContent();
+            $resourceType = null;
+            $resourceId = null;
+            if (method_exists($selectionEntry, 'resourceType')) {
+                $resourceType = $selectionEntry->resourceType();
+            }
+            if (method_exists($selectionEntry, 'resourceId')) {
+                $resourceId = $selectionEntry->resourceId();
+            }
+            // Fallbacks if the representation exposes a linked resource.
+            if ((!$resourceType || !$resourceId) && method_exists($selectionEntry, 'resource')) {
+                $res = $selectionEntry->resource();
+                if (is_object($res)) {
+                    if (!$resourceType && method_exists($res, 'resourceName')) {
+                        $resourceType = $res->resourceName();
+                    }
+                    if (!$resourceId && method_exists($res, 'id')) {
+                        $resourceId = (int) $res->id();
+                    }
+                }
+            }
+
+            $this->selectionResourceToReindex = ($resourceType && $resourceId)
+                ? ['resource_type' => $resourceType, 'resource_id' => (int) $resourceId]
+                : null;
+        } catch (\Exception $e) {
+            $this->selectionResourceToReindex = null;
+        }
+    }
+
+    /**
+     * Trigger a minimal update on the underlying resource to emit api.update.post.
+     */
+    public function reindexResourceFromSelectionChange(Event $event): void
+    {
+        $services = $this->getServiceLocator();
+        $api = $services->get('Omeka\ApiManager');
+        $logger = $services->get('Omeka\Logger');
+
+        $request = $event->getParam('request');
+        $response = $event->getParam('response');
+        $operation = $request ? $request->getOperation() : null;
+
+        $resourceType = null;
+        $resourceId = null;
+
+        // Prefer values from request content for create.
+        $content = $request ? ($request->getContent() ?: []) : [];
+        if (!empty($content['resource_type'])) {
+            $resourceType = (string) $content['resource_type'];
+        }
+        if (!empty($content['resource_id'])) {
+            $resourceId = (int) $content['resource_id'];
+        }
+
+        // On delete, use the stored info from pre-delete.
+        if ($operation === 'delete' && !$resourceId) {
+            if ($this->selectionResourceToReindex) {
+                $resourceType = $resourceType ?: $this->selectionResourceToReindex['resource_type'] ?? null;
+                $resourceId = $resourceId ?: $this->selectionResourceToReindex['resource_id'] ?? null;
+            }
+            $this->selectionResourceToReindex = null;
+        }
+
+        // Fallback: try to infer from response content.
+        if ((!$resourceType || !$resourceId) && $response && method_exists($response, 'getContent')) {
+            $selectionEntry = $response->getContent();
+            if (is_object($selectionEntry)) {
+                if (!$resourceType && method_exists($selectionEntry, 'resourceType')) {
+                    $resourceType = $selectionEntry->resourceType();
+                }
+                if (!$resourceId && method_exists($selectionEntry, 'resourceId')) {
+                    $resourceId = (int) $selectionEntry->resourceId();
+                }
+                if ((!$resourceType || !$resourceId) && method_exists($selectionEntry, 'resource')) {
+                    $res = $selectionEntry->resource();
+                    if (is_object($res)) {
+                        if (!$resourceType && method_exists($res, 'resourceName')) {
+                            $resourceType = $res->resourceName();
+                        }
+                        if (!$resourceId && method_exists($res, 'id')) {
+                            $resourceId = (int) $res->id();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!$resourceType || !$resourceId) {
+            return;
+        }
+
+        // Normalize resource type to Omeka API resource names.
+        $map = [
+            'item' => 'items',
+            'items' => 'items',
+            'item_set' => 'item_sets',
+            'item_sets' => 'item_sets',
+            'media' => 'media',
+            'resource' => 'resources',
+            'resources' => 'resources',
+        ];
+        $resourceType = $map[$resourceType] ?? $resourceType;
+
+        try {
+            // Empty partial update triggers api.update.post on the resource adapter.
+            $api->update($resourceType, $resourceId, [], [], ['isPartial' => true]);
+        } catch (\Exception $e) {
+            $logger->err('Selection: unable to trigger reindex for {type} #{id}: {message}', [
+                'type' => $resourceType,
+                'id' => $resourceId,
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
