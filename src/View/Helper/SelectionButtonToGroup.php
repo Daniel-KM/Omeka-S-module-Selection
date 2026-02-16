@@ -23,6 +23,9 @@ class SelectionButtonToGroup extends AbstractHelper
      * Adapted:
      * @see \Selection\View\Helper\SelectionButton
      * @see \Selection\View\Helper\SelectionButtonToGroup
+     * @see \Selection\View\Helper\SelectionButtonToSelect
+     *
+     * @todo Deprecate in favor of selectionButtonToSelect when container will be managed.
      */
     public function __invoke(AbstractResourceEntityRepresentation $resource, array $options = []): string
     {
@@ -46,6 +49,21 @@ class SelectionButtonToGroup extends AbstractHelper
             $first = false;
         }
 
+        $site = $plugins->get('currentSite')();
+        $url = $plugins->get('url');
+        $siteSlug = $site->slug();
+
+        $resourceId = $resource->id();
+
+        // TODO Manage mode in selection button to group?
+        // This helper cannot be used in mode multiple.
+        $mode = $siteSetting('selection_mode', 'single');
+        if ($mode !== 'single') {
+            return '';
+        }
+
+        $disposition = $siteSetting('selection_disposition', 'flat') ?: 'flat';
+
         // TODO Query in session is used only for pagination, not implemented yet.
         $query = $view->params()->fromQuery();
 
@@ -56,12 +74,6 @@ class SelectionButtonToGroup extends AbstractHelper
         $selection = $selectionContainer->selections[$selectionId] ?? reset($selectionContainer->selections);
         $selectionId = $selection['id'];
 
-        $site = $plugins->get('currentSite')();
-        $url = $plugins->get('url');
-        $siteSlug = $site->slug();
-
-        $resourceId = $resource->id();
-
         $defaultOptions = [
             'site' => $site,
             'resource' => $resource,
@@ -69,7 +81,8 @@ class SelectionButtonToGroup extends AbstractHelper
             'selectionId' => $selectionId,
             'selections' => $selectionContainer->selections,
             'records' => $selectionContainer->records,
-            'disposition' => $siteSetting('selection_browse_disposition', 'list') ?: 'list',
+            'mode' => $mode,
+            'disposition' => $disposition,
             'isGuestActive' => $plugins->has('guestWidget'),
             'isSession' => !$user,
             'value' => isset($selectionContainer->records[$selectionId][$resourceId]) ? 'selected' : 'unselected',

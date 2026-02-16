@@ -4,9 +4,9 @@ namespace Selection\Controller\Site;
 
 use Common\Mvc\Controller\Plugin\JSend;
 use Common\Stdlib\PsrMessage;
-use Exception;
 use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
+use Omeka\Mvc\Exception\RuntimeException;
 
 /**
  * Manage selections via session for anonymous visitors.
@@ -23,7 +23,12 @@ trait TraitSessionController
 {
     protected function browseSession()
     {
-        // Browse the current selection.
+        throw new RuntimeException($this->translate('It is not possible to browse multiple selections without an account for now.')); // @translate
+    }
+
+    protected function showSession()
+    {
+        // Show the current selection.
 
         // TODO Query in session is used only for pagination, not implemented yet.
         $query = $this->params()->fromQuery();
@@ -40,41 +45,46 @@ trait TraitSessionController
         $selection = $this->getSelectionFromSessionOrInit($selectionContainer, $selectionId);
         $selectionId = $selection['id'];
 
-        $siteSettings = $this->siteSettings();
-        $viewHelpers = $this->viewHelpers();
-
-        $allowedDispositions = ['list', 'grouped', 'hierarchy'];
-        if (isset($query['disposition']) && in_array($query['disposition'], $allowedDispositions)) {
-            $disposition = $query['disposition'];
-        } else {
-            $disposition = $siteSettings->get('selection_browse_disposition');
-            $disposition = in_array($disposition, $allowedDispositions) ? $disposition : 'list';
-        }
-
-        $allowIndividualSelect = $siteSettings->get('selection_individual_select', 'auto');
-        $allowIndividualSelect = ($allowIndividualSelect !== 'no' && $allowIndividualSelect !== 'yes')
-            ? $viewHelpers->has('bulkExport') || $viewHelpers->has('contactUs')
-            : $allowIndividualSelect === 'yes';
+        $disposition = $this->currentDisposition($query);
+        $allowIndividualSelect = $this->allowIndividualSelect();
 
         $view = new ViewModel([
             'site' => $this->currentSite(),
             'user' => null,
+            'selection' => null,
+            'resource' => null,
             'selectionId' => $selectionId,
             'selections' => $selectionContainer->selections,
             'records' => $selectionContainer->records,
-            'disposition' => $disposition,
             'isGuestActive' => false,
             'isSession' => true,
+            'mode' => $this->settings()->get('selection_mode'),
+            'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
         ]);
         return $view
-            ->setTemplate("selection/site/selection/selection-browse-$disposition");
+            ->setTemplate('selection/site/selection/selection-show');
+    }
+
+    protected function addSession()
+    {
+        throw new RuntimeException($this->translate('It is not possible to add a selection without an account for now.')); // @translate
+    }
+
+        protected function editSession()
+    {
+        throw new RuntimeException($this->translate('It is not possible to edit a selection without an account for now.')); // @translate
+    }
+
+    protected function deleteSession()
+    {
+        throw new RuntimeException($this->translate('It is not possible to delete a selection without an account for now.')); // @translate
     }
 
     /**
      * Select resource(s) to add to a selection.
      */
-    protected function addSession(array $resources, bool $isMultiple)
+    protected function includeSession(array $resources, bool $isMultiple)
     {
         /**
          * Read selection from session.
@@ -134,7 +144,7 @@ trait TraitSessionController
     /**
      * Delete resource(s) from a selection.
      */
-    protected function deleteSession(array $resources, bool $isMultiple)
+    protected function excludeSession(array $resources, bool $isMultiple)
     {
         /**
          * Read selection from session.
@@ -189,10 +199,12 @@ trait TraitSessionController
     }
 
     /**
-     * Delete all resources from selection.
+     * Delete all resources from a selection.
      */
     protected function resetSession()
     {
+        $mode = $this->settings()->get('selection_mode', 'single');
+
         /**
          * Read selection from session.
          *
@@ -200,6 +212,12 @@ trait TraitSessionController
          * @var \Laminas\Session\Container $selectionContainer
          */
         $selectionContainer = $this->selectionContainer();
+
+        $selection = $this->checkSelectionFromRouteOrInitSession($selectionContainer);
+        if (!$selection && $mode !== 'single') {
+            return $this->jsonErrorNotFound();
+        }
+
         $selectionContainer->exchangeArray([]);
 
         $data = [

@@ -32,10 +32,10 @@ $escapeAttr = $plugins->get('escapeHtmlAttr');
 
 $textSelect['unselected'] = $translate('Add to selection');
 $textSelect['selected'] = $translate('Remove from selection');
-$textSelect['add'] = $textSelect['unselected'];
-$textSelect['delete'] = $textSelect['selected'];
+$textSelect['include'] = $textSelect['unselected'];
+$textSelect['exclude'] = $textSelect['selected'];
 $class = $value === 'selected' ? 'selected' : 'unselected';
-$text = in_array($action, ['add', 'delete']) ? $textSelect[$action] : $textSelect[$class];
+$text = in_array($action, ['include', 'exclude']) ? $textSelect[$action] : $textSelect[$class];
 ?>
 
 <button type="button" class="button selection-button selection-update <?= $class ?> selection-<?= $escapeAttr($action) ?>" data-id="<?= $resource->id() ?>" title="<?= $text ?>" data-action="<?= $escapeAttr($action) ?>" data-text-selected="<?= $textSelect['selected'] ?>" data-text-unselected="<?= $textSelect['unselected'] ?>" data-url="<?= $urlButton ?>">

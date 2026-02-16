@@ -31,6 +31,7 @@
 namespace Selection\Api\Adapter;
 
 use DateTime;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\QueryBuilder;
 use Omeka\Api\Adapter\AbstractEntityAdapter;
 use Omeka\Api\Request;
@@ -77,48 +78,59 @@ class SelectionResourceAdapter extends AbstractEntityAdapter
 
         $expr = $qb->expr();
 
-        if (isset($query['owner_id']) && is_numeric($query['owner_id'])) {
-            $userAlias = $this->createAlias();
-            $qb
-                ->innerJoin(
-                    'omeka_root.owner',
-                    $userAlias
-                )
-                ->andWhere($expr->eq(
-                    "$userAlias.id",
-                    $this->createNamedParameter($qb, $query['owner_id'])
-                ));
+        if (isset($query['owner_id']) && $query['owner_id'] !== '' && $query['owner_id'] !== []) {
+            if (!is_array($query['owner_id'])) {
+                $query['owner_id'] = [$query['owner_id']];
+            }
+            $ids = array_values(array_unique(array_map('intval', $query['owner_id'])));
+            if ($ids) {
+                $userAlias = $this->createAlias();
+                $alias = ':owner_ids_' . ++$this->index;
+                $qb
+                    // The join allows to force the check rights.
+                    ->innerJoin('omeka_root.owner', $userAlias)
+                    ->andWhere($expr->in('omeka_root.owner', $alias))
+                    ->setParameter($alias, $ids, Connection::PARAM_INT_ARRAY)
+                ;
+            } else {
+                $qb->andWhere($expr->isNull('omeka_root.owner'));
+            }
         }
 
-        if (isset($query['resource_id']) && is_numeric($query['resource_id'])) {
-            $resourceAlias = $this->createAlias();
-            $qb
-                ->innerJoin(
-                    'omeka_root.resource',
-                    $resourceAlias
-                )
-                ->andWhere($expr->eq(
-                    "$resourceAlias.id",
-                    $this->createNamedParameter($qb, $query['resource_id'])
-                ));
+        if (isset($query['resource_id']) && $query['resource_id'] !== '' && $query['resource_id'] !== []) {
+            if (!is_array($query['resource_id'])) {
+                $query['resource_id'] = [$query['resource_id']];
+            }
+            $ids = array_values(array_unique(array_map('intval', $query['resource_id'])));
+            if ($ids) {
+                $resourceAlias = $this->createAlias();
+                $alias = ':resource_ids_' . ++$this->index;
+                $qb
+                    // The join allows to force the check of visibility.
+                    ->innerJoin('omeka_root.resource', $resourceAlias)
+                    ->andWhere($expr->in('omeka_root.resource', $alias))
+                    ->setParameter($alias, $ids, Connection::PARAM_INT_ARRAY)
+                ;
+            } else {
+                $qb->andWhere($expr->isNull('omeka_root.resource'));
+            }
         }
 
-        if (isset($query['selection_id']) && is_numeric($query['selection_id'])) {
-            $selectionId = (int) $query['selection_id'];
+        if (isset($query['selection_id']) && $query['selection_id'] !== '' && $query['selection_id'] !== []) {
             // Allow to get the selection resources that are not in a specific
             // selection, i.e. in the unlabelised default selection.
             // Note: as soon as a structure is created, all resources without a
             // selection are attached to it.
-            if ($selectionId) {
-                $selectionAlias = $this->createAlias();
-                $qb->innerJoin(
-                    'omeka_root.selection',
-                    $selectionAlias
-                );
-                $qb->andWhere($expr->eq(
-                    "$selectionAlias.id",
-                    $this->createNamedParameter($qb, $selectionId)
-                ));
+            if (!is_array($query['selection_id'])) {
+                $query['selection_id'] = [$query['selection_id']];
+            }
+            $ids = array_values(array_unique(array_map('intval', $query['selection_id'])));
+            if ($ids) {
+                $alias = ':selection_ids_' . ++$this->index;
+                $qb
+                    ->andWhere($expr->in('omeka_root.selection', $alias))
+                    ->setParameter($alias, $ids, Connection::PARAM_INT_ARRAY)
+                ;
             } else {
                 $qb->andWhere($expr->isNull('omeka_root.selection'));
             }
@@ -129,7 +141,7 @@ class SelectionResourceAdapter extends AbstractEntityAdapter
             $qb
                 ->innerJoin(
                     'omeka_root.selection',
-                    $selectionAlias
+                    $selectionAlias,
                 )
                 ->andWhere($expr->eq(
                     "$selectionAlias.label",
@@ -169,6 +181,8 @@ class SelectionResourceAdapter extends AbstractEntityAdapter
         EntityInterface $entity,
         ErrorStore $errorStore
     ): void {
+        /** @todo Replace this adapter by an hydrator like values for resource. */
+
         /** @var \Selection\Entity\SelectionResource $entity */
 
         // The selected resource is not updatable, except for the selection

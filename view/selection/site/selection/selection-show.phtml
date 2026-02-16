@@ -1,0 +1,70 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Omeka\Entity\User $user
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $selection
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $resource
+ * @var int $selectionId
+ * @var array $selections
+ * @var array $records
+ * @var bool $isGuestActive
+ * @var bool $isSession
+ * @var string $mode
+ * @var string $disposition
+ * @var bool $allowIndividualSelect
+ */
+
+// Display the list of resources for the selection.
+
+$plugins = $this->getHelperPluginManager();
+$partial = $plugins->get('partial');
+$escape = $plugins->get('escapeHtml');
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$siteSetting = $plugins->get('siteSetting');
+$guestNavigation = $user && $plugins->has('guestNavigation') ? $plugins->get('guestNavigation')() : null;
+$breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
+
+$hasGuestNav = $guestNavigation && $guestNavigation->getContainer()->count();
+
+// May be included in main layout.
+$this->headLink()
+    ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/selection.css', 'Selection'));
+$this->headScript()
+    ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/selection.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
+
+$this->htmlElement('body')->appendAttribute('class', 'selection resource browse');
+
+if (isset($selection) && is_object($selection)) {
+    $selectionId = $selection->id();
+} else {
+    $selection = $selections[$selectionId];
+}
+
+$labelSelection = $siteSetting('selection_label', $translate('Selection'));
+?>
+
+<?php if ($breadcrumbs && !$hasGuestNav): ?>
+<?= $breadcrumbs() ?>
+<?php endif; ?>
+
+<?php if ($hasGuestNav): ?>
+<nav class="navigation-guest">
+    <?= $guestNavigation->menu()->renderMenu() ?>
+</nav>
+<?php endif; ?>
+
+<?= $this->pageTitle(is_object($selection) ? $selection->label() : ($selection['label'] ?? $labelSelection), 2) ?>
+
+<?php if ($isSession): ?>
+<?php $labelWarning = $siteSetting('selection_warning_anonymous', $translate('This selection is stored in the session cookie. It will be lost if the cookie is cleared.')); ?>
+<p class="selection-warning-anonymous">
+    <strong><?= $translate('Warning') ?></strong>
+    <?= $escape($labelWarning) ?>
+</p>
+<?php endif; ?>
+
+<?= $partial('selection/site/selection/selection-list-' . $disposition) ?>

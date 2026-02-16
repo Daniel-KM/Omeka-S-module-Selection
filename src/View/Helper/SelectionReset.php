@@ -3,6 +3,7 @@
 namespace Selection\View\Helper;
 
 use Laminas\View\Helper\AbstractHelper;
+use Selection\Api\Representation\SelectionRepresentation;
 
 class SelectionReset extends AbstractHelper
 {
@@ -26,7 +27,7 @@ class SelectionReset extends AbstractHelper
      *
      * @param array $options Options for the partial.
      */
-    public function __invoke(array $options = []): string
+    public function __invoke(?SelectionRepresentation $selection, array $options = []): string
     {
         $view = $this->getView();
 
@@ -34,9 +35,19 @@ class SelectionReset extends AbstractHelper
         $url = $plugins->get('url');
 
         $user = $view->identity();
-        $urlReset = $this->isGuestActive && $user
-            ? $url('site/guest/selection', ['action' => 'reset'], true)
-            : $url('site/selection', ['action' => 'reset'], true);
+
+        if ($selection) {
+            $urlReset = $this->isGuestActive && $user
+                ? $url('site/guest/selection-id', ['id' => $selection->id(), 'action' => 'reset'], true)
+                : $url('site/selection-id', ['id' => $selection->id(), 'action' => 'reset'], true);
+        } elseif ($view->setting('selection_mode', 'single') === 'single') {
+            $urlReset = $this->isGuestActive && $user
+                ? $url('site/guest/selection', ['action' => 'reset'], true)
+                : $url('site/selection', ['action' => 'reset'], true);
+        } else {
+            // Do not remove all selections.
+            return '';
+        }
 
         $template = $options['template'] ?? self::PARTIAL_NAME;
         unset($options['template']);

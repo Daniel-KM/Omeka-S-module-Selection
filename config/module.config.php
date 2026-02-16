@@ -6,6 +6,7 @@ return  [
     'api_adapters' => [
         'invokables' => [
             'selections' => Api\Adapter\SelectionAdapter::class,
+            // TODO Remove selection_resources from the api: it is only a table for selections?
             'selection_resources' => Api\Adapter\SelectionResourceAdapter::class,
         ],
     ],
@@ -15,6 +16,9 @@ return  [
         ],
         'proxy_paths' => [
             dirname(__DIR__) . '/data/doctrine-proxies',
+        ],
+        'filters' => [
+            'selection_visibility' => Db\Filter\SelectionVisibilityFilter::class,
         ],
     ],
     'view_manager' => [
@@ -29,7 +33,9 @@ return  [
         'invokables' => [
             'selectionButton' => View\Helper\SelectionButton::class,
             'selectionButtonToGroup' => View\Helper\SelectionButtonToGroup::class,
+            'selectionButtonToSelect' => View\Helper\SelectionButtonToSelect::class,
             'selectionList' => View\Helper\SelectionList::class,
+            'selectionRecords' => View\Helper\SelectionRecords::class,
         ],
         'factories' => [
             'selectionReset' => Service\ViewHelper\SelectionResetFactory::class,
@@ -53,6 +59,7 @@ return  [
             'selection' => Site\ResourcePageBlockLayout\Selection::class,
             'selectionButton' => Site\ResourcePageBlockLayout\SelectionButton::class,
             'selectionButtonToGroup' => Site\ResourcePageBlockLayout\SelectionButtonToGroup::class,
+            'selectionButtonToSelect' => Site\ResourcePageBlockLayout\SelectionButtonToSelect::class,
             'selectionList' => Site\ResourcePageBlockLayout\SelectionList::class,
         ],
     ],
@@ -90,13 +97,14 @@ return  [
         'routes' => [
             'site' => [
                 'child_routes' => [
+                    // TODO Clarify routes.
                     'selection' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
                             'route' => '/selection[/:action]',
                             'constraints' => [
                                 // Set groups first for regex.
-                                'action' => 'browse|add-group|rename-group|move-group|delete-group|add|delete|move|reset|toggle|update',
+                                'action' => 'browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -110,16 +118,17 @@ return  [
                         'options' => [
                             'route' => '/selection/:id[/:action]',
                             'constraints' => [
-                                'action' => 'browse|add-group|rename-group|move-group|delete-group|add|delete|move|toggle|update',
+                                'action' => 'browse|edit|delete|show|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
                                 'id' => '\d+',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
                                 'controller' => 'Selection',
-                                'action' => 'toggle',
+                                'action' => 'show',
                             ],
                         ],
                     ],
+                    // The js urls uses routes above.
                     'guest' => [
                         // The default values for the guest user route are kept
                         // to avoid issues for visitors when an upgrade of
@@ -135,12 +144,27 @@ return  [
                                 'options' => [
                                     'route' => '/selection[/:action]',
                                     'constraints' => [
-                                        'action' => 'browse|reset',
+                                        'action' => 'browse|reset|show',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'Selection\Controller\Site',
                                         'controller' => 'Guest',
                                         'action' => 'browse',
+                                    ],
+                                ],
+                            ],
+                            'selection-id' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/selection/:id[/:action]',
+                                    'constraints' => [
+                                        'action' => 'browse|reset|show',
+                                        'id' => '\d+',
+                                    ],
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'Selection\Controller\Site',
+                                        'controller' => 'Guest',
+                                        'action' => 'show',
                                     ],
                                 ],
                             ],
@@ -162,6 +186,8 @@ return  [
     ],
     'selection' => [
         'site_settings' => [
+            'selection_mode' => 'single',
+            'selection_disposition' => 'flat',
             'selection_disable_anonymous' => false,
             'selection_hide_login' => false,
             'selection_selectable_resources' => [
@@ -171,7 +197,6 @@ return  [
             'selection_placement_list' => [],
             'selection_resource_show_open' => true,
             'selection_resource_show_open_list' => true,
-            'selection_browse_disposition' => 'list',
             'selection_individual_select' => 'auto',
             'selection_append_items_browse_individual' => false,
             'selection_label' => 'Selection', // @translate
@@ -180,7 +205,7 @@ return  [
         ],
         'block_settings' => [
             'selection' => [
-                'disposition' => 'list',
+                'disposition' => 'flat',
                 'individual_select' => 'auto',
             ],
         ],

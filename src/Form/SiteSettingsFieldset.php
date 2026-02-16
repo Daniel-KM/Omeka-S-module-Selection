@@ -22,6 +22,41 @@ class SiteSettingsFieldset extends Fieldset
         $this
             ->setAttribute('id', 'selection')
             ->setOption('element_groups', $this->elementGroups)
+
+            ->add([
+                'name' => 'selection_mode',
+                'type' => CommonElement\OptionalRadio::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Mode of creation of selections', // @translate
+                    'value_options' => [
+                        'single' => 'Single selection', // @translate'
+                        'multiple' => 'Multiple selections (unavailable for anonymous)', // @translate'],
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection_mode',
+                ],
+            ])
+            // TODO Add a third view with a button to let user choose disposition.
+            ->add([
+                'name' => 'selection_disposition',
+                'type' => CommonElement\OptionalRadio::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Default disposition of page Selection', // @translate
+                    'info' => 'When the url query argument "disposition" is set, it overrides this option.', // @ŧranslate
+                    'value_options' => [
+                        'flat' => 'List of resources', // @translate
+                        'grouped' => 'List of selections', // @translate
+                        'hierarchy' => 'Nested selections', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection_disposition',
+                ],
+            ])
+
             ->add([
                 'name' => 'selection_disable_anonymous',
                 'type' => Element\Checkbox::class,
@@ -123,24 +158,6 @@ class SiteSettingsFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'selection_resource_show_open_list',
-                ],
-            ])
-            // TODO Add a third view with a button to let user choose disposition.
-            ->add([
-                'name' => 'selection_browse_disposition',
-                'type' => CommonElement\OptionalRadio::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Default disposition of page Selection', // @translate
-                    'info' => 'When the url query argument "disposition" is set, it overrides this option.', // @ŧranslate
-                    'value_options' => [
-                        'list' => 'List of resources', // @translate
-                        'grouped' => 'List of selections', // @translate
-                        'hierarchy' => 'Nested selections', // @translate
-                    ],
-                ],
-                'attributes' => [
-                    'id' => 'selection_browse_disposition',
                 ],
             ])
             ->add([

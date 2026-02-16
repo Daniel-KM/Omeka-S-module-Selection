@@ -47,6 +47,139 @@
         });
         */
 
+         /**
+          * Add a new selection.
+          */
+         $(document).on('click', '.selection-list-actions button.add', function(e) {
+             e.preventDefault();
+             e.stopPropagation();
+             const button = $(this);
+             const msg = button.data('msg-selection-name') ? button.data('msg-selection-name') : button.text();
+             CommonDialog.dialogPrompt({ message: msg })
+                 .then(function(name) {
+                     if (!name || !name.trim().length) {
+                         return;
+                     }
+                     const url = button.attr('data-url');
+                     $.ajax({
+                        method: 'POST',
+                         url: url,
+                         data: {
+                             'o:label': name.trim(),
+                         },
+                     })
+                     .done(function(data) {
+                         // TODO Add events to update the list, etc.
+                         window.location.reload();
+                         return false;
+                     })
+                     .fail(CommonDialog.jSendFail);
+                 });
+         });
+
+         /**
+          * Rename a selection.
+          */
+         $(document).on('click', '.selection .actions button.rename', function(e) {
+             e.preventDefault();
+             e.stopPropagation();
+             const button = $(this);
+             const msg = button.data('msg') ? button.data('msg') : button.text();
+             const selection = button.closest('.selection.resource[data-id]');
+             const currentName = selection.find('.resource-name:first').text();
+             CommonDialog.dialogPrompt({ message: msg, defaultValue: currentName })
+                 .then(function(name) {
+                     if (!name || !name.trim().length || name.trim() === currentName) {
+                         return;
+                     }
+                     const url = button.attr('data-url');
+                     $.ajax({
+                        method: 'POST',
+                         url: url,
+                         data: {
+                             'o:label': name.trim(),
+                         },
+                     })
+                     .done(function(data) {
+                         if (data.status === 'success') {
+                             selection.find('.resource-name:first').text(name.trim());
+                             $(document).trigger('o:selection-updated', data);
+                         }
+                     })
+                     .fail(CommonDialog.jSendFail);
+                 });
+         });
+
+        /**
+         * Publish/unpublish a selection.
+         */
+        $(document).on('click', '.selection .actions button.publish, .selection .actions button.unpublish', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = $(this);
+            const selection = button.closest('.selection.resource[data-id]');
+            const msg = button.hasClass('publish') ? button.data('msg-publish-confirm') : button.data('msg-unpublish-confirm');
+            CommonDialog.dialogConfirm({ message: msg })
+                .then(function(confirmed) {
+                    if (!confirmed) return;
+                    const url = button.attr('data-url');
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: {
+                            'o:is_public': button.hasClass('publish') ? 1 : 0,
+                        },
+                    })
+                    .done(function(data) {
+                        if (data.status === 'success') {
+                            if (button.hasClass('publish')) {
+                                button.addClass('unpublish').removeClass('publish');
+                                button.text(button.data('msg-unpublish'));
+                                selection.removeClass('selection-public').addClass('selection-private');
+                                selection.find('.visibility')
+                                    .removeClass('visibility-public').addClass('visibility-private')
+                                    .text(selection.find('.visibility').data('msg-visible'));
+                            } else {
+                                button.addClass('publish').removeClass('unpublish');
+                                button.text(button.data('msg-publish'));
+                                selection.removeClass('selection-private').addClass('selection-public');
+                                selection.find('.visibility')
+                                    .removeClass('visibility-private').addClass('visibility-public')
+                                    .text(selection.find('.visibility').data('msg-invisible'));
+                            }
+                            $(document).trigger('o:selection-updated', data);
+                        }
+                    })
+                    .fail(CommonDialog.jSendFail);
+                });
+        });
+
+        /**
+          * Delete a selection.
+          */
+         $(document).on('click', '.selection .actions .selection-delete, .selection .selection-button.selection-delete', function(e) {
+             e.preventDefault();
+             e.stopPropagation();
+             const button = $(this);
+             const selection = button.closest('.selection.resource[data-id]');
+             const msg = button.data('msg-selection-name') ? button.data('msg-selection-name') : button.text();
+             CommonDialog.dialogConfirm({ message: msg })
+                 .then(function(confirmed) {
+                     if (!confirmed) return;
+                     const url = button.attr('data-url');
+                     $.ajax({
+                         url: url,
+                     })
+                     .done(function(data) {
+                        if (data.status === 'success') {
+                            selection.remove();
+                            $(document).trigger('o:selection-deleted', data);
+                        }
+                     })
+                     .fail(CommonDialog.jSendFail);
+                 });
+         });
+
         /**
          * Check all check boxes of a selection.
          *
@@ -63,7 +196,7 @@
         /**
          * Update multiple resources from a selection.
          */
-        $(document).on('click', '.selection-button', function(e) {
+        $(document).on('click', '.selection-button.selection-update', function(e) {
             e.preventDefault();
             e.stopPropagation();
             const button = $(this);
@@ -78,8 +211,8 @@
             })
             .done(function(data) {
                 const selectionResource = data.data.selection_resource;
-                // The status may be "fail" when the action is add/delete
-                // and the item is already added or deleted.
+                // The status may be "fail" when the action is include/exclude
+                // and the item is already included or excluded.
                 if (selectionResource.status === 'success') {
                     updateSelectionButton(selectionResource);
                     updateSelectionList(selectionResource);
@@ -187,8 +320,8 @@
                     }
                     const selectionGroup = button.closest('.selection-group');
                     const path = selectionGroup.data('path') ? selectionGroup.data('path') : null;
-                    const groupName = path ? path.substring(path.lastIndexOf('/') + 1) : null;
-                    if (!groupName || !groupName.length || groupName === '/' || groupName === groupDestination) {
+                    const name = path ? path.substring(path.lastIndexOf('/') + 1) : null;
+                    if (!name || !name.length || name === '/' || name === groupDestination) {
                         return;
                     }
                     const url = button.attr('data-url');
@@ -294,7 +427,7 @@
         });
 
         /**
-         * Reset selection.
+         * Reset resources from a selection.
          */
         $(document).on('click', '.selection-button.selection-reset', function(e) {
             e.preventDefault();
@@ -306,11 +439,13 @@
                 beforeSend: function() { CommonDialog.spinnerEnable(button[0]); },
             })
             .done(function(data) {
-                const selectionResource = data.data.selection_resource;
                 // The status may be "fail" when the action is add/delete
                 // and the item is already added or deleted.
-                if (selectionResource.status === 'success') {
-                    updateSelectionButton(selectionResource);
+                if (data.status === 'success') {
+                    window.location.reload();
+                    return false;
+                    const selectionResource = button.closest('.selection.resource');
+                    updateSelectionButton({id: selectionId});
                     updateSelectionList(selectionResource);
                     button.closest('body.selection.browse .selection-list .resource').remove();
                     $(document).trigger('o:selection-updated', data);
@@ -380,39 +515,48 @@
 
         /**
          * Include or exclude ids of resources in one or multiple selections.
+         *
+         * @todo Manage actions separately (do a full form or specific buttons).
          */
         $(document).on('change', '.selector-group select', function(e) {
             const select = $(this);
-            const selectedGroups = select.val();
             const selector = select.closest('.selector-group');
             const resourceId = selector.data('resource-id');
-            const url = selector.data('url');
+            const selectionId = selector.data('id') && selector.data('id') !== '' ? selector.data('id') : null;
 
-            const selectedOption = select.find('option:selected');
-            const action = selectedOption.data('action');
+            // Check if it is a special option (empty value) and clean select.
+            const selectedSpecial = (select.val() || []).filter(v => v === "0" || v === "00");
+            const action = selectedSpecial.length ? select.find('option.selection-action[value=' + selectedSpecial[0] + ']').data('action') : null;
+            select.find('option.selection-action').prop('selected', false);
+            if (action) {
+                select.trigger('chosen:updated');
+            }
 
-            if (action === 'add-group') {
-                // Open dialog to create a new group.
-                const addGroupUrl = url.replace(/\/update/, '/add-group');
-                CommonDialog.dialogPrompt({ message: Omeka.jsTranslate('Enter new group name:') })
-                    .then(function(groupName) {
-                        if (groupName && groupName.trim().length) {
+            const selecteds = select.val() || [];
+
+            if (action === 'add') {
+                CommonDialog.dialogPrompt({ message: Omeka.jsTranslate('Enter new selection name') })
+                    .then(function(name) {
+                        if (name && name.trim().length) {
                             // TODO Use CommonDialog.jSend.
+                            const url = selector.data('url-selections') + '/add';
                             $.ajax({
-                                url: addGroupUrl,
-                                method: 'GET',
-                                // TODO No parent group for now: create at root for flat hierarchy.
-                                data: { name: groupName.trim(), group: '/' },
+                                method: 'POST',
+                                // Include the current resource in the selection automatically.
+                                url: url + '?id[]=' + resourceId,
+                                data: {
+                                    'o:label': name.trim(),
+                                 },
                                 beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
                             })
                             .done(function(data) {
-                                if (data.status === 'success' && data.data && data.data.group) {
-                                    const groupLabel = data.data.group.id;
+                                if (data.status === 'success') {
+                                    // Include the new selection in the list and select it for the current resource.
+                                    const selectionLabel = name;
                                     const newOption = $('<option>')
-                                        .val('/' + groupLabel)
-                                        .text(groupLabel)
+                                        .val(data.data.selection['o:id'])
+                                        .text(selectionLabel)
                                         .prop('selected', true);
-                                    // Insert before the first selection-action option.
                                     select.find('option.selection-action').first().before(newOption);
                                     select.prop('disabled', false);
                                     select.trigger('chosen:updated');
@@ -420,8 +564,6 @@
                                 $(document).trigger('o:selection-updated', data);
                             })
                             .fail(function() {
-                                select.find('option[value="' + resourceId + '"]').remove();
-                                select.trigger('chosen:updated');
                                 CommonDialog.jSendFail();
                             })
                             .always(function () {
@@ -429,17 +571,55 @@
                             });
                         }
                     });
-                return;
-            } else if (action === 'delete' || !selectedGroups || !selectedGroups.length) {
-                const removeFromGroupUrl = url.replace(/\/update/, '/delete');
-                // Confirm and remove from group.
-                CommonDialog.dialogConfirm({ message: Omeka.jsTranslate('Remove from group?') })
+            } else if (action === 'add-group') {
+                CommonDialog.dialogPrompt({ message: Omeka.jsTranslate('Enter new group name') })
+                    .then(function(name) {
+                        if (name && name.trim().length) {
+                            // TODO Use CommonDialog.jSend.
+                            const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/add-group';
+                            $.ajax({
+                                url: url + '?id[]=' + resourceId,
+                                method: 'GET',
+                                // TODO No parent group for now: create at root for flat hierarchy.
+                                data: {
+                                    name: name.trim(),
+                                    group: '/',
+                                },
+                                beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
+                            })
+                            .done(function(data) {
+                                if (data.status === 'success' && data.data && data.data.group) {
+                                    // Include the new group in the list and select it for the current resource.
+                                    const groupLabel = data.data.group.id;
+                                    const newOption = $('<option>')
+                                        .val('/' + groupLabel)
+                                        .text(groupLabel)
+                                        .prop('selected', true);
+                                    select.find('option.selection-action').first().before(newOption);
+                                    select.prop('disabled', false);
+                                    select.trigger('chosen:updated');
+                                }
+                                $(document).trigger('o:selection-updated', data);
+                            })
+                            .fail(function() {
+                                CommonDialog.jSendFail();
+                            })
+                            .always(function () {
+                                CommonDialog.spinnerDisable(select[0]);
+                            });
+                        }
+                    });
+            } else if (action === 'exclude' || !selecteds || !selecteds.length) {
+                CommonDialog.dialogConfirm({ message: Omeka.jsTranslate('Remove from selection?') })
                     .then(function(confirmed) {
                         if (confirmed) {
+                            const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/exclude';
                             $.ajax({
-                                url: removeFromGroupUrl,
+                                url: url,
                                 method: 'POST',
-                                data: { id: resourceId },
+                                data: {
+                                    id: resourceId,
+                                },
                                beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
                             })
                             .done(function() {
@@ -454,31 +634,34 @@
                             });
                         }
                     });
-                return;
-            }
-
-            CommonDialog.spinnerEnable(select[0]);
-
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    id: resourceId,
-                    groups: selectedGroups
-                }
-            })
-            .done(function(data) {
-                // Optionally update UI or show a success dialog
-                CommonDialog.dialogAlert({
-                    message: Omeka.jsTranslate('Resource added or removed from selections.'),
-                    nl2br: true
+            } else {
+                // The resource is included in one or multiple groups or selections.
+                // All groups or selections are sent, so it is update, because
+                // there may be excluded too.
+                const url = selector.data(selectionId ? 'url-selection' : 'url-selections') + '/update';
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        id: [resourceId],
+                        // Selected may be selections or groups or selection:groups).
+                        selecteds: selecteds,
+                    },
+                    beforeSend: function() { CommonDialog.spinnerEnable(select[0]); },
+                })
+                .done(function(data) {
+                    // Optionally update UI or show a success dialog
+                    CommonDialog.dialogAlert({
+                        message: Omeka.jsTranslate('Resource updated for selections.'),
+                        nl2br: true
+                    });
+                    $(document).trigger('o:selection-updated', data);
+                })
+                .fail(CommonDialog.jSendFail)
+                .always(function () {
+                    CommonDialog.spinnerDisable(select[0]);
                 });
-                $(document).trigger('o:selection-updated', data);
-            })
-            .fail(CommonDialog.jSendFail)
-            .always(function () {
-                CommonDialog.spinnerDisable(select[0]);
-            });
+            }
         });
 
         /**
@@ -541,6 +724,15 @@
             $('#contact-us [name="fields[id]"]').remove();
             return true;
         });
+
+        /**
+         * Trigger all chosen select on load.
+         *
+         * @todo Find a way to not trigger twice on the same select.
+         */
+        if ($.fn.chosen) {
+            $('select.chosen-select').chosen();
+        }
 
     });
 })();

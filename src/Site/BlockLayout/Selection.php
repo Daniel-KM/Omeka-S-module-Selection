@@ -63,10 +63,11 @@ class Selection extends AbstractBlockLayout implements TemplateableBlockLayoutIn
         $selection = $selectionContainer->selections[$selectionId] ?? reset($selectionContainer->selections);
         $selectionId = $selection['id'];
 
-        if (isset($query['disposition']) && in_array($query['disposition'], ['list', 'hierarchy'])) {
+        if (isset($query['disposition']) && in_array($query['disposition'], ['flat', 'grouped', 'hierarchy'])) {
             $disposition = $query['disposition'];
         } else {
-            $disposition = $block->dataValue('disposition') === 'hierarchy' ? 'hierarchy' : 'list';
+            $disposition = $block->dataValue('disposition');
+            $disposition = in_array($disposition, ['flat', 'grouped', 'hierarchy']) ? $disposition : 'flat';
         }
 
         $allowIndividualSelect = $block->dataValue('individual_select', 'auto');

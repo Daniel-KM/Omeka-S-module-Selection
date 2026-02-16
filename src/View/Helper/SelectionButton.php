@@ -17,7 +17,7 @@ class SelectionButton extends AbstractHelper
      *
      * @param array $options Options for the partial. Managed keys:
      * - selectionId (int)
-     * - action: "add" or "delete". If not specified, the action is "toggle".
+     * - action: "include" or "exclude". If not specified, the action is "toggle".
      * - template (string)
      *
      * Adapted:
@@ -68,7 +68,7 @@ class SelectionButton extends AbstractHelper
             'selectionId' => $selectionId,
             'selections' => $selectionContainer->selections,
             'records' => $selectionContainer->records,
-            'disposition' => $siteSetting('selection_browse_disposition', 'list') ?: 'list',
+            'disposition' => $siteSetting('selection_disposition', 'flat') ?: 'flat',
             'isGuestActive' => $plugins->has('guestWidget'),
             'isSession' => !$user,
             'value' => isset($selectionContainer->records[$selectionId][$resourceId]) ? 'selected' : 'unselected',

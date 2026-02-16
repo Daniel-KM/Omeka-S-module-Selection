@@ -21,7 +21,8 @@ class SelectionFieldset extends Fieldset
                 'options' => [
                     'label' => 'Disposition', // @translate
                     'value_options' => [
-                        'list' => 'List', // @translate
+                        'flat' => 'List', // @translate
+                        'grouped' => 'Grouped', // @translate
                         'hierarchy' => 'Hierarchy', // @translate
                     ],
                 ],

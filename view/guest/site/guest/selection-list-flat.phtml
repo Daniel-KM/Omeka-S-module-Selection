@@ -3,13 +3,17 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\SiteRepresentation $site
  * @var \Omeka\Entity\User $user
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $selection
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $resource
  * @var int $selectionId
  * @var array $selections
  * @var array $records
- * @var string $disposition
  * @var bool $isGuestActive
  * @var bool $isSession
+ * @var string $disposition
  * @var bool $allowIndividualSelect
  */
 
-echo $this->partial('selection/site/selection/selection-browse-grouped');
+// Flat list of resources of a selection.
+
+echo $this->partial('selection/site/selection/selection-list-flat');

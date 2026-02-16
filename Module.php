@@ -14,6 +14,7 @@ use Laminas\EventManager\Event;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Mvc\MvcEvent;
 use Omeka\Module\AbstractModule;
+use Omeka\Permissions\Assertion\OwnsEntityAssertion;
 
 /**
  * Selection.
@@ -32,27 +33,127 @@ class Module extends AbstractModule
     {
         parent::onBootstrap($event);
 
-        /** @var \Omeka\Permissions\Acl $acl */
-        $acl = $this->getServiceLocator()->get('Omeka\Acl');
+        /**
+         * @var \Omeka\Permissions\Acl $acl
+         */
+        $services = $this->getServiceLocator();
+        $acl = $services->get('Omeka\Acl');
 
         // Since Omeka 1.4, modules are ordered, so Guest come before Selection.
         $roles = $acl->getRoles();
 
+        // Acl should be specified, because selection is not a resource.
+        $entityManagerFilters = $services->get('Omeka\EntityManager')->getFilters();
+        $entityManagerFilters->enable('selection_visibility')->setServiceLocator($services);
+
+        // TODO How to make a distinction between public and admin roles? Which new rule? So guests.
+
+        // The anonymous mode is managed via session. So here rights are not for
+        // anonymous users.
+
+        // Public can see public selections.
+        // Users can see own selections, even private.
+        // Admin can see all selections (not managed currently).
+
+        $adminRoles = [
+            \Omeka\Permissions\Acl::ROLE_GLOBAL_ADMIN,
+            \Omeka\Permissions\Acl::ROLE_SITE_ADMIN,
+            \Omeka\Permissions\Acl::ROLE_EDITOR,
+            \Omeka\Permissions\Acl::ROLE_REVIEWER,
+        ];
+        $baseRoles = [
+            \Omeka\Permissions\Acl::ROLE_RESEARCHER,
+            \Omeka\Permissions\Acl::ROLE_AUTHOR,
+            'guest',
+        ];
+
+        // Rights on visibility public/private are added via db filter.
+
         $acl
+            // Every user can create, read, update and delete own and public.
+            // Entity/Adapter.
+            ->allow(
+                null,
+                [
+                    Entity\Selection::class,
+                    Entity\SelectionResource::class,
+                ],
+                ['read']
+            )
+            ->allow(
+                null,
+                [
+                    Api\Adapter\SelectionAdapter::class,
+                    Api\Adapter\SelectionResourceAdapter::class,
+                ],
+                ['search', 'read']
+            )
+            ->allow(
+                $baseRoles,
+                [
+                    Entity\Selection::class,
+                    Entity\SelectionResource::class,
+                ],
+                ['create', 'read', 'update', 'delete'],
+                new OwnsEntityAssertion
+            )
+            ->allow(
+                $adminRoles,
+                [
+                    Entity\Selection::class,
+                    Entity\SelectionResource::class,
+                ],
+                ['create', 'read', 'update', 'delete', 'view-all'],
+            )
+            ->allow(
+                $baseRoles,
+                [
+                    Api\Adapter\SelectionAdapter::class,
+                    Api\Adapter\SelectionResourceAdapter::class,
+                ],
+                ['create', 'search', 'read', 'update', 'delete']
+            )
+            ->allow(
+                $adminRoles,
+                [
+                    Api\Adapter\SelectionAdapter::class,
+                    Api\Adapter\SelectionResourceAdapter::class,
+                ],
+                ['create', 'search', 'read', 'update', 'delete', 'view-all'],
+            )
+            // Controller.
             ->allow(
                 null,
                 [
                     'Selection\Controller\Site\Selection',
+                ],
+                [
+                    'browse',
+                    'show',
                 ]
             )
             ->allow(
                 $roles,
                 [
-                    Entity\Selection::class,
-                    Entity\SelectionResource::class,
-                    Api\Adapter\SelectionAdapter::class,
-                    Api\Adapter\SelectionResourceAdapter::class,
+                    'Selection\Controller\Site\Selection',
                     'Selection\Controller\Site\Guest',
+                ],
+                [
+                    'browse',
+                    'show',
+                    'add',
+                    'edit',
+                    'delete',
+                    'include',
+                    'exclude',
+                    'move',
+                    'reset',
+                    'toggle',
+                    'update',
+                    'add-group',
+                    'rename-group',
+                    'move-group',
+                    'delete-group',
                 ]
             )
         ;

@@ -100,65 +100,17 @@ class SelectionContainer extends AbstractHelper
 
     /**
      * Format all resources to be stored.
-     *
-     * Adapted in:
-     * @see \Selection\View\Helper\SelectionContainer::normalizeResources()
-     * @see \Selection\Controller\Site\AbstractSelectionController::normalizeResources()
      */
     protected function normalizeResources(User $user): array
     {
-        $view = $this->getView();
-        $plugins = $view->getHelperPluginManager();
-        $url = $plugins->get('url');
-        $siteSlug = $view->currentSite()->slug();
-
-        $siteSetting = $plugins->get('siteSetting');
-        $lang = $view->lang();
-        $filterLocale = (bool) $siteSetting('filter_locale_values');
-        $headingTerm = $siteSetting('browse_heading_property_term');
-        $bodyTerm = $siteSetting('browse_body_property_term');
-        $defaultLang = $filterLocale ? [$lang, ''] : null;
-
         try {
             /** @var \Selection\Api\Representation\SelectionResourceRepresentation[] $selectionResources */
             $selectionResources = $this->api->search('selection_resources', ['owner_id' => $user->getId()])->getContent();
         } catch (Exception $e) {
             return [];
         }
-
-        $records = [];
-        foreach ($selectionResources as $selectionResource) {
-            $resource = $selectionResource->resource();
-            if (!$resource) {
-                continue;
-            }
-            $selection = $selectionResource->selection();
-            $selectionId = $selection ? $selection->id() : 0;
-            $resourceId = $resource->id();
-            $title = (string) $resource->displayTitle(null, $defaultLang);
-            $description = (string) $resource->displayDescription(null, $defaultLang);
-            $heading = $headingTerm ? (string) $resource->value($headingTerm, ['default' => $title]) : $title;
-            $body = $bodyTerm ? (string) $resource->value($bodyTerm, ['default' => $description]) : $description;
-            $records[$selectionId][$resourceId] = [
-                'id' => $resourceId,
-                'type' => $resource->getControllerName(),
-                'resource_name' => $resource->resourceName(),
-                'selection_id' => $selectionId,
-                'url' => $resource->siteUrl($siteSlug, true),
-                'url_remove' => $selectionId
-                    ? $url("site/selection-id", ['site-slug' => $siteSlug, 'action' => 'delete', 'id' => $selectionId], ['query' => ['id' => $resourceId]])
-                    : $url("site/selection", ['site-slug' => $siteSlug, 'action' => 'delete'], ['query' => ['id' => $resourceId]]),
-                // String is required to avoid error in container when the title
-                // is a resource.
-                'title' => $title,
-                'description' => $description,
-                'heading' => $heading,
-                'body' => $body,
-                // Here, the value is never "unselected" because it is the init
-                // of the container.
-                'value' => 'selected',
-            ];
-        }
-        return $records;
+        // Here, the value is never "unselected" because it is the init of the
+        // container.
+        return $this->getView()->selectionRecords(null, $selectionResources, true);
     }
 }

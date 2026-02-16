@@ -24,7 +24,7 @@ $ids = is_array($ids) ? array_filter($ids) : [$ids];
                     'label' => 'Selection', // @translate
                     'resource_value_options' => [
                         'resource' => 'selections',
-                        'option_text_callback' => fn (\Selection\Api\Representation\SelectionRepresentation $selection) => trim(sprintf('%s (#%d)', $selection->id(), $selection->id()), ': '),
+                        'option_text_callback' => fn (\Selection\Api\Representation\SelectionRepresentation $selection) => trim(sprintf('%s (%s, #%d)', $selection->label(), $selection->owner() ? $selection->owner()->name() : '[Anonymous]' , $selection->id()), ': '),
                     ],
                     'prepend_value_options' => [
                         '0' => '[none]', // @translate

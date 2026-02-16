@@ -3,12 +3,15 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\SiteRepresentation $site
  * @var \Omeka\Entity\User $user
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $selection
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $resource
  * @var int $selectionId
  * @var array $selection
  * @var array $record
- * @var string $disposition
  * @var bool $isGuestActive
  * @var bool $isSession
+ * @var string $mode
+ * @var string $disposition
  * @var bool $allowIndividualSelect
  *
  * // Helpers.
@@ -34,7 +37,7 @@
  * @var array $bulkExporters
  */
 
-// Partial loop template used by selection-browse to display a single resource.
+// Partial loop template used by selection-show to display a single resource.
 
 if (!$record) return;
 
@@ -61,7 +64,7 @@ $linkContent = sprintf('%s<span class="resource-name">%s</span>', $thumbnail($re
         <summary class="selection-summary group-name" aria-expanded="false"><?= $translate('Actions') ?></summary>
         <ul class="actions">
             <?php if ($selection && $selection['structure']): ?>
-            <li><button type="button" class="button move-resource" data-url="<?= strtr($record['url_remove'], ['/delete' => '/move']) ?>"><?= $moveText ?></button></li>
+            <li><button type="button" class="button move-resource" data-url="<?= strtr($record['url_remove'], ['/exclude' => '/move']) ?>"><?= $moveText ?></button></li>
             <?php endif; ?>
             <li><button type="button" class="button selection-button selection-delete" data-id="<?= $record['id'] ?>" data-url="<?= $record['url_remove'] ?>"><?= $deleteText ?></button></li>
         </ul>

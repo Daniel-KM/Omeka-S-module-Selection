@@ -56,18 +56,40 @@ abstract class AbstractSelectionController extends AbstractActionController
     public function browseAction()
     {
         $user = $this->identity();
+        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+            throw new \Omeka\Api\Exception\PermissionDeniedException();
+        }
+
+        $mode = $this->siteSettings()->get('selection_mode', 'single');
+        if ($mode === 'single') {
+            $params = $this->params()->fromRoute();
+            $params['action'] = 'show';
+            // TODO For now, there is always a user.
+            return $user
+                ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
+                : $this->forward()->dispatch('Selection\Controller\Site\Guet', $params);
+        }
+
+        return $user
+            ? $this->browseDb($user)
+            : $this->browseSession();
+    }
+
+    public function showAction()
+    {
+        $user = $this->identity();
         if (!$user) {
             if ($this->siteSettings()->get('selection_disable_anonymous')) {
                 throw new \Omeka\Api\Exception\PermissionDeniedException();
             }
-            return $this->browseSession();
+            return $this->showSession();
         }
 
-        return $this->browseDb($user);
+        return $this->showDb($user);
     }
 
     /**
-     * Select resource(s) to add to a selection.
+     * Add a new selection.
      */
     public function addAction()
     {
@@ -80,20 +102,53 @@ abstract class AbstractSelectionController extends AbstractActionController
             return $this->jsonPermissionDenied();
         }
 
-        $resourcesData = $this->requestedResources();
-        if (empty($resourcesData['has_result'])) {
-            return $this->jsonErrorNotFound();
-        }
-
         return $user
-            ? $this->addDb($resourcesData['resources'], $resourcesData['is_multiple'], $user)
-            : $this->addSession($resourcesData['resources'], $resourcesData['is_multiple']);
+            ? $this->addDb($user)
+            : $this->addSession();
     }
 
     /**
-     * Delete resource(s) from a selection.
+     * Edit a selection (publish, rename, clear).
+     */
+    public function editAction()
+    {
+        if (!$this->getRequest()->isXmlHttpRequest()) {
+            return $this->jsonErrorNotFound();
+        }
+
+        $user = $this->identity();
+        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+            return $this->jsonPermissionDenied();
+        }
+
+        return $user
+            ? $this->editDb($user)
+            : $this->editSession();
+    }
+
+    /**
+     * Delete a selection.
      */
     public function deleteAction()
+    {
+        if (!$this->getRequest()->isXmlHttpRequest()) {
+            return $this->jsonErrorNotFound();
+        }
+
+        $user = $this->identity();
+        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+            return $this->jsonPermissionDenied();
+        }
+
+        return $user
+            ? $this->deleteDb($user)
+            : $this->deleteSession();
+    }
+
+    /**
+     * Select resource(s) to add to a selection.
+     */
+    public function includeAction()
     {
         if (!$this->getRequest()->isXmlHttpRequest()) {
             return $this->jsonErrorNotFound();
@@ -110,8 +165,32 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         return $user
-            ? $this->deleteDb($resourcesData['resources'], $resourcesData['is_multiple'], $user)
-            : $this->deleteSession($resourcesData['resources'], $resourcesData['is_multiple']);
+            ? $this->includeDb($resourcesData['resources'], $resourcesData['is_multiple'], $user)
+            : $this->includeSession($resourcesData['resources'], $resourcesData['is_multiple']);
+    }
+
+    /**
+     * Delete resource(s) from a selection.
+     */
+    public function excludeAction()
+    {
+        if (!$this->getRequest()->isXmlHttpRequest()) {
+            return $this->jsonErrorNotFound();
+        }
+
+        $user = $this->identity();
+        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+            return $this->jsonPermissionDenied();
+        }
+
+        $resourcesData = $this->requestedResources();
+        if (empty($resourcesData['has_result'])) {
+            return $this->jsonErrorNotFound();
+        }
+
+        return $user
+            ? $this->excludeDb($resourcesData['resources'], $resourcesData['is_multiple'], $user)
+            : $this->excludeSession($resourcesData['resources'], $resourcesData['is_multiple']);
     }
 
     /**
@@ -158,7 +237,7 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
-     * Update one or more resources for multiple groups of a selection.
+     * Update one or more resources for one or multiple selections or groups.
      *
      * Same as addAction, but with groups.
      */
@@ -179,20 +258,22 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         // TODO For now, the module does not support to store the same resource in multiple places.
-        $group = $groups =$this->params()->fromPost('groups', '');
-        if (is_array($groups)) {
-            $groups = array_filter($groups);
-            $group = reset($groups);
+        $selecteds = $this->params()->fromPost('selecteds', '');
+        if (is_array($selecteds)) {
+            $selecteds = array_filter($selecteds);
+        } else {
+            $selecteds = [$selecteds];
         }
-        if (!strlen((string) $group)) {
+        $selecteds = array_filter($selecteds, fn ($v) => strlen((string) $v));
+        if (!count($selecteds)) {
             return $this->jSend(JSend::FAIL, null, (new PsrMessage(
-                'The destination group is not set.', // @translate
+                'The selection is not set.', // @translate
             ))->setTranslator($this->translator()));
         }
 
         return $user
-            ? $this->updateDb($resourcesData['resources'], $resourcesData['is_multiple'], [$group], $user)
-            : $this->updateSession($resourcesData['resources'], $resourcesData['is_multiple'], [$group]);
+            ? $this->updateDb($resourcesData['resources'], $resourcesData['is_multiple'], $selecteds, $user)
+            : $this->updateSession($resourcesData['resources'], $resourcesData['is_multiple'], $selecteds);
     }
 
     /**
@@ -643,7 +724,7 @@ abstract class AbstractSelectionController extends AbstractActionController
     protected function requestedResources(): array
     {
         $params = $this->params();
-        $id = $params->fromQuery('id');
+        $id = $params->fromQuery('id') ?: $params->fromPost('id');
         if (!$id) {
             return [
                 'has_result' => false,
@@ -731,57 +812,50 @@ abstract class AbstractSelectionController extends AbstractActionController
 
     /**
      * Format a resource to be stored.
-     *
-     * Adapted in:
-     * @see \Selection\View\Helper\SelectionContainer::normalizeResources()
-     * @see \Selection\Controller\Site\AbstractSelectionController::normalizeResource()
      */
     protected function normalizeResource(
         AbstractResourceEntityRepresentation $resource,
         bool $isSelected,
         ?int $selectionId = null
     ): array {
-        static $siteSlug;
-        static $defaultLang;
-        static $headingTerm;
-        static $bodyTerm;
-        static $url;
-
-        if ($siteSlug === null) {
-            $viewHelpers = $this->viewHelpers();
-            $siteSlug = $this->currentSite()->slug();
-            $lang = $viewHelpers->get('lang')();
-            $siteSettings = $this->siteSettings();
-            $filterLocale = (bool) $siteSettings->get('filter_locale_values');
-            $headingTerm = $siteSettings->get('browse_heading_property_term');
-            $bodyTerm = $siteSettings->get('browse_body_property_term');
-            $defaultLang = $filterLocale ? [$lang, ''] : null;
-            $url = $this->url();
+        try {
+            $selection = $selectionId
+                ? $this->api()->read('selections', ['id' => $selectionId])->getContent()
+                : null;
+        } catch (\Omeka\Api\Exception\NotFoundException $e) {
+            $selection = null;
         }
 
-        $resourceId = $resource->id();
-        $title = (string) $resource->displayTitle(null, $defaultLang);
-        $description = (string) $resource->displayDescription(null, $defaultLang);
-        $heading = $headingTerm ? (string) $resource->value($headingTerm, ['default' => $title]) : $title;
-        $body = $bodyTerm ? (string) $resource->value($bodyTerm, ['default' => $description]) : $description;
-
-        return [
-            'id' => $resource->id(),
-            'type' => $resource->getControllerName(),
-            'resource_name' => $resource->resourceName(),
-            'selection_id' => (int) $selectionId,
-            'url' => $resource->siteUrl($siteSlug, true),
-            'url_remove' => $selectionId
-                ? $url->fromRoute("site/selection-id", ['site-slug' => $siteSlug, 'action' => 'delete', 'id' => $selectionId], ['query' => ['id' => $resourceId]])
-                : $url->fromRoute("site/selection", ['site-slug' => $siteSlug, 'action' => 'delete'], ['query' => ['id' => $resourceId]]),
-            // String is required to avoid error in container when the title is
-            // a resource.
-            'title' => $title,
-            'description' => $description,
-            'heading' => $heading,
-            'body' => $body,
-            'value' => $isSelected ? 'selected' : 'unselected',
+        // TODO Use a fake selection resource for now. Or check if the api selectionResource can be found.
+        $selectionResource = (object) [
+            'resource' => $resource,
+            'selection' => $selection,
         ];
+
+        $selectionRecords = $this->viewHelpers()->get('selectionRecords');
+        return $selectionRecords(null, [$selectionResource], $isSelected);
+    }
+
+    protected function currentDisposition(array $query = []): string
+    {
+        $allowedDispositions = ['flat', 'grouped', 'hierarchy'];
+        if (isset($query['disposition']) && in_array($query['disposition'], $allowedDispositions)) {
+            return $query['disposition'];
+        } else {
+            $siteSettings = $this->siteSettings();
+            $disposition = $siteSettings->get('selection_disposition');
+            return in_array($disposition, $allowedDispositions) ? $disposition : 'flat';
+        }
+    }
+
+    protected function allowIndividualSelect(): bool
+    {
+        $siteSettings = $this->siteSettings();
+        $viewHelpers = $this->viewHelpers();
+        $allowIndividualSelect = $siteSettings->get('selection_individual_select', 'auto');
+        return ($allowIndividualSelect !== 'no' && $allowIndividualSelect !== 'yes')
+            ? $viewHelpers->has('bulkExport') || $viewHelpers->has('contactUs')
+            : $allowIndividualSelect === 'yes';
     }
 
     protected function jsonErrorNotFound(): JsonModel

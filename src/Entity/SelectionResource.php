@@ -2,7 +2,7 @@
 
 /*
  * Copyright BibLibre, 2016
- * Copyright Daniel Berthereau, 2020-2024
+ * Copyright Daniel Berthereau, 2020-2025
  *
  * This software is governed by the CeCILL license under French law and abiding
  * by the rules of distribution of free software.  You can use, modify and/ or
@@ -67,6 +67,9 @@ class SelectionResource extends AbstractEntity
 
     /**
      * @var User
+     *
+     * Denormalized from Selection to allow to select resources without selection.
+     * @todo Remove field "user" from SelectionResource.
      *
      * @ManyToOne(
      *      targetEntity="\Omeka\Entity\User"

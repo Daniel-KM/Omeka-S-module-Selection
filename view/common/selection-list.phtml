@@ -13,8 +13,8 @@
  * @var bool $allowIndividualSelect
  */
 
-// This template display a simple list of the current selection,
-// unlike the full hierarchical list of selection-browse.
+// This template display a simple list of the current selection, unlike the full
+// hierarchical list of selection-show.
 
 $plugins = $this->getHelperPluginManager();
 $translate = $plugins->get('translate');
@@ -47,7 +47,7 @@ $openDetails = (bool) $siteSetting('selection_resource_show_open_list', true);
             <input type="checkbox" name="resource_ids[]" class="selected-resource" value="<?= $resourceId ?>" aria-label="<?= $selectText ?>"/>
             <?php endif; ?>
             <a href="<?= $record['url'] ?>"><?= $record['heading'] ?></a>
-            <span class="selection-delete" data-id="<?= $resourceId ?>" data-url="<?= $record['url_remove'] ?>" title="<?= $deleteText ?>" aria-label="<?= $deleteText ?>"></span>
+            <span class="selection-exclude" data-id="<?= $resourceId ?>" data-url="<?= $record['url_remove'] ?>" title="<?= $deleteText ?>" aria-label="<?= $deleteText ?>"></span>
         </li>
         <?php endforeach; ?>
     </ul>

@@ -7,12 +7,13 @@
  * @var int $selectionId
  * @var array $selections
  * @var array $records
+ * @var string $mode
  * @var string $disposition
  * @var bool $isGuestActive
  * @var bool $isSession
  * @var string $value
- * @var string $action Always "update".
- * @var string $urlButton
+ * @var string $urlSelections
+ * @var string $urlSelection
  * @var string $messageSuccess
  * @var string $messageError
  * @var string $placeholder
@@ -21,7 +22,8 @@
  * and options passed from the caller.
  */
 
-// TODO Manage multiple selections for a resource (require entity update).
+// For one selection.
+// TODO Deprecate in favor of selection-button-to-select when container will be managed.
 
 $plugins = $this->getHelperPluginManager();
 $translate = $plugins->get('translate');
@@ -50,7 +52,7 @@ $placeholder = $escapeAttr($placeholder ?? $translate('Choose a selection'));
 
 <details class="selection-groups" <?= $openDetails ? 'open="open"' : '' ?>>
     <summary><?= $escape($translate('Add to a selection')) ?></summary>
-    <div id="selector-group" class="selector-group inactive" data-id="<?= $resource->id() ?>" data-url="<?= $urlButton ?>" data-action="<?= $escapeAttr($action) ?>">
+    <div id="selector-group" class="selector-group selection-mode-<?= $mode ?> inactive" data-id="<?= $selectionId ?: '' ?>" data-resource-id="<?= $resource->id() ?>" data-url="<?= $urlSelection ?>" data-url-selections="<?= $urlSelections ?>">
         <select name="group" class="chosen-select" aria-label="<?= $placeholder ?>" placeholder="<?= $placeholder ?>" data-placeholder="<?= $placeholder ?>" data-message-success="<?= $escapeAttr($messageSuccess) ?>" data-message-error="<?= $escapeAttr($messageError) ?>">
             <?php if ($allowStoreNoGroup): ?>
             <option value=""><?= $disposition === 'hierarchy' ? '/' : $escapeAttr($translate('Store without group')) ?></option>
@@ -60,8 +62,8 @@ $placeholder = $escapeAttr($placeholder ?? $translate('Choose a selection'));
             <?php foreach ($selections ? $selections['structure'] ?? [] : [] as $groupFullPath => $selection): ?>
             <option value="<?= $groupFullPath ?>"<?= in_array($resourceId, $selection['resources'] ?? []) ? ' selected="selected"' : '' ?>><?= strtr($disposition === 'hierarchy' || $groupFullPath === '/' ? $groupFullPath : trim($groupFullPath, '/'), ['/' => ' / ']) ?></option>
             <?php endforeach ?>
-            <option class="selection-action" data-action="add-group" value=""><?= $translate('Create a new selection') ?></option>
-            <option class="selection-action" data-action="delete" value=""><?= $translate('Remove from selection') ?></option>
+            <option class="selection-action" data-action="add-group" value="00"><?= $translate('Create a new group for selection') ?></option>
+            <option class="selection-action" data-action="exclude" value="0"><?= $translate('Remove from selection') ?></option>
         </select>
     </div>
 </details>

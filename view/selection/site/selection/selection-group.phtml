@@ -3,16 +3,19 @@
  * @var \Laminas\View\Renderer\PhpRenderer $this
  * @var \Omeka\Api\Representation\SiteRepresentation $site
  * @var \Omeka\Entity\User $user
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $selection
+ * @var \Selection\Api\Representation\SelectionRepresentation|null $resource
  * @var int $selectionId
  * @var array $selections
  * @var array $records
- * @var string $disposition
  * @var bool $isGuestActive
  * @var bool $isSession
+ * @var string $mode
+ * @var string $disposition
  * @var bool $allowIndividualSelect
  */
 
-// Template used by selection-browse to display a selection with a list of resources, if any.
+// Template used by selection-show to display a selection with a list of resources, if any.
 
 $plugins = $this->getHelperPluginManager();
 $url = $plugins->get('url');
@@ -35,7 +38,7 @@ $bulkExporters = $plugins->has('bulkExporters') ? $plugins->get('bulkExporters')
             <summary class="selection-summary group-name" aria-expanded="false"><?= $translate('Actions') ?></summary>
             <ul class="actions">
                 <?php if ($disposition === 'hierarchy'): ?>
-                <li><button type="button" class="button add-group" data-url="<?= $baseUrl  ?>/add-group"><?= $escape($translate('Add a sub-selection')) ?></button></li>
+                <li><button type="button" class="button add-group" data-url="<?= $baseUrl ?>/add-group"><?= $escape($translate('Add a sub-selection')) ?></button></li>
                 <?php endif; ?>
                 <li><button type="button" class="button rename-group" data-url="<?= $baseUrl ?>/rename-group"><?= $escape($translate('Rename selection')) ?></button></li>
                 <?php if ($disposition === 'hierarchy'): ?>
@@ -43,12 +46,17 @@ $bulkExporters = $plugins->has('bulkExporters') ? $plugins->get('bulkExporters')
                 <?php endif; ?>
                 <li><button type="button" class="button delete-group" data-url="<?= $baseUrl ?>/delete-group"><?= $escape($translate('Delete selection')) ?></button></li>
                 <li><button type="button" class="button move-resource" data-url="<?= $baseUrl ?>/move"><?= $escape($translate('Move resources')) ?></button></li>
-                <?php if ($bulkExporters):
-                foreach ($bulkExporters as $format => $label):
-                    $urlFormat = $url('site/resource/output', ['site-slug' => $siteSlug, 'controller' => 'resource', 'action' => 'browse', 'format' => $format]);
-                ?>
-                <li><a class="download-file download-id" href="<?= $urlFormat ?>" download="download" target="_self"><button type="button" class="export-group download-<?= $format ?>" data-url="<?= $urlFormat ?>"><?= $label ?></button></a></li>
-                <?php endforeach; ?>
+                <?php if ($bulkExporters): ?>
+                <li><button type="button" class="button export-selection" data-url="<?= $baseUrl ?>/export"><?= $escape($translate('Export resources')) ?></button>
+                    <ul class="selection-list-exporters">
+                        <?php
+                        foreach ($bulkExporters as $format => $label):
+                            $urlFormat = $url('site/resource/output', ['site-slug' => $siteSlug, 'controller' => 'resource', 'action' => 'browse', 'format' => $format]);
+                            ?>
+                        <li><a class="download-file download-id" href="<?= $urlFormat ?>" download="download" target="_self"><button type="button" class="export-group download-<?= $format ?>" data-url="<?= $urlFormat ?>"><?= $label ?></button></a></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
                 <?php endif; ?>
             </ul>
         </details>
