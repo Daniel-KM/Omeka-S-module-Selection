@@ -230,7 +230,7 @@ trait TraitDbController
             return $this->jsonPermissionDenied();
         }
 
-        if (!$selection->userIsAllowed('edit')) {
+        if (!$selection->userIsAllowed('update')) {
             return $this->jsonPermissionDenied();
         }
 

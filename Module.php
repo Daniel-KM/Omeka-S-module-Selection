@@ -146,7 +146,7 @@ class Module extends AbstractModule
                     Api\Adapter\SelectionAdapter::class,
                     Api\Adapter\SelectionResourceAdapter::class,
                 ],
-                ['create', 'search', 'read', 'update', 'delete']
+                ['create', 'search', 'read', 'update', 'delete', 'batch_update', 'batch_delete']
             )
             ->allow(
                 $adminRoles,
@@ -154,7 +154,7 @@ class Module extends AbstractModule
                     Api\Adapter\SelectionAdapter::class,
                     Api\Adapter\SelectionResourceAdapter::class,
                 ],
-                ['create', 'search', 'read', 'update', 'delete', 'view-all', 'validate'],
+                ['create', 'search', 'read', 'update', 'delete', 'batch_update', 'batch_delete', 'view-all', 'validate'],
             )
             // Controller.
             ->allow(
