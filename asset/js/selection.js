@@ -132,20 +132,29 @@
                     })
                     .done(function(data) {
                         if (data.status === 'success') {
+                            var validation = selection.find('.validation');
                             if (button.hasClass('publish')) {
                                 button.addClass('unpublish').removeClass('publish');
                                 button.text(button.data('msg-unpublish'));
-                                selection.removeClass('selection-public').addClass('selection-private');
-                                selection.find('.visibility')
-                                    .removeClass('visibility-public').addClass('visibility-private')
-                                    .text(selection.find('.visibility').data('msg-visible'));
-                            } else {
-                                button.addClass('publish').removeClass('unpublish');
-                                button.text(button.data('msg-publish'));
                                 selection.removeClass('selection-private').addClass('selection-public');
                                 selection.find('.visibility')
                                     .removeClass('visibility-private').addClass('visibility-public')
+                                    .text(selection.find('.visibility').data('msg-visible'));
+                                // Show validation status and reset to "not yet" (pending moderation).
+                                selection.removeClass('selection-validated-true selection-validated-false').addClass('selection-validated-not-yet');
+                                validation
+                                    .removeClass('validated-true validated-false').addClass('validated-not-yet')
+                                    .text(validation.data('msg-validated-not-yet'))
+                                    .show();
+                            } else {
+                                button.addClass('publish').removeClass('unpublish');
+                                button.text(button.data('msg-publish'));
+                                selection.removeClass('selection-public').addClass('selection-private');
+                                selection.find('.visibility')
+                                    .removeClass('visibility-public').addClass('visibility-private')
                                     .text(selection.find('.visibility').data('msg-invisible'));
+                                // Hide validation status (irrelevant for private selections).
+                                validation.hide();
                             }
                             $(document).trigger('o:selection-updated', data);
                         }
@@ -551,15 +560,25 @@
                             })
                             .done(function(data) {
                                 if (data.status === 'success') {
-                                    // Include the new selection in the list and select it for the current resource.
-                                    const selectionLabel = name;
-                                    const newOption = $('<option>')
-                                        .val(data.data.selection['o:id'])
-                                        .text(selectionLabel)
-                                        .prop('selected', true);
-                                    select.find('option.selection-action').first().before(newOption);
+                                    // Include the new selection in all selector dropdowns on the page.
+                                    var selectionId = data.data.selection['o:id'];
+                                    var selectionLabel = name;
+                                    $('.selector-group select').each(function() {
+                                        var sel = $(this);
+                                        if (sel.find('option[value="' + selectionId + '"]').length) {
+                                            return;
+                                        }
+                                        var newOption = $('<option>')
+                                            .val(selectionId)
+                                            .text(selectionLabel);
+                                        // Only pre-select for the current resource's dropdown.
+                                        if (sel.is(select)) {
+                                            newOption.prop('selected', true);
+                                        }
+                                        sel.find('option.selection-action').first().before(newOption);
+                                        sel.trigger('chosen:updated');
+                                    });
                                     select.prop('disabled', false);
-                                    select.trigger('chosen:updated');
                                 }
                                 $(document).trigger('o:selection-updated', data);
                             })
