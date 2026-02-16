@@ -90,6 +90,8 @@ class SelectionButtonToGroup extends AbstractHelper
             'urlButton' => $selectionId
                 ? $url("site/selection-id", ['site-slug' => $siteSlug, 'action' => 'update', 'id' => $selectionId], ['query' => ['id' => $resourceId]])
                 : $url("site/selection", ['site-slug' => $siteSlug, 'action' => 'update'], ['query' => ['id' => $resourceId]]),
+            'urlSelections' => $url('site/selection', ['site-slug' => $siteSlug, 'action' => null]),
+            'urlSelection' => $url('site/selection-id', ['site-slug' => $siteSlug, 'action' => null, 'id' => $selectionId ?: '0']),
             'messageSuccess' => $translate('The selection has been updated.'), // @translate
             'messageError' => $translate('The selection could not be updated.'), // @translate
             'placeholder' => $translate('Choose a selection'), // @translate
