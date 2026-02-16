@@ -1,0 +1,153 @@
+@media all {
+    header nav .selection:before {
+        content: "\f02e"; /* far fa-bookmark */
+    }
+    .selections .no-resources:before {
+        content: "\f02e"; /* far fa-bookmark */
+    }
+
+    .selections .resource-count {
+        display: block;
+        font-size: 0.85em;
+        opacity: 0.7;
+        margin-left: 0.5em;
+    }
+
+    .selection .no-action,
+    .selection .single-action {
+        float: right;
+    }
+
+    .selection .actions {
+        float: right;
+        display: flex;
+    }
+    .selection .actions li {
+        display: inline;
+    }
+
+    .actions .no-action,
+    .actions .no-action::before {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        vertical-align: top;
+        border: 0;
+        box-shadow: none;
+        text-align: right;
+    }
+
+    /* Toggle buttons - center icons */
+    .selection .single-action.toggle span.fas {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    /* Two rules kept until Common 3.4.75. */
+    /* Hide icon when spinner is active, show only spinner */
+    .selection .single-action.toggle.is-busy span.fas:not(.spinner) {
+        display: none;
+    }
+    .selection .single-action.toggle.is-busy span.spinner {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+
+    /* Status icons */
+    .selection .o-icon-public::before,
+    .resource-details .o-icon-public::before {
+        color: #00AA00;
+        content: "\f06e"; /* eye */
+    }
+    .selection .o-icon-private::before,
+    .resource-details .o-icon-private::before {
+        color: #888888;
+        content: "\f070"; /* eye-slash */
+        opacity: 0.5;
+    }
+    .selection .o-icon-undetermined::before,
+    .resource-details .o-icon-undetermined::before {
+        color: #FFA500;
+        content: "\f128"; /* question */
+    }
+    .selection .o-icon-validated::before,
+    .resource-details .o-icon-validated::before {
+        color: #00AA00;
+        content: "\f00c"; /* check */
+    }
+    .selection .o-icon-rejected::before,
+    .resource-details .o-icon-rejected::before {
+        color: #DD0000;
+        content: "\f00d"; /* times */
+    }
+
+    /* Show-details sidebar */
+    .resource-details .selection-status ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .resource-details .selection-status li {
+        margin-bottom: 0.5em;
+    }
+    .resource-details .selection-status .fas {
+        margin-right: 0.5em;
+    }
+    .resource-details .resource-counts {
+        list-style: none;
+        padding: 0;
+        margin: 0.5em 0;
+    }
+    .resource-details .resource-counts li {
+        margin-bottom: 0.25em;
+    }
+    .resource-details .links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .resource-details .links li {
+        margin-bottom: 0.5em;
+    }
+
+    /* Dialog */
+    dialog.dialog-send-message.dialog-selection {
+        width: 500px;
+        max-width: 90%;
+    }
+    dialog.dialog-selection .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.5em;
+        margin-bottom: 1em;
+    }
+    dialog.dialog-selection .dialog-header h3 {
+        margin: 0;
+    }
+    dialog.dialog-selection .dialog-header-close-button {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+    dialog.dialog-selection button[name=submit],
+    dialog.dialog-selection input[name=submit] {
+        float: right;
+        margin-top: 1em;
+    }
+    dialog.dialog-selection label.required::after {
+        display: none;
+    }
+    form#selection-send-message-form > div:last-child,
+    form#selection-send-message-form #submit_field {
+        background-color: #fff;
+    }
+    form#selection-send-message-form .field-meta {
+        display: none;
+    }
+}

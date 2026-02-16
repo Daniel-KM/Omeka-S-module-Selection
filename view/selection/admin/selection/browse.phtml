@@ -1,0 +1,239 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $selections
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $resources
+ * @var \Selection\Form\SendMessageForm $formSendMessage
+ * @var \Omeka\Form\ConfirmForm $formDeleteSelected
+ * @var \Omeka\Form\ConfirmForm $formDeleteAll
+ */
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$i18n = $plugins->get('i18n');
+$escape = $plugins->get('escapeHtml');
+$sortLink = $plugins->get('sortLink');
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$hyperlink = $plugins->get('hyperlink');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
+$defaultSite = $plugins->get('defaultSite');
+
+$this->htmlElement('body')->appendAttribute('class', 'selections browse');
+
+$this->headLink()
+    ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/selection-admin.css', 'Selection'));
+$this->headScript()
+    ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/selection-admin.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
+
+$sortHeadings = [
+    [
+        'label' => $translate('Label'),
+        'value' => 'label',
+    ],
+    [
+        'label' => $translate('Owner'),
+        'value' => 'owner_name',
+    ],
+    [
+        'label' => $translate('Modified'),
+        'value' => 'modified',
+    ],
+];
+
+$defaultSiteSlug = $defaultSite('slug');
+
+$userIsAllowedBatchDelete = $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'batch_delete');
+?>
+
+<?= $this->pageTitle($translate('Selections')) ?>
+
+<div class="browse-controls">
+    <?= $this->pagination() ?>
+    <?= $this->sortSelector($sortHeadings) ?>
+</div>
+
+<div id="page-actions">
+</div>
+
+<?php $this->trigger('view.browse.before'); ?>
+<?php if (count($selections)): ?>
+<form method="post" id="batch-form" class="disable-unsaved-warning">
+
+    <table class="tablesaw batch-edit" data-tablesaw-mode="stack">
+        <thead>
+            <tr>
+                <th><input type="checkbox" class="select-all" aria-label="<?= $escapeAttr($translate('Select all')) ?>"><?= $sortLink($translate('Label'), 'label') ?></th>
+                <th><?= $sortLink($translate('Owner'), 'owner_name') ?></th>
+                <th><?= $sortLink($translate('Modified'), 'modified') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($selections as $selection):
+            $owner = $selection->owner();
+            $ownerText = $owner
+                ? $hyperlink($owner->name(), $url('admin/id', ['controller' => 'user', 'action' => 'show', 'id' => $owner->id()]))
+                : $translate('[no owner]');
+            $resourceCount = $selection->resourceCount();
+            ?>
+            <tr class="selection" data-id="<?= $selection->id() ?>">
+                <td>
+                    <?php if ($selection->userIsAllowed('update') || $selection->userIsAllowed('delete')): ?>
+                    <input type="checkbox" name="resource_ids[]" value="<?= $selection->id() ?>" aria-label="<?= $escapeAttr($translate('Select selection')) ?>">
+                    <?php endif; ?>
+                    <span class="title"><?= $escape($selection->label()) ?></span>
+                    <span class="resource-count"><?= $escape(sprintf($translate('%d resources'), $resourceCount)) ?></span>
+                    <ul class="actions">
+                        <?php if ($selection->userIsAllowed('update')): ?>
+                        <li>
+                            <button type="button"
+                                class="single-action jsend-action toggle public-toggle"
+                                data-url="<?= $escapeAttr($url('admin/selection/id', ['action' => 'toggle-public', 'id' => $selection->id()])) ?>"
+                                data-status="<?= $selection->isPublic() ? 'public' : 'private' ?>"
+                                data-spinner="true"
+                                aria-label="<?= $v = $escapeAttr($translate('Toggle public/private')) ?>"
+                                title="<?= $v ?>"><span class="fas o-icon-<?= $selection->isPublic() ? 'public' : 'private' ?>"></span></button>
+                        </li>
+                        <?php else: ?>
+                        <li>
+                            <span class="no-action is-public"><span
+                                class="fas o-icon-<?= $selection->isPublic() ? 'public' : 'private' ?>"
+                                data-status="<?= $selection->isPublic() ? 'public' : 'private' ?>"
+                                aria-label="<?= $v = ($selection->isPublic() ? $escapeAttr($translate('Public')) : $escapeAttr($translate('Private'))) ?>"
+                                title="<?= $v ?>"></span>
+                            </span>
+                        </li>
+                        <?php endif; ?>
+                        <?php if ($selection->userIsAllowed('update')): ?>
+                        <li<?php if (!$selection->isPublic()): ?> style="display: none;"<?php endif; ?>>
+                            <button type="button"
+                                class="single-action jsend-action toggle validated-toggle"
+                                data-url="<?= $escapeAttr($url('admin/selection/id', ['action' => 'toggle-validated', 'id' => $selection->id()])) ?>"
+                                data-status="<?= $selection->isValidated() === null ? 'undetermined' : ($selection->isValidated() ? 'validated' : 'rejected') ?>"
+                                data-spinner="true"
+                                aria-label="<?= $v = $escapeAttr($translate('Toggle validation status')) ?>"
+                                title="<?= $v ?>"><span class="fas o-icon-<?= $selection->isValidated() === null ? 'undetermined' : ($selection->isValidated() ? 'validated' : 'rejected') ?>"></span></button>
+                        </li>
+                        <?php endif; ?>
+                        <?php if ($owner): ?>
+                        <li>
+                            <button type="button"
+                                class="single-action button-dialog-common send-message"
+                                data-dialog-selector="dialog.dialog-send-message.dialog-selection"
+                                data-url="<?= $escapeAttr($url('admin/selection/id', ['action' => 'send-message', 'id' => $selection->id()])) ?>"
+                                data-selection-id="<?= $selection->id() ?>"
+                                aria-label="<?= $v = $escapeAttr($translate('Send a message to the owner')) ?>"
+                                title="<?= $v ?>"><span class="fas o-icon- fa-envelope"></span></button>
+                        </li>
+                        <?php endif; ?>
+                        <li>
+                            <?= $hyperlink('', $url('admin/default', ['controller' => 'item', 'action' => 'browse'], ['query' => ['selection_id' => $selection->id()]]), [
+                                'class' => 'o-icon-items',
+                                'title' => $translate('View items in admin'),
+                            ]) ?>
+                        </li>
+                        <?php if ($defaultSiteSlug): ?>
+                        <li>
+                            <?= $hyperlink('', $url('site/selection-id', ['site-slug' => $defaultSiteSlug, 'id' => $selection->id()]), [
+                                'class' => 'o-icon-external',
+                                'title' => $translate('View in public site'),
+                                'target' => '_blank',
+                            ]) ?>
+                        </li>
+                        <?php endif; ?>
+                        <?php if ($selection->userIsAllowed('delete')): ?>
+                        <li>
+                            <?= $hyperlink('', '#', [
+                                'data-sidebar-selector' => '#sidebar',
+                                'data-sidebar-content-url' => $url('admin/selection/id', ['action' => 'delete-confirm', 'id' => $selection->id()]),
+                                'class' => 'o-icon-delete sidebar-content',
+                                'title' => $translate('Delete'),
+                            ]) ?>
+                        </li>
+                        <?php endif; ?>
+                        <li>
+                            <?= $hyperlink('', '#', [
+                                'data-sidebar-selector' => '#sidebar',
+                                'data-sidebar-content-url' => $url('admin/selection/id', ['action' => 'show-details', 'id' => $selection->id()]),
+                                'class' => 'o-icon-more sidebar-content',
+                                'title' => $translate('Details'),
+                            ]) ?>
+                        </li>
+                    </ul>
+                </td>
+                <td><?= $ownerText ?></td>
+                <td><?= ($modified = $selection->modified()) ? $escape($i18n->dateFormat($modified, 'medium', 'short')) : $escape($i18n->dateFormat($selection->created(), 'medium', 'short')) ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+</form>
+
+<?php $this->trigger('view.browse.after'); ?>
+<div class="browse-controls">
+    <?= $this->pagination() ?>
+</div>
+
+<div id="sidebar" class="sidebar">
+    <?= $hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $translate('Close'),
+    ]) ?>
+    <div class="sidebar-content"></div>
+</div>
+
+<?php if ($userIsAllowedBatchDelete): ?>
+
+<div id="sidebar-delete-selected" class="sidebar">
+    <?= $hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $translate('Close'),
+    ]) ?>
+    <div class="sidebar-content">
+        <div id="sidebar-confirm">
+            <h3><?= $translate('Delete selections') ?></h3>
+            <p><?= $translate('Are you sure you would like to delete the selected selections?') ?></p>
+            <p class="error"><?= sprintf(
+                $translate('%1$s: this action will permanently delete %2$s selections and cannot be undone.'),
+                sprintf('<strong>%s</strong>', $translate('Warning')),
+                '<strong><span id="delete-selected-count"></span></strong>'
+            ) ?></p>
+            <?= $this->form($this->formDeleteSelected) ?>
+        </div>
+    </div>
+</div>
+<div id="sidebar-delete-all" class="sidebar">
+    <?= $hyperlink('', '#', [
+        'class' => 'sidebar-close o-icon-close',
+        'title' => $translate('Close'),
+    ]) ?>
+    <div class="sidebar-content">
+        <div id="sidebar-confirm">
+            <h3><?= $translate('Delete selections') ?></h3>
+            <p><?= $translate('Are you sure you would like to delete all selections on all pages of this result?') ?></p>
+            <p class="error"><?= sprintf(
+                $translate('%1$s: this action will permanently delete %2$s selections and cannot be undone.'),
+                sprintf('<strong>%s</strong>', $translate('Warning')),
+                sprintf('<strong>%s</strong>', number_format($this->pagination()->getPaginator()->getTotalCount()))
+            ) ?></p>
+            <label><input type="checkbox" name="confirm-delete-all-check"> <?= $translate('Are you sure?') ?></label>
+            <?= $this->form($this->formDeleteAll) ?>
+        </div>
+    </div>
+</div>
+
+<?php endif; ?>
+
+<?php else: ?>
+
+<div class="no-resources">
+    <p><?= $translate('Omeka could not find any selections.') ?></p>
+</div>
+
+<?php endif; ?>
+
+<?php $this->vars()->offsetSet('form', $formSendMessage); ?>
+<?= $this->partial('common/dialog/selection-send-message') ?>

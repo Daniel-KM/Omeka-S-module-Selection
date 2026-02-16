@@ -1,0 +1,144 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Selection\Api\Representation\SelectionRepresentation $resource
+ * @var \Selection\Api\Representation\SelectionRepresentation $selection
+ * @var bool $linkTitle
+ */
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$i18n = $plugins->get('i18n');
+$escape = $plugins->get('escapeHtml');
+$translate = $plugins->get('translate');
+$hyperlink = $plugins->get('hyperlink');
+$defaultSite = $plugins->get('defaultSite');
+
+$selection = $resource;
+
+$defaultSiteSlug = $defaultSite('slug');
+?>
+
+<div class="resource-details">
+    <?php if ($linkTitle): ?>
+    <h3 class="o-title"><?= $escape($selection->label()) ?></h3>
+    <?php else: ?>
+    <h3 class="o-title"><?= $escape($selection->label()) ?></h3>
+    <?php endif; ?>
+    <span class="resource-id">#<?= $selection->id() ?></span>
+
+    <div class="meta-group">
+        <h4><?= $escape($translate('Owner')) ?></h4>
+        <?php
+        if ($owner = $selection->owner()) {
+            $ownerText = $hyperlink($owner->name(), $url('admin/id', ['controller' => 'user', 'action' => 'show', 'id' => $owner->id()]));
+            $ownerEmail = $owner->email();
+        } else {
+            $ownerText = $escape($translate('[no owner]'));
+            $ownerEmail = null;
+        }
+        ?>
+        <div class="value"><?= $ownerText ?></div>
+        <?php if ($ownerEmail): ?>
+        <div class="value email"><?= $escape($ownerEmail) ?></div>
+        <?php endif; ?>
+    </div>
+
+    <div class="meta-group">
+        <h4><?= $escape($translate('Resources')) ?></h4>
+        <div class="value">
+            <?php
+            $resourceCount = $selection->resourceCount();
+            $countByType = $selection->resourceCountByType();
+            ?>
+            <strong><?= $escape(sprintf($translate('Total: %d'), $resourceCount)) ?></strong>
+            <ul class="resource-counts">
+                <?php foreach ($countByType as $type => $count): ?>
+                <?php if ($count > 0): ?>
+                <li>
+                    <?= $hyperlink(
+                        sprintf('%s: %d', $translate(ucfirst(str_replace('_', ' ', $type))), $count),
+                        $url('admin/default', ['controller' => str_replace('_', '-', $type), 'action' => 'browse'], ['query' => ['selection_id' => $selection->id()]])
+                    ) ?>
+                </li>
+                <?php endif; ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+
+    <div class="meta-group selection-status">
+        <h4><?= $escape($translate('Status')) ?></h4>
+        <ul>
+            <li class="public">
+                <span class="fas o-icon-<?= $selection->isPublic() ? 'public' : 'private' ?>"></span>
+                <?= $escape($selection->isPublic() ? $translate('Public') : $translate('Private')) ?>
+            </li>
+            <?php if ($selection->isPublic()):
+                $isValidated = $selection->isValidated();
+                if ($isValidated === null) {
+                    $validatedClass = 'undetermined';
+                    $validatedLabel = $translate('Undetermined');
+                } elseif ($isValidated) {
+                    $validatedClass = 'validated';
+                    $validatedLabel = $translate('Validated');
+                } else {
+                    $validatedClass = 'rejected';
+                    $validatedLabel = $translate('Rejected');
+                }
+            ?>
+            <li class="validated">
+                <span class="fas o-icon-<?= $validatedClass ?>"></span>
+                <?= $escape($validatedLabel) ?>
+            </li>
+            <?php endif; ?>
+            <li class="dynamic">
+                <?= $escape($selection->isDynamic() ? $translate('Dynamic selection') : $translate('Static selection')) ?>
+            </li>
+        </ul>
+    </div>
+
+    <div class="meta-group">
+        <h4><?= $escape($translate('Dates')) ?></h4>
+        <div class="value">
+            <strong><?= $escape($translate('Created')) ?>:</strong>
+            <?= $escape($i18n->dateFormat($selection->created(), 'medium', 'short')) ?>
+        </div>
+        <?php if ($modified = $selection->modified()): ?>
+        <div class="value">
+            <strong><?= $escape($translate('Modified')) ?>:</strong>
+            <?= $escape($i18n->dateFormat($modified, 'medium', 'short')) ?>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <?php if ($comment = $selection->comment()): ?>
+    <div class="meta-group">
+        <h4><?= $escape($translate('Comment')) ?></h4>
+        <div class="value"><?= $escape($comment) ?></div>
+    </div>
+    <?php endif; ?>
+
+    <div class="meta-group">
+        <h4><?= $escape($translate('Links')) ?></h4>
+        <ul class="links">
+            <li>
+                <?= $hyperlink(
+                    $translate('View items in admin'),
+                    $url('admin/default', ['controller' => 'item', 'action' => 'browse'], ['query' => ['selection_id' => $selection->id()]])
+                ) ?>
+            </li>
+            <?php if ($defaultSiteSlug): ?>
+            <li>
+                <?= $hyperlink(
+                    $translate('View in public site'),
+                    $url('site/selection-id', ['site-slug' => $defaultSiteSlug, 'id' => $selection->id()]),
+                    ['target' => '_blank']
+                ) ?>
+            </li>
+            <?php endif; ?>
+        </ul>
+    </div>
+
+    <?php $this->trigger('view.details', ['entity' => $selection]); ?>
+</div>

@@ -55,6 +55,8 @@ return  [
     'form_elements' => [
         'invokables' => [
             Form\SelectionFieldset::class => Form\SelectionFieldset::class,
+            Form\SettingsFieldset::class => Form\SettingsFieldset::class,
+            Form\SendMessageForm::class => Form\SendMessageForm::class,
         ],
         'factories' => [
             Form\SiteSettingsFieldset::class => Service\Form\SiteSettingsFieldsetFactory::class,
@@ -82,6 +84,7 @@ return  [
     'controllers' => [
         'invokables' => [
             'Selection\Controller\Site\Guest' => Controller\Site\GuestController::class,
+            'Selection\Controller\Admin\Selection' => Controller\Admin\SelectionController::class,
         ],
         'factories' => [
             'Selection\Controller\Site\Selection' => Service\Controller\Site\SelectionControllerFactory::class,
@@ -93,6 +96,26 @@ return  [
         ],
     ],
     'navigation' => [
+        'AdminModule' => [
+            'selection' => [
+                'label' => 'Selections', // @translate
+                // Class can be star, list-alt, basket, but bookmark for now.
+                'class' => 'o-icon- selections fa-bookmark',
+                'route' => 'admin/selection',
+                'pages' => [
+                    [
+                        'route' => 'admin/selection/default',
+                        'controller' => Controller\Admin\SelectionController::class,
+                        'visible' => false,
+                    ],
+                    [
+                        'route' => 'admin/selection/id',
+                        'controller' => Controller\Admin\SelectionController::class,
+                        'visible' => false,
+                    ],
+                ],
+            ],
+        ],
         'site' => [
             [
                 'label' => 'Selection', // @translate
@@ -190,6 +213,46 @@ return  [
                     ],
                 ],
             ],
+            'admin' => [
+                'child_routes' => [
+                    'selection' => [
+                        'type' => \Laminas\Router\Http\Literal::class,
+                        'options' => [
+                            'route' => '/selection',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Selection\Controller\Admin',
+                                'controller' => 'Selection',
+                                'action' => 'browse',
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'default' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/:action',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                    ],
+                                ],
+                            ],
+                            'id' => [
+                                'type' => \Laminas\Router\Http\Segment::class,
+                                'options' => [
+                                    'route' => '/:id[/:action]',
+                                    'constraints' => [
+                                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                        'id' => '\d+',
+                                    ],
+                                    'defaults' => [
+                                        'action' => 'show',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ],
     ],
     'translator' => [
@@ -211,6 +274,29 @@ return  [
         'Selection limit reached. Maximum %d resources allowed.', // @translate
     ],
     'selection' => [
+        'settings' => [
+            'selection_message_approve_subject' => 'Your selection has been approved on {main_title}', // @translate
+            'selection_message_approve_body' => <<<'MAIL'
+                Hello,
+                
+                Your selection "{selection_label}" on {main_title} has been approved and is now publicly available.
+                
+                You can view it at: {selection_url}
+                
+                Sincerely,
+                MAIL, // @translate
+            'selection_message_reject_subject' => 'Your selection on {main_title}', // @translate
+            'selection_message_reject_body' => <<<'MAIL'
+                Hello,
+                
+                Your selection "{selection_label}" on {main_title} could not be approved for publication.
+                
+                Please contact us if you have any question.
+                
+                Sincerely,
+                MAIL, // @translate
+            'selection_notify_recipients' => [],
+        ],
         // TODO Move "selection_share" to main settings?
         'site_settings' => [
             'selection_mode' => 'single',
