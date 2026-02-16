@@ -41,6 +41,11 @@ class SelectionRepresentation extends AbstractEntityRepresentation
      */
     protected $resource;
 
+    public function getControllerName()
+    {
+        return 'selection';
+    }
+
     public function getJsonLdType()
     {
         return 'o:Selection';
@@ -96,6 +101,8 @@ class SelectionRepresentation extends AbstractEntityRepresentation
 
     public function owner(): UserRepresentation
     {
+        // The selection is removed when the user is deleted, so there is
+        // always a user.
         $adapter = $this->getAdapter('users');
         return $adapter->getRepresentation($this->resource->getOwner());
     }
@@ -115,7 +122,23 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return $this->resource->getLabel();
     }
 
+    /**
+     * Alias of label().
+     */
+    public function title(): ?string
+    {
+        return $this->resource->getLabel();
+    }
+
     public function comment(): ?string
+    {
+        return $this->resource->getComment();
+    }
+
+    /**
+     * Alias of comment().
+     */
+    public function description(): ?string
     {
         return $this->resource->getComment();
     }
@@ -168,7 +191,10 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         /** @var \Selection\Entity\SelectionResource $selectionResourceEntity */
         foreach ($this->resource->getSelectionResources() as $selectionResourceEntity) {
             $resource = $selectionResourceEntity->getResource();
-            $resources[$resource->getId()] = $resourceAdapter->getRepresentation($resource);
+            // Avoid rights issues.
+            if ($resource) {
+                $resources[$resource->getId()] = $resourceAdapter->getRepresentation($resource);
+            }
         }
         return $resources;
     }
@@ -254,17 +280,115 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return $this->resource->getModified();
     }
 
+    public function siteUrl($siteSlug = null, $canonical = false)
+    {
+        if ($siteSlug === null) {
+            $siteSlug = $this->getServiceLocator()->get('Application')
+                ->getMvcEvent()->getRouteMatch()->getParam('site-slug');
+        }
+        $url = $this->getViewHelper('Url');
+        return $url(
+            'site/selection-id',
+            [
+                'site-slug' => $siteSlug,
+                'id' => $this->id(),
+            ],
+            ['force_canonical' => $canonical]
+        );
+    }
+
+    /**
+     * Get pretty link to this selection containing thumbnail and label.
+     *
+     * The thumbnail is the one of the first resource with an image.
+     *
+     * @see \Omeka\Api\Representation\AbstractResourceEntityRepresentation::linkPretty()
+     *
+     * @param string $thumbnailType Type of thumbnail to show
+     * @param string|null $titleDefault See $default param for displayTitle()
+     * @param string|null $action Action to link to (see link() and linkRaw())
+     * @param array $attributes HTML attributes, key and value
+     * @return string
+     */
+    public function linkPretty(
+        string $thumbnailType = 'square',
+        ?string $titleDefault = null,
+        ?string $action = null,
+        array $attributes = []
+    ) {
+        $escape = $this->getViewHelper('escapeHtml');
+        $thumbnail = $this->getViewHelper('thumbnail');
+
+        // TODO Find the first media with image.
+        $media = $this->primaryMedia();
+
+        $linkContent = sprintf(
+            '%s<span class="resource-name">%s</span>',
+            $thumbnail($media, $thumbnailType),
+            $escape($this->label())
+        );
+
+        if (empty($attributes['class'])) {
+            $attributes['class'] = 'resource-link selection-link';
+        } else {
+            $attributes['class'] .= ' resource-link selection-link';
+        }
+
+        return $this->linkRaw($linkContent, $action, $attributes);
+    }
+
+    /**
+     * Get the number of resources in this selection.
+     *
+     * @todo Manage count of dynamic selections.
+     */
+    public function resourceCount(): int
+    {
+        return $this->resource->getSelectionResources()->count();
+    }
+
+    /**
+     * Get total resource of this selection by type.
+     */
+    public function resourceCountByType(): array
+    {
+        $api = $this->getServiceLocator()->get('Omeka\ApiManager');
+
+        $classesToNames = [
+            \Omeka\Entity\Item::class => 'items',
+            \Omeka\Entity\ItemSet::class => 'item_sets',
+            \Omeka\Entity\Media::class => 'media',
+        ];
+
+        if (class_exists(\Annotate\Entity\Annotation::class, false)) {
+            $classesToNames[\Annotate\Entity\Annotation::class] = 'annotations';
+        }
+
+        $result = [];
+        foreach ($classesToNames as $resourceName) {
+            $result[$resourceName] = $api
+                ->search($resourceName, [
+                    'selection_id' => $this->resource->getId(),
+                    'limit' => 0,
+                ])->getTotalResults();
+        }
+        return $result;
+    }
+
     public function primaryMedia(): ?MediaRepresentation
     {
-        // Return the first media if one exists.
+        // Return the first viewable media if one exists.
         foreach ($this->resource->getSelectionResources() as $selectionResource) {
             $resource = $selectionResource->getResource();
             if ($resource instanceof \Omeka\Entity\Media) {
                 return $this->getAdapter('media')->getRepresentation($resource);
             }
-            $media = $this->getAdapter('resources')->getRepresentation($resource)->primaryMedia();
-            if ($media) {
-                return $media;
+            $representation = $this->getAdapter('resources')->getRepresentation($resource);
+            if ($representation) {
+                $media = $representation->primaryMedia();
+                if ($media) {
+                    return $media;
+                }
             }
         }
         return null;
