@@ -19,10 +19,10 @@ $hyperlink = $plugins->get('hyperlink');
 $escapeAttr = $plugins->get('escapeHtmlAttr');
 $defaultSite = $plugins->get('defaultSite');
 
-$this->htmlElement('body')->appendAttribute('class', 'selections browse');
+$this->htmlElement('body')->appendAttribute('class', 'selection selections browse');
 
 $this->headLink()
-    ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/common-dialog-admin.css', 'Common'))
     ->appendStylesheet($assetUrl('css/selection-admin.css', 'Selection'));
 $this->headScript()
     ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
@@ -48,7 +48,7 @@ $defaultSiteSlug = $defaultSite('slug');
 $userIsAllowedBatchDelete = $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'batch_delete');
 ?>
 
-<?= $this->pageTitle($translate('Selections')) ?>
+<?= $this->pageTitle('', 1, $translate('Selections')) ?>
 
 <div class="browse-controls">
     <?= $this->pagination() ?>
