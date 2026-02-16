@@ -149,27 +149,19 @@ class SelectionAdapter extends AbstractEntityAdapter
 
         $this->hydrateOwner($request, $entity);
 
+        // Store previous state for validation check.
         $wasPublic = $entity->isPublic();
+        $wasLabel = $entity->getLabel();
+        $wasValidated = $entity->isValidated();
+        $wasResourceIds = array_map(
+            fn ($sr) => $sr->getResource()->getId(),
+            $entity->getSelectionResources()->toArray()
+        );
+        sort($wasResourceIds);
+
         if ($this->shouldHydrate($request, 'o:is_public')) {
             // Unlike resources, the selections are always private by default.
             $entity->setIsPublic($request->getValue('o:is_public', false));
-        }
-
-        // Reinitialize the validation when a resource visibility is changing.
-        // TODO Manage the case where the user modify the list of resources or changes the label.
-        $isPublic = $entity->isPublic();
-        $wasValidated = $entity->isValidated();
-        if ($this->shouldHydrate($request, 'o:is_validated')) {
-            $entity->setisValidated($isPublic ? $request->getValue('o:is_validated') : null);
-        } elseif ($wasPublic !== $isPublic) {
-            $entity->setisValidated(null);
-        }
-
-        // Only admins can validate a selection.
-        // This is a check for direct api call.
-        $isValidated = $entity->isValidated();
-        if (!$canValidate && $isValidated && $wasValidated !== $isValidated) {
-            $entity->setisValidated(null);
         }
 
         if ($this->shouldHydrate($request, 'o:label')) {
@@ -197,6 +189,33 @@ class SelectionAdapter extends AbstractEntityAdapter
                 $entity->setStructure($request->getValue('o:structure') ?: null);
             }
             $this->hydrateSelectionResources($request, $entity);
+        }
+
+        // Compare old and new state to determine if revalidation is needed.
+        $isPublic = $entity->isPublic();
+        $labelChanged = $wasLabel !== $entity->getLabel();
+        $publicChanged = $wasPublic !== $isPublic;
+
+        $newResourceIds = array_map(
+            fn ($sr) => $sr->getResource()->getId(),
+            $entity->getSelectionResources()->toArray()
+        );
+        sort($newResourceIds);
+        $resourcesModified = $wasResourceIds !== $newResourceIds;
+
+        $needsRevalidation = $publicChanged || $labelChanged || $resourcesModified;
+
+        // Update validation status based on changes.
+        if ($this->shouldHydrate($request, 'o:is_validated')) {
+            $entity->setisValidated($isPublic ? $request->getValue('o:is_validated') : null);
+        } elseif ($needsRevalidation) {
+            if ($canValidate && $isPublic) {
+                // Users with moderation rights: auto-validate public selections.
+                $entity->setisValidated(true);
+            } elseif ($wasValidated !== null) {
+                // Regular users: reset validation to undetermined if modified.
+                $entity->setisValidated(null);
+            }
         }
 
         // Unlike core, don't set modified date the first time.
