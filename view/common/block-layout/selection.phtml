@@ -8,8 +8,9 @@
  * @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation[] $resources
  * @var array $resourcesByType
  * @var bool $isGuestActive
- * @var bool $allowIndividualSelect
+ * @var string $mode
  * @var string $disposition "list" or "hierarchy"
+ * @var bool $allowIndividualSelect
  */
 
 $plugins = $this->getHelperPluginManager();
@@ -17,7 +18,5 @@ $partial = $plugins->get('partial');
 ?>
 
 <div class="block block-selection">
-    <?= $isGuestActive
-        ? $partial("guest/site/guest/selection-list-$disposition")
-        : $partial("selection/site/selection/list-$disposition") ?>
+    <?= $partial("selection/site/selection/list-$disposition") ?>
 </div>
