@@ -5,18 +5,20 @@ Selection (module for Omeka S)
 > are available on [GitLab], which seems to respect users and privacy better
 > than the previous repository.__
 
-[Selection] is a module for [Omeka S] that allows any users to store one or
-multiple selections and the same for any visitor via local session. Each
-selections can be saved with a label to simplify management and it is possible
-to create a directory-like hierarchy to arrange resources. The selection can be
-dynamic too when a search query is used.
+[Selection] is a module for [Omeka S] that allows any users to store and to
+share one or multiple selections and the same for any visitor via local session.
+
+Each selections can be saved with a label to simplify management and it is
+possible to create a directory-like hierarchy to arrange resources. The
+selection can be dynamic too when a search query is used.
 
 Furthermore, when the module [Bulk Export] is installed, it is possible to
 export them instantly to common formats, included common spreadsheet formats.
 
 The selection is saved in a cookie for anonymous visitor, so anybody can create
 a selection. When the user is authenticated, in particular as a [Guest], the
-selections is saved in the database and available permanently.
+selections is saved in the database and available permanently. Only
+authenticated users can share a selection.
 
 
 Installation
@@ -50,17 +52,34 @@ git clone https://gitlab.com/Daniel-KM/Omeka-S-module-Selection Selection
 
 Then install it like any other Omeka module and follow the config instructions.
 
+* For test
+
+The module includes a comprehensive test suite with unit and functional tests.
+Run them from the root of Omeka:
+
+```sh
+vendor/bin/phpunit -c modules/Selection/phpunit.xml --testdox
+```
+
 
 Usage
 -----
 
-The user can see a selection in the item page. On a click, the item is added to
-the selection, or removed. The full list of resources in the selection is
-available at "/s/my-site/selection". This page is available for any registered
-users and possibly for visitors. For guest users (module [Guest]), the url is
-"/s/my-site/guest/selection".
+The list of all public selections of all users can be browsed at "/s/my-site/selection".
 
-A resource can be selected multiple times, but only once by selection.
+Own selections of the user can be browsed at "/s/my-site/selection/browse".
+For guest users (module [Guest]), the url is "/s/my-site/guest/selection".
+
+To fill a selection, the resource blocks "Selection button" or Selection Select"
+can be used. Other resource blocks allow to display the user list of selections.
+On a click, the item is added to the selection or in a specific group, or
+removed.
+
+The full list of resources in the selection is
+available at "/s/my-site/selection/browse". This page is available for any registered
+users and possibly for visitors.
+
+A resource can be selected in multiple selections, but only once by selection.
 
 
 Integration in a theme
@@ -94,6 +113,12 @@ echo $this->selectionList();
 
 ```php
 echo $this->selectionLinkBrowse();
+```
+
+- Display the public selections of all users.
+
+```php
+echo $this->selectionBrowse($query, $options);
 ```
 
 
@@ -210,6 +235,9 @@ $selection = $this->api()->update('selections', 1, [
 TODO
 ----
 
+- [ ] Important: Finalize process of multiple selections against container and remove useless code.
+- [ ] Make selection not nullable in entity SelectionResource.
+- [ ] Make owner nullable.
 - [ ] Multiple selection of resources at once when a selection is not specified. Use a default selection in all cases?
 - [x] Multiple selections with a title for each.
 - [ ] Multiple selections (view pages).
@@ -217,6 +245,8 @@ TODO
 - [ ] Allow to query multiple ids (owner id, resource id, selection id) in the api.
 - [x] Add a modified date of a selection (from the selection itself, not only from the list of selected resources).
 - [ ] Add a third view with a button to let user choose disposition.
+- [ ] For moderation, manage the case where the user modify the list of resources or changes the label.
+- [ ] Add options to display selected resources (show) as item/browse.
 
 
 Warning
@@ -272,7 +302,8 @@ Copyright
 
 This module was initially based on the fork of the module [Basket] from BibLibre
 and restructured and improved for various projects, like [Collections de la Maison de Salins],
-and [Bibliothèque numérique] of Université Paris Sciences et Lettres ([PSL]).
+[Bibliothèque numérique] of Université Paris Sciences et Lettres ([PSL]), and
+[Collections du musée de Bretagne] (upcoming).
 
 
 [Selection]: https://gitlab.com/Daniel-KM/Omeka-S-module-Selection
@@ -292,4 +323,5 @@ and [Bibliothèque numérique] of Université Paris Sciences et Lettres ([PSL]).
 [Collections de la Maison de Salins]: https://collections.maison-salins.fr
 [Bibliothèque numérique]: https://bibnum.explore.psl.eu
 [PSL]: https://psl.eu
+[Collections du musée de Bretagne]: http://www.collections.musee-bretagne.fr
 [Daniel-KM]: https://gitlab.com/Daniel-KM "Daniel Berthereau"
