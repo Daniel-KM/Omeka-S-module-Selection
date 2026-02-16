@@ -104,12 +104,12 @@ return  [
                             'route' => '/selection[/:action]',
                             'constraints' => [
                                 // Set groups first for regex.
-                                'action' => 'browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add',
+                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
                                 'controller' => 'Selection',
-                                'action' => 'browse',
+                                'action' => 'index',
                             ],
                         ],
                     ],

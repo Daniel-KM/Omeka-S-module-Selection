@@ -8,11 +8,4 @@ class SelectionController extends AbstractSelectionController
     {
         $this->isGuestActive = $isGuestActive;
     }
-
-    public function indexAction()
-    {
-        $params = $this->params()->fromRoute();
-        $params['action'] = 'browse';
-        return $this->forward()->dispatch('Selection\Controller\Site\Selection', $params);
-    }
 }

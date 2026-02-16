@@ -35,6 +35,7 @@ use Common\Stdlib\PsrMessage;
 use Laminas\Http\Response as HttpResponse;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\JsonModel;
+use Laminas\View\Model\ViewModel;
 use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 
 /**
@@ -53,6 +54,40 @@ abstract class AbstractSelectionController extends AbstractActionController
      */
     protected $isGuestActive = false;
 
+    public function indexAction()
+    {
+        $site = $this->currentSite();
+        $user = $this->identity();
+
+        $this->browse()->setDefaults('selections');
+
+        $query = $this->params()->fromQuery();
+
+        // The selection are not related to site for now.
+        $query['site_id'] = $site->id();
+
+        // The rights are automatically managed, so it is a quick check.
+        if (!$user) {
+            $query['is_public'] = true;
+        }
+
+        $response = $this->api()->search('selections', $query);
+        $this->paginator($response->getTotalResults());
+        $selections = $response->getContent();
+
+        return new ViewModel([
+            'site' => $site,
+            'user' => $user,
+            'selections' => $selections,
+            'resources' => $selections,
+            'isGuestActive' => $this->isGuestActive,
+            'isSession' => false,
+        ]);
+    }
+
+    /**
+     * Browse means browse own selections. Use "index" to browse all selections.
+     */
     public function browseAction()
     {
         $user = $this->identity();

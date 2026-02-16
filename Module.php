@@ -133,6 +133,8 @@ class Module extends AbstractModule
                     'Selection\Controller\Site\Selection',
                 ],
                 [
+                    // TODO Clarify acl rule for browse.
+                    'index',
                     'browse',
                     'show',
                 ]
@@ -144,6 +146,7 @@ class Module extends AbstractModule
                     'Selection\Controller\Site\Guest',
                 ],
                 [
+                    'index',
                     'browse',
                     'show',
                     'add',

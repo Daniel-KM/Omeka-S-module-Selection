@@ -1,0 +1,83 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $selections
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $resources
+ * @var \Omeka\Entity\User $user
+ * @var bool $isGuestActive
+ * @var bool $isSession
+ */
+
+// Browse the list of selections (of the current user for guest).
+// Adapted from omeka browse items.
+
+$plugins = $this->getHelperPluginManager();
+$url = $plugins->get('url');
+$escape = $plugins->get('escapeHtml');
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$hyperlink = $this->plugin('hyperlink');
+$pageTitle = $plugins->get('pageTitle');
+$thumbnail = $this->plugin('thumbnail');
+$breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
+
+/*
+$filterLocale = (bool) $siteSetting('filter_locale_values');
+$lang = $this->lang();
+$valueLang = $filterLocale ? [$lang, ''] : null;
+
+$headingTerm = $siteSetting('browse_heading_property_term');
+$bodyTerm = $siteSetting('browse_body_property_term');
+
+$query = $this->params()->fromQuery();
+*/
+
+$this->htmlElement('body')->appendAttribute('class', 'selection resource browse');
+
+$defaultThumbnail = sprintf('<img loading="lazy" src="%1$s" title="%2$s"/>', $assetUrl('thumbnails/default.png', 'Omeka', true), $translate('No media'));
+?>
+
+<?php if ($breadcrumbs): ?>
+<?= $breadcrumbs() ?>
+<?php endif; ?>
+
+<?= $pageTitle($translate('User selections'), 2) ?>
+
+<?php //= $this->searchFilters() // TODO Search selection filters. ?>
+
+<div class="browse-controls">
+    <?= $p = $this->pagination() ?>
+    <?php /*
+    <?= $hyperlink($translate('Advanced search'), $url('site/selection', ['action' => 'search'], ['query' => $query], true), ['class' => 'advanced-search']) ?>
+    <?= $this->browse()->renderSortSelector('selections') ?>
+    */ ?>
+</div>
+
+<?php $this->trigger('view.browse.before'); ?>
+
+<ul class="resource-list selection-list">
+<?php
+foreach ($selections as $selection):
+    $heading = $selection->label();
+    $owner = $selection->owner();
+    $media = $selection->primaryMedia();
+    $body = $selection->comment();
+    $linkContent = sprintf('%s<span class="resource-name">%s</span>',
+        $media ? $thumbnail($media, 'medium') : $defaultThumbnail,
+        $escape($heading)
+    );
+    ?>
+    <li class="resource selection">
+        <?= $hyperlink->raw($linkContent, $url('site/resource', ['controller' => 'item', 'action' => 'browse'], ['query' => ['selection_id' => $selection->id()]], true), ['class' => 'resource-link selection-link']) ?>
+        <?php if ($body): ?>
+        <div class="description"><?= $escape($body) ?></div>
+        <?php endif; ?>
+        <div class="description selection-owner"><?= $escape($owner ? $owner->name() : $translate('[anonymous]')) ?></div>
+    </li>
+<?php endforeach; ?>
+</ul>
+
+<?php $this->trigger('view.browse.after'); ?>
+
+<?= $p ?>
