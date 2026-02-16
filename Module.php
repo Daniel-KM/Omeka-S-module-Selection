@@ -45,6 +45,26 @@ class Module extends AbstractModule
         $acl = $services->get('Omeka\Acl');
 
         // Since Omeka 1.4, modules are ordered, so Guest come before Selection.
+        // Nevertheless, it is not available during upgrade of Guest, so add it
+        // to avoid issue.
+        // See \Guest\Module::onBootstrap(). Manage other roles too: contributor, etc.
+        if (class_exists('Guest\Module', false) || class_exists('GuestRole\Module', false)) {
+            $hasGuest = true;
+            if (!$acl->hasRole('guest')) {
+                $acl->addRole('guest');
+            }
+        } else {
+            $hasGuest = false;
+        }
+        if (class_exists('GuestPrivate\Module', false)) {
+            if (!$acl->hasRole('guest_private')) {
+                $acl->addRole('guest_private');
+            }
+            if (!$acl->hasRole('guest_private_site')) {
+                $acl->addRole('guest_private_site');
+            }
+        }
+
         $roles = $acl->getRoles();
 
         // Acl should be specified, because selection is not a resource.
@@ -69,8 +89,10 @@ class Module extends AbstractModule
         $baseRoles = [
             \Omeka\Permissions\Acl::ROLE_RESEARCHER,
             \Omeka\Permissions\Acl::ROLE_AUTHOR,
-            'guest',
         ];
+        if ($hasGuest) {
+            $baseRoles[] = 'guest';
+        }
 
         // Rights on visibility public/private are added via db filter.
 
