@@ -43,15 +43,25 @@ use Omeka\Entity\User;
  *
  * @Entity
  * @Table(
- *     uniqueConstraints={
- *          @UniqueConstraint(
- *              columns={
- *                  "owner_id",
- *                  "label",
- *                  "is_dynamic"
- *              }
+ *     indexes={
+ *         @Index(
+ *             name="is_public",
+ *             columns={"is_public"}
+ *         ),
+ *         @Index(
+ *             name="is_validated",
+ *             columns={"is_validated"}
  *          )
- *    }
+ *     },
+ *     uniqueConstraints={
+ *         @UniqueConstraint(
+ *             columns={
+ *                 "owner_id",
+ *                 "label",
+ *                 "is_dynamic"
+ *             }
+ *         )
+ *     }
  * )
  */
 class Selection extends AbstractEntity
@@ -94,6 +104,16 @@ class Selection extends AbstractEntity
      * )
      */
     protected $isPublic = false;
+
+    /**
+     * @var bool|null
+     *
+     * @Column(
+     *      type="boolean",
+     *      nullable=true
+     * )
+     */
+    protected $isValidated;
 
     /**
      * This flag is automatically generated from the presence of a search query.
@@ -223,7 +243,18 @@ class Selection extends AbstractEntity
 
     public function isPublic(): bool
     {
-        return (bool) $this->isPublic;
+        return $this->isPublic;
+    }
+
+    public function setisValidated(?bool $isValidated): self
+    {
+        $this->isValidated = $isValidated;
+        return $this;
+    }
+
+    public function isValidated(): ?bool
+    {
+        return $this->isValidated;
     }
 
     public function setIsDynamic(bool $isDynamic): self

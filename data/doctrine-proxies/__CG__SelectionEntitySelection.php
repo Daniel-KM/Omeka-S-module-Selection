@@ -67,10 +67,10 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
+            return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
         }
 
-        return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
+        return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
     }
 
     /**
@@ -133,7 +133,7 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
-    public function __setInitializer(\Closure $initializer = null): void
+    public function __setInitializer(?\Closure $initializer = null): void
     {
         $this->__initializer__ = $initializer;
     }
@@ -151,7 +151,7 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
      */
-    public function __setCloner(\Closure $cloner = null): void
+    public function __setCloner(?\Closure $cloner = null): void
     {
         $this->__cloner__ = $cloner;
     }
@@ -234,6 +234,28 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isPublic', []);
 
         return parent::isPublic();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setisValidated(?bool $isValidated): \Selection\Entity\Selection
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setisValidated', [$isValidated]);
+
+        return parent::setisValidated($isValidated);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isValidated(): ?bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isValidated', []);
+
+        return parent::isValidated();
     }
 
     /**

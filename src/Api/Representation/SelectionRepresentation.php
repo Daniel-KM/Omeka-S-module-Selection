@@ -80,6 +80,7 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return [
             'o:owner' => $this->owner()->getReference()->jsonSerialize(),
             'o:is_public' => $this->isPublic(),
+            'o:is_validated' => $this->isValidated(),
             'o:is_dynamic' => $this->isDynamic(),
             'o:label' => $this->label(),
             'o:comment' => $this->comment(),
@@ -110,6 +111,11 @@ class SelectionRepresentation extends AbstractEntityRepresentation
     public function isPublic(): bool
     {
         return $this->resource->isPublic();
+    }
+
+    public function isValidated(): ?bool
+    {
+        return $this->resource->isValidated();
     }
 
     public function isDynamic(): bool

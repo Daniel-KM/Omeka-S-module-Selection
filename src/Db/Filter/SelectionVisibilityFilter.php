@@ -31,12 +31,12 @@ class SelectionVisibilityFilter extends SQLFilter
 
             $identity = $this->services->get('Omeka\AuthenticationService')->getIdentity();
             if ($identity) {
-                // Users can view all selections they own.
+                // Users can view all public selections and own selections.
                 $identityId = (int) $identity->getId();
-                $constraint = "$targetTableAlias.is_public = 1 OR $targetTableAlias.owner_id = $identityId";
+                $constraint = "(($targetTableAlias.is_public = 1 AND $targetTableAlias.is_validated = 1) OR $targetTableAlias.owner_id = $identityId)";
             } else {
                 // Users can view public selections they do not own.
-                $constraint = "$targetTableAlias.is_public = 1";
+                $constraint = "($targetTableAlias.is_public = 1 AND $targetTableAlias.is_validated = 1)";
             }
 
             return $constraint;

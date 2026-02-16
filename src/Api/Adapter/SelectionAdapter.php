@@ -48,6 +48,7 @@ class SelectionAdapter extends AbstractEntityAdapter
         'label' => 'label',
         'owner_id' => 'owner',
         'is_public' => 'isPublic',
+        'is_validated' => 'isValidated',
         'is_dynamic' => 'isDynamic',
         'created' => 'created',
         'modified' => 'modified',
@@ -57,6 +58,7 @@ class SelectionAdapter extends AbstractEntityAdapter
         'id' => 'id',
         'owner' => 'owner',
         'is_public' => 'isPublic',
+        'is_validated' => 'isValidated',
         'is_dynamic' => 'isDynamic',
         'label' => 'label',
         'comment' => 'comment',
@@ -114,6 +116,15 @@ class SelectionAdapter extends AbstractEntityAdapter
             ));
         }
 
+        if (isset($query['is_validated'])
+            && (is_numeric($query['is_validated']) || is_bool($query['is_validated']))
+        ) {
+            $qb->andWhere($expr->eq(
+                'omeka_root.isValidated',
+                $this->createNamedParameter($qb, (bool) $query['is_validated'])
+            ));
+        }
+
         if (isset($query['is_dynamic'])
             && (is_numeric($query['is_dynamic']) || is_bool($query['is_dynamic']))
         ) {
@@ -133,9 +144,19 @@ class SelectionAdapter extends AbstractEntityAdapter
 
         $this->hydrateOwner($request, $entity);
 
+        $wasPublic = $entity->isPublic();
         if ($this->shouldHydrate($request, 'o:is_public')) {
             // Unlike resources, the selections are always private by default.
             $entity->setIsPublic($request->getValue('o:is_public', false));
+        }
+
+        // Reinitialize the validation when a resource visibility is changing.
+        // TODO Manage the case where the user modify the list of resources or changes the label.
+        $isPublic = $entity->isPublic();
+        if ($this->shouldHydrate($request, 'o:is_validated')) {
+            $entity->setisValidated($isPublic ? $request->getValue('o:is_validated') : null);
+        } elseif ($wasPublic !== $isPublic) {
+            $entity->setisValidated(null);
         }
 
         if ($this->shouldHydrate($request, 'o:label')) {
