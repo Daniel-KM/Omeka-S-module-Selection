@@ -1,8 +1,8 @@
 @media all {
-    header nav .selection:before {
-        content: "\f02e"; /* far fa-bookmark */
-    }
-    .selections .no-resources:before {
+    header nav .selection::before,
+    .selection .subhead::before,
+    .selections .subhead::before,
+    .selections .no-resources::before {
         content: "\f02e"; /* far fa-bookmark */
     }
 

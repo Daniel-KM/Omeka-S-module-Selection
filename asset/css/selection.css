@@ -99,7 +99,7 @@
         cursor: pointer;
     }
     .action-details summary {
-	    display: list-item;
+        display: list-item;
         cursor: pointer;
     }
     .selections-details summary {
@@ -111,7 +111,7 @@
     .action-details summary::-webkit-details-marker,
     .selection-details summary::marker,
     .selection-details summary::-webkit-details-marker {
-	   content: none;
+       content: none;
     }
     .action-details > summary::after,
     .selection-details > summary::after {

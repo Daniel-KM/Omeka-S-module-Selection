@@ -69,7 +69,7 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 <div class="selection-list-actions">
     <ul class="actions">
         <li>
-            <button type="button" class="button add" data-msg-selection-name="<?= $translate('Set title of the new selection') ?>" data-url="<?= $url('site/selection', ['action' => 'add'], true) ?>"><?= $translate('Create a new selection') ?></button>
+            <button type="button" class="button add" data-msg-selection-name="<?= $escapeAttr($translate('Set title of the new selection')) ?>" data-url="<?= $url('site/selection', ['action' => 'add'], true) ?>"><?= $escape($translate('Create a new selection')) ?></button>
         </li>
     </ul>
 </div>
@@ -78,7 +78,7 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 <?php if ($isSession): ?>
 <?php $labelWarning = $siteSetting('selection_warning_anonymous', $translate('This selection is stored in the session cookie. It will be lost if the cookie is cleared.')); ?>
 <p class="selection-warning-anonymous">
-    <strong><?= $translate('Warning') ?></strong>
+    <strong><?= $escape($translate('Warning')) ?></strong>
     <?= $escape($labelWarning) ?>
 </p>
 <?php endif; ?>
@@ -127,8 +127,8 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
         echo $selection->linkRaw($linkContent, null, ['class' => 'resource-link']);
         ?>
         <div class="description total-resources"><?= $escape($total) ?></div>
-        <div class="description visibility <?= $isPublic ? 'visibility-public' : 'visibility-private' ?>" data-msg-visible="<?= $msgs['visible'] ?>" data-msg-invisible="<?= $msgs['invisible'] ?>"><?= $escape($visibility) ?></div>
-        <?php if ($requireModeration): ?>
+        <div class="description visibility <?= $isPublic ? 'visibility-public' : 'visibility-private' ?>" data-msg-visible="<?= $escapeAttr($msgs['visible']) ?>" data-msg-invisible="<?= $escapeAttr($msgs['invisible']) ?>"><?= $escape($visibility) ?></div>
+        <?php if ($selectionShare === 'moderate' && $isPublic): ?>
         <div class="description validation <?= $isValidatedClass ?>" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($validated) ?></div>
         <?php endif; ?>
 

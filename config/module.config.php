@@ -328,16 +328,4 @@ return  [
             ],
         ],
     ],
-
-    'advancedsearch' => [
-        'search_fields' => [
-            'common/advanced-search/selections' => [
-                'module' => 'Selection',
-                'label' => 'Selections', // @translate
-                'resource_type' => ['item_sets', 'items', 'media'],
-                'default_admin' => true,
-                'default_site' => false,
-            ],
-        ],
-    ],
 ];

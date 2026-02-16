@@ -2,16 +2,12 @@
 
 /**
  * Requires common-dialog.js.
+ *
+ * @see Access, Comment, ContactUs, Contribute, Generate, Guest, Resa, SearchHistory, Selection, TwoFactorAuth, Urify.
  */
 
 (function() {
     $(document).ready(function() {
-
-        /**
-         * Use common-dialog.js.
-         *
-         * @see Comment, ContactUs, Contribute, Generate, Guest, Resa, SearchHistory, Selection, TwoFactorAuth.
-         */
 
         $(document).on('click', 'summary.selection-summary', function() {
             this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');

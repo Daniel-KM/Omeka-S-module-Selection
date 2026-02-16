@@ -14,7 +14,6 @@ use Laminas\EventManager\Event;
 use Laminas\EventManager\SharedEventManagerInterface;
 use Laminas\Mvc\MvcEvent;
 use Omeka\Module\AbstractModule;
-use Omeka\Permissions\Assertion\OwnsEntityAssertion;
 
 /**
  * Selection.
@@ -224,9 +223,13 @@ class Module extends AbstractModule
 
     protected function postInstall(): void
     {
+        /**
+         * @var \Omeka\Module\Manager $moduleManager
+         */
         $services = $this->getServiceLocator();
-        /** @var \Omeka\Module\Manager $moduleManager */
         $moduleManager = $services->get('Omeka\ModuleManager');
+        $settings = $services->get('Omeka\Settings');
+
         $module = $moduleManager->getModule('Basket');
         if ($module) {
             $message = new PsrMessage(
@@ -234,6 +237,12 @@ class Module extends AbstractModule
             );
             $messenger = $services->get('ControllerPluginManager')->get('messenger');
             $messenger->addWarning($message);
+        }
+
+        $searchFields = $settings->get('advancedsearch_search_fields');
+        if ($searchFields !== null) {
+            $searchFields[] = 'common/advanced-search/selections';
+            $settings->set('advancedsearch_search_fields', $searchFields);
         }
     }
 
