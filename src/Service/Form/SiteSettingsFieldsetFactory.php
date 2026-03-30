@@ -8,7 +8,7 @@ use Selection\Form\SiteSettingsFieldset;
 
 class SiteSettingsFieldsetFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $services, $requestedName, ?array $options = null)
     {
         /** @var \AdvancedSearch\Api\Representation\SearchConfigRepresentation[] $searchConfigs */
         try {

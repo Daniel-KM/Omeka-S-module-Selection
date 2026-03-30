@@ -8,7 +8,7 @@ use Selection\View\Helper\SelectionReset;
 
 class SelectionResetFactory implements FactoryInterface
 {
-    public function __invoke(ContainerInterface $services, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $services, $requestedName, ?array $options = null)
     {
         /** @var \Omeka\Module\Manager $moduleManager */
         $moduleManager = $services->get('Omeka\ModuleManager');
