@@ -563,7 +563,7 @@ class Module extends AbstractModule
             $this->selectionResourceToReindex = ($resourceType && $resourceId)
                 ? ['resource_type' => $resourceType, 'resource_id' => (int) $resourceId]
                 : null;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->selectionResourceToReindex = null;
         }
     }
@@ -645,7 +645,7 @@ class Module extends AbstractModule
         try {
             // Empty partial update triggers api.update.post on the resource adapter.
             $api->update($resourceType, $resourceId, [], [], ['isPartial' => true]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $logger->err('Selection: unable to trigger reindex for {type} #{id}: {message}', [
                 'type' => $resourceType,
                 'id' => $resourceId,

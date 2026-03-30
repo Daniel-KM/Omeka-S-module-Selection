@@ -196,7 +196,7 @@ class SelectionController extends AbstractActionController
 
         try {
             $selection = $this->api()->read('selections', $id)->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jSend()->fail(null, $this->translate(
                 'Resource not found.' // @translate
             ), HttpResponse::STATUS_CODE_404);
@@ -209,7 +209,7 @@ class SelectionController extends AbstractActionController
             $this->api()->update('selections', $id, $data, [], ['isPartial' => true]);
             // Re-read to get the updated validation status (auto-validated by adapter).
             $selection = $this->api()->read('selections', $id)->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jSend()->error(null, $this->translate(
                 'An internal error occurred.' // @translate
             ));
@@ -256,7 +256,7 @@ class SelectionController extends AbstractActionController
 
         try {
             $selection = $this->api()->read('selections', $id)->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jSend()->fail(null, $this->translate(
                 'Resource not found.' // @translate
             ), HttpResponse::STATUS_CODE_404);
@@ -289,7 +289,7 @@ class SelectionController extends AbstractActionController
 
         try {
             $this->api()->update('selections', $id, $data, [], ['isPartial' => true]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jSend()->error(null, $this->translate(
                 'An internal error occurred.' // @translate
             ));
@@ -321,7 +321,7 @@ class SelectionController extends AbstractActionController
 
         try {
             $selection = $this->api()->read('selections', $id)->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jSend()->fail(null, $this->translate(
                 'Resource not found.' // @translate
             ), HttpResponse::STATUS_CODE_404);

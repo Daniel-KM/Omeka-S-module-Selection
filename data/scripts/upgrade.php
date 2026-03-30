@@ -146,7 +146,7 @@ if (version_compare($oldVersion, '3.3.4.5', '<')) {
         SQL;
     try {
         $connection->executeStatement($sql);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         // Skip.
     }
 
@@ -211,7 +211,7 @@ if (version_compare($oldVersion, '3.4.7', '<')) {
         SQL;
     try {
         $connection->executeStatement($sql);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         // Skip.
     }
 
@@ -514,7 +514,7 @@ if (version_compare($oldVersion, '3.4.16', '<')) {
         SQL;
     try {
         $connection->executeStatement($sql);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         // Skip.
     }
 
@@ -526,7 +526,7 @@ if (version_compare($oldVersion, '3.4.16', '<')) {
         SQL;
     try {
         $connection->executeStatement($sql);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         // Skip.
     }
 

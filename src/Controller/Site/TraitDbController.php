@@ -226,7 +226,7 @@ trait TraitDbController
         try {
             /** @var \Selection\Api\Representation\SelectionRepresentation $selection */
             $selection = $api->read('selections', ['id' => $selectionId])->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jsonPermissionDenied();
         }
 
@@ -293,7 +293,7 @@ trait TraitDbController
         try {
             /** @var \Selection\Api\Representation\SelectionRepresentation $selection */
             $selection = $this->api()->read('selections', ['id' => $selectionId])->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return $this->jsonPermissionDenied();
         }
 

@@ -13,7 +13,7 @@ class SiteSettingsFieldsetFactory implements FactoryInterface
         /** @var \AdvancedSearch\Api\Representation\SearchConfigRepresentation[] $searchConfigs */
         try {
             $searchConfigs = $services->get('Omeka\ApiManager')->search('search_configs')->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $searchConfigs = [];
         }
 

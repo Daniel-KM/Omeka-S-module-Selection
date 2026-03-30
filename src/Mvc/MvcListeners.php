@@ -61,7 +61,7 @@ class MvcListeners extends AbstractListenerAggregate
         // The check of the rights should be done earlier.
         try {
             $selection = $api->read('selections', ['id' => $selectionId])->getContent();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $selection = null;
             $selectionId = 0;
         }
@@ -108,7 +108,7 @@ class MvcListeners extends AbstractListenerAggregate
         try {
             $searchConfig = $api->read('search_configs', ['id' => $searchConfigId], [], ['responseContent' => 'resource'])->getContent();
             $searchConfigSlug = $searchConfig->getSlug();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return;
         }
 
