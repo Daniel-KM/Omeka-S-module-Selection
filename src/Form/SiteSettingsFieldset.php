@@ -20,6 +20,7 @@ class SiteSettingsFieldset extends Fieldset
 
     protected $elementGroups = [
         'selection' => 'Selection', // @translate
+        'themes_old' => 'Old themes', // @translate
     ];
 
     public function init(): void
@@ -157,7 +158,7 @@ class SiteSettingsFieldset extends Fieldset
                 'name' => 'selection_placement_button',
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
-                    'element_group' => 'selection',
+                    'element_group' => 'themes_old',
                     'label' => 'Display selection button (old themes)', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
@@ -177,7 +178,7 @@ class SiteSettingsFieldset extends Fieldset
                 'name' => 'selection_placement_list',
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
-                    'element_group' => 'selection',
+                    'element_group' => 'themes_old',
                     'label' => 'Display selection list (old themes)', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
