@@ -2,7 +2,7 @@
 
 namespace Selection\Service\ControllerPlugin;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Selection\Mvc\Controller\Plugin\SelectionContainer;
 

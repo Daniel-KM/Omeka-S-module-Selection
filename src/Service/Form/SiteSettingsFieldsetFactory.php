@@ -2,7 +2,7 @@
 
 namespace Selection\Service\Form;
 
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Laminas\ServiceManager\Factory\FactoryInterface;
 use Selection\Form\SiteSettingsFieldset;
 
