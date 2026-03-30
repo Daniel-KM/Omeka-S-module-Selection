@@ -31,6 +31,7 @@ namespace Selection\Api\Representation;
 
 use DateTime;
 use Omeka\Api\Representation\AbstractEntityRepresentation;
+use Omeka\Api\Representation\AssetRepresentation;
 use Omeka\Api\Representation\MediaRepresentation;
 use Omeka\Api\Representation\UserRepresentation;
 
@@ -331,12 +332,9 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         $escape = $this->getViewHelper('escapeHtml');
         $thumbnail = $this->getViewHelper('thumbnail');
 
-        // TODO Find the first media with image.
-        $media = $this->primaryMedia();
-
         $linkContent = sprintf(
             '%s<span class="resource-name">%s</span>',
-            $thumbnail($media, $thumbnailType),
+            $thumbnail($this, $thumbnailType),
             $escape($this->label())
         );
 
@@ -385,6 +383,22 @@ class SelectionRepresentation extends AbstractEntityRepresentation
                 ])->getTotalResults();
         }
         return $result;
+    }
+
+    public function thumbnail(): ?AssetRepresentation
+    {
+        foreach ($this->resource->getSelectionResources() as $selectionResource) {
+            $resource = $selectionResource->getResource();
+            $representation = $this->getAdapter('resources')
+                ->getRepresentation($resource);
+            if ($representation) {
+                $thumbnail = $representation->thumbnail();
+                if ($thumbnail) {
+                    return $thumbnail;
+                }
+            }
+        }
+        return null;
     }
 
     public function primaryMedia(): ?MediaRepresentation
