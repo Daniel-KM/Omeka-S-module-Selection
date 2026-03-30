@@ -143,6 +143,20 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return $this->resource->getLabel();
     }
 
+    public function displayTitle($default = null): string
+    {
+        $title = $this->resource->getLabel();
+        if ($title !== null && $title !== '') {
+            return $title;
+        }
+        if ($default !== null) {
+            return $default;
+        }
+        $translator = $this->getServiceLocator()
+            ->get('MvcTranslator');
+        return $translator->translate('[Untitled]');
+    }
+
     public function comment(): ?string
     {
         return $this->resource->getComment();
