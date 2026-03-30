@@ -427,7 +427,7 @@ class SelectionController extends AbstractActionController
 
         if ($selection) {
             $replace['{selection_label}'] = $selection->label();
-            $replace['{selection_url}'] = $selection->isPublic() ? $selection->siteUrl() : '';
+            $replace['{selection_url}'] = $selection->isPublic() ? $selection->siteUrl(null, true) : '';
         }
 
         return strtr($message, $replace);
