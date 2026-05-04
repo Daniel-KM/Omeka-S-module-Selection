@@ -62,6 +62,18 @@ class SiteSettingsFieldset extends Fieldset
                     'id' => 'selection_mode_user',
                 ],
             ])
+            ->add([
+                'name' => 'selection_convert_auto',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Auto-convert anonymous basket on login', // @translate
+                    'info' => 'When enabled, the anonymous basket is appended silently to the user default selection at login, without showing the convert dialog.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_convert_auto',
+                ],
+            ])
             // TODO Add a third view with a button to let user choose disposition.
             ->add([
                 'name' => 'selection_disposition',

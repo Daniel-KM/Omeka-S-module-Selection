@@ -379,24 +379,85 @@ class Module extends AbstractModule
 
     /**
      * Flag the session for a pending conversion of the basket to user
-     * selections when a visitor logs in with a non-empty session basket.
+     * selections when a visitor logs in with a non-empty session basket. When
+     * site setting "selection_convert_auto" is enabled, the basket is merged
+     * silently into the user default selection instead of flagging.
      */
     public function onUserLogin(Event $event): void
     {
         $container = new \Laminas\Session\Container('Selection');
         $records = $container->records ?? [];
-        $hasItems = false;
+        $resourceIds = [];
         foreach ($records as $items) {
-            if (!empty($items)) {
-                $hasItems = true;
-                break;
+            foreach ($items as $rid => $_) {
+                $resourceIds[(int) $rid] = true;
             }
         }
-        if (!$hasItems) {
+        if (!$resourceIds) {
             return;
         }
+        $resourceIds = array_keys($resourceIds);
+
+        $services = $this->getServiceLocator();
+        $siteSettings = $services->get('Omeka\Settings\Site');
+        if (!$siteSettings->get('selection_convert_auto', false)) {
+            $flag = new \Laminas\Session\Container('SelectionConvert');
+            $flag->pending = true;
+            unset($flag->dismissed);
+            return;
+        }
+
+        $user = $event->getTarget();
+        if (!$user instanceof \Omeka\Entity\User) {
+            $auth = $services->get('Omeka\AuthenticationService');
+            $user = $auth->getIdentity();
+            if (!$user instanceof \Omeka\Entity\User) {
+                return;
+            }
+        }
+
+        $api = $services->get('Omeka\ApiManager');
+        try {
+            $existing = $api->search('selections', [
+                'owner_id' => $user->getId(),
+                'limit' => 1,
+            ])->getContent();
+            $selection = $existing
+                ? reset($existing)
+                : $api->create('selections', [
+                    'o:owner' => ['o:id' => $user->getId()],
+                    'o:label' => $siteSettings->get('selection_label_user', 'Selection'),
+                ])->getContent();
+
+            $existingIds = $selection->resources();
+            foreach ($resourceIds as $rid) {
+                if (isset($existingIds[$rid])) {
+                    continue;
+                }
+                try {
+                    $api->create('selection_resources', [
+                        'o:selection' => ['o:id' => $selection->id()],
+                        'o:resource' => ['o:id' => $rid],
+                    ]);
+                } catch (
+                    \Omeka\Api\Exception\NotFoundException
+                    | \Omeka\Api\Exception\PermissionDeniedException
+                    | \Omeka\Api\Exception\ValidationException $e
+                ) {
+                    // Skip resource unavailable since anonymous session.
+                }
+            }
+        } catch (\Exception $e) {
+            // On failure, fall back to manual conversion via dialog.
+            $flag = new \Laminas\Session\Container('SelectionConvert');
+            $flag->pending = true;
+            unset($flag->dismissed);
+            return;
+        }
+
+        $container->exchangeArray([]);
         $flag = new \Laminas\Session\Container('SelectionConvert');
-        $flag->pending = true;
+        $flag->pending = false;
         unset($flag->dismissed);
     }
 
