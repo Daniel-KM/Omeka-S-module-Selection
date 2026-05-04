@@ -753,7 +753,7 @@ trait TraitDbController
                         'o:owner' => ['o:id' => $userId],
                         'o:resource' => ['o:id' => $resourceId],
                         'o:selection' => ['o:id' => $selectionId],
-                    ])->getContent();
+                    ]);
                 } catch (Exception $e) {
                 }
             }
@@ -886,16 +886,19 @@ trait TraitDbController
                     return $this->jsonInternalError();
                 }
 
-                // Ensure resources are stored.
+                // Ensure resources are stored. Only create selection_resource
+                // for those that are not already linked (avoid
+                // unique-constraint ValidationException, which would return
+                // false from the api plugin and crash on getContent()).
                 foreach ($resources as $resourceId => $resource) {
                     $data = $this->normalizeResource($resource, true, $selectionId);
-                    if (!isset($newResourcesInSelection["$selectionId:$resourceId"])) {
+                    if (!isset($resourceAndSelections["$selectionId:$resourceId"])) {
                         try {
                             $api->create('selection_resources', [
                                 'o:owner' => ['o:id' => $userId],
                                 'o:resource' => ['o:id' => $resourceId],
                                 'o:selection' => ['o:id' => $selectionId],
-                            ])->getContent();
+                            ]);
                         } catch (Exception $e) {
                             $this->logger()->err(
                                 'Error when adding resource to selection: {exception}', // @translate
