@@ -50,6 +50,7 @@ return  [
             'selectionReset' => Service\ViewHelper\SelectionResetFactory::class,
             'selectionContainer' => Service\ViewHelper\SelectionContainerFactory::class,
             'selectionLinkBrowse' => Service\ViewHelper\SelectionLinkBrowseFactory::class,
+            'selectionButtonFavorite' => Service\ViewHelper\SelectionButtonFavoriteFactory::class,
             'selectionMode' => Service\ViewHelper\SelectionModeFactory::class,
             'selectionLabel' => Service\ViewHelper\SelectionLabelFactory::class,
             'selectionConvertInjector' => Service\ViewHelper\SelectionConvertInjectorFactory::class,
@@ -74,6 +75,7 @@ return  [
         'invokables' => [
             'selection' => Site\ResourcePageBlockLayout\Selection::class,
             'selectionButton' => Site\ResourcePageBlockLayout\SelectionButton::class,
+            'selectionButtonFavorite' => Site\ResourcePageBlockLayout\SelectionButtonFavorite::class,
             'selectionButtonToGroup' => Site\ResourcePageBlockLayout\SelectionButtonToGroup::class,
             'selectionButtonToSelect' => Site\ResourcePageBlockLayout\SelectionButtonToSelect::class,
             'selectionList' => Site\ResourcePageBlockLayout\SelectionList::class,
