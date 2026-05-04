@@ -58,6 +58,7 @@ return  [
     ],
     'form_elements' => [
         'invokables' => [
+            Form\QuickSearchForm::class => Form\QuickSearchForm::class,
             Form\SelectionFieldset::class => Form\SelectionFieldset::class,
             Form\SettingsFieldset::class => Form\SettingsFieldset::class,
             Form\SendMessageForm::class => Form\SendMessageForm::class,

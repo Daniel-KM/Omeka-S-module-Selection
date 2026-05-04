@@ -4,6 +4,7 @@
  * @var \Selection\Api\Representation\SelectionRepresentation[] $selections
  * @var \Selection\Api\Representation\SelectionRepresentation[] $resources
  * @var \Selection\Form\SendMessageForm $formSendMessage
+ * @var \Selection\Form\QuickSearchForm $formSearch
  * @var \Omeka\Form\ConfirmForm $formDeleteSelected
  * @var \Omeka\Form\ConfirmForm $formDeleteAll
  */
@@ -23,9 +24,11 @@ $this->htmlElement('body')->appendAttribute('class', 'selection selections brows
 
 $this->headLink()
     ->appendStylesheet($assetUrl('css/common-dialog-admin.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/common-quick-search.css', 'Common'))
     ->appendStylesheet($assetUrl('css/selection-admin.css', 'Selection'));
 $this->headScript()
     ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/common-quick-search.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
     ->appendFile($assetUrl('js/selection-admin.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
 
 $sortHeadings = [
@@ -52,6 +55,7 @@ $userIsAllowedBatchDelete = $this->userIsAllowed(\Selection\Api\Adapter\Selectio
 
 <div class="browse-controls">
     <?= $this->pagination() ?>
+    <button type="button" class="button search quick-search"><?= $escape($translate('Quick filter')) ?></button>
     <?= $this->sortSelector($sortHeadings) ?>
 </div>
 
@@ -237,3 +241,8 @@ $userIsAllowedBatchDelete = $this->userIsAllowed(\Selection\Api\Adapter\Selectio
 
 <?php $this->vars()->offsetSet('form', $formSendMessage); ?>
 <?= $this->partial('common/dialog/selection-send-message') ?>
+
+<?= $this->partial('common/quick-search-sidebar', [
+    'formSearch' => $formSearch,
+    'title' => $translate('Filter selections'),
+]) ?>

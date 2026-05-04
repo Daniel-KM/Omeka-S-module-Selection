@@ -8,6 +8,7 @@ use Laminas\Http\Response as HttpResponse;
 use Laminas\Mvc\Controller\AbstractActionController;
 use Laminas\View\Model\ViewModel;
 use Omeka\Form\ConfirmForm;
+use Selection\Form\QuickSearchForm;
 use Selection\Form\SendMessageForm;
 
 class SelectionController extends AbstractActionController
@@ -44,20 +45,21 @@ class SelectionController extends AbstractActionController
         $formSendMessage = $this->getForm(SendMessageForm::class);
         $formSendMessage
             ->setAttribute('action', $this->url()->fromRoute('admin/selection/default', ['action' => 'send-message'], true))
-            ->setAttribute('id', 'selection-send-message-form')
             ->populateValues($messageData);
+
+        $formSearch = $this->getForm(QuickSearchForm::class);
+        $formSearch->setAttribute('action', $this->url()->fromRoute(null, ['action' => 'browse'], true));
+        $formSearch->setData($params);
 
         /** @var \Omeka\Form\ConfirmForm $formDeleteSelected */
         $formDeleteSelected = $this->getForm(ConfirmForm::class);
         $formDeleteSelected
-            ->setAttribute('id', 'confirm-delete-selected')
             ->setAttribute('action', $this->url()->fromRoute('admin/selection/default', ['action' => 'batch-delete'], true))
             ->setButtonLabel('Confirm Delete'); // @translate
 
         /** @var \Omeka\Form\ConfirmForm $formDeleteAll */
         $formDeleteAll = $this->getForm(ConfirmForm::class);
         $formDeleteAll
-            ->setAttribute('id', 'confirm-delete-all')
             ->setAttribute('action', $this->url()->fromRoute('admin/selection/default', ['action' => 'batch-delete-all'], true))
             ->setButtonLabel('Confirm Delete'); // @translate
         $formDeleteAll
@@ -71,6 +73,7 @@ class SelectionController extends AbstractActionController
             'formSendMessage' => $formSendMessage,
             'formDeleteSelected' => $formDeleteSelected,
             'formDeleteAll' => $formDeleteAll,
+            'formSearch' => $formSearch,
         ]);
     }
 
