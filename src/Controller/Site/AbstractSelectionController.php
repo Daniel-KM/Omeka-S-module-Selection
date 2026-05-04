@@ -103,7 +103,7 @@ abstract class AbstractSelectionController extends AbstractActionController
             // TODO For now, there is always a user.
             return $user
                 ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
-                : $this->forward()->dispatch('Selection\Controller\Site\Guet', $params);
+                : $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
         }
 
         return $user
