@@ -556,3 +556,56 @@ if (version_compare($oldVersion, '3.4.16', '<')) {
     );
     $messenger->addWarning($message);
 }
+
+if (version_compare($oldVersion, '3.4.18', '<')) {
+    $sql = <<<'SQL'
+        ALTER TABLE `selection`
+            ADD `is_default` TINYINT(1) DEFAULT 0 NOT NULL AFTER `is_dynamic`,
+            ADD INDEX `is_default` (`is_default`);
+        SQL;
+    try {
+        $connection->executeStatement($sql);
+    } catch (\Throwable $e) {
+        // Skip.
+    }
+
+    // Promote one selection per owner as the default favorites basket: pick
+    // the oldest non-dynamic selection. New owners get one auto-created on
+    // first interaction by the SelectionContainer view helper.
+    $sql = <<<'SQL'
+        UPDATE `selection` AS s
+        INNER JOIN (
+            SELECT MIN(id) AS id
+            FROM `selection`
+            WHERE `is_dynamic` = 0
+            GROUP BY `owner_id`
+        ) AS first ON first.id = s.id
+        SET s.is_default = 1;
+        SQL;
+    $connection->executeStatement($sql);
+
+    $message = new PsrMessage(
+        'A "default" flag has been added on selections to designate the favorites basket for each user. The oldest selection of each user has been promoted as default.' // @translate
+    );
+    $messenger->addSuccess($message);
+
+    $siteIds = array_keys($api->search('sites', [], ['returnScalar' => 'id'])->getContent());
+    foreach ($siteIds as $siteId) {
+        $siteSettings->setTargetId($siteId);
+        $disable = (bool) $siteSettings->get('selection_disable_anonymous', false);
+        $mode = $siteSettings->get('selection_mode', 'single');
+        $label = $siteSettings->get('selection_label', 'Selection');
+        $siteSettings->set('selection_mode_visitor', $disable ? 'none' : 'simple');
+        $siteSettings->set('selection_mode_user', $mode === 'multiple' ? 'standard' : 'simple');
+        $siteSettings->set('selection_label_visitor', $label);
+        $siteSettings->set('selection_label_user', $label);
+        $siteSettings->delete('selection_disable_anonymous');
+        $siteSettings->delete('selection_mode');
+        $siteSettings->delete('selection_label');
+    }
+
+    $message = new PsrMessage(
+        'The selection modes and labels for visitors and users are now configured separately in site settings.' // @translate
+    );
+    $messenger->addWarning($message);
+}
