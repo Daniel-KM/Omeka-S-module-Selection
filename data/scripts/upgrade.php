@@ -209,10 +209,14 @@ if (version_compare($oldVersion, '3.4.7', '<')) {
         ALTER TABLE `selection_resource`
             CHANGE `created` `created` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL AFTER `selection_id`;
         SQL;
-    try {
-        $connection->executeStatement($sql);
-    } catch (\Throwable $e) {
-        // Skip.
+    // Use single statements for execution. See core commit #2689ce92f.
+    $sqls = array_filter(array_map('trim', explode(";\n", $sql)));
+    foreach ($sqls as $sql) {
+        try {
+            $connection->executeStatement($sql);
+        } catch (\Throwable $e) {
+            // Skip.
+        }
     }
 
     $sql = <<<'SQL'

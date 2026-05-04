@@ -189,7 +189,7 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
                     'element_group' => 'themes_old',
-                    'label' => 'Display selection button (old themes)', // @translate
+                    'label' => 'Display selection button', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
@@ -209,7 +209,7 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
                     'element_group' => 'themes_old',
-                    'label' => 'Display selection list (old themes)', // @translate
+                    'label' => 'Display selection list', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
