@@ -14,20 +14,20 @@ $translatePlural = $plugins->get('translatePlural');
 $escapeHtml = $plugins->get('escapeHtml');
 $escapeHtmlAttr = $plugins->get('escapeHtmlAttr');
 ?>
-<dialog class="dialog-common selection-convert-dialog" data-is-dynamic="1">
+<dialog class="dialog-common selection-convert-dialog" data-is-dynamic="1" aria-labelledby="selection-convert-heading" aria-describedby="selection-convert-message">
     <div class="dialog-background">
         <div class="dialog-panel">
             <div class="dialog-header">
-                <button type="button" class="dialog-header-close-button" data-action="dismiss" title="<?= $escapeHtmlAttr($translate('Close')) ?>">
-                    <span class="dialog-close">&#x1F5D9;</span>
+                <button type="button" class="dialog-header-close-button" data-action="dismiss">
+                    <span class="dialog-close" aria-hidden="true">&#x1F5D9;</span>
                     <span class="dialog-close-label"><?= $escapeHtml($translate('Close')) ?></span>
                 </button>
             </div>
             <div class="dialog-contents">
                 <div class="dialog-heading">
-                    <h4><?= $escapeHtml($translate('Your anonymous favorites')) // @translate ?></h4>
+                    <h2 id="selection-convert-heading"><?= $escapeHtml($translate('Your anonymous favorites')) // @translate ?></h2>
                 </div>
-                <div class="dialog-message"></div>
+                <div class="dialog-message" id="selection-convert-message" role="status" aria-live="polite"></div>
                 <div class="dialog-body">
                     <p><?= sprintf(
                         $translatePlural(

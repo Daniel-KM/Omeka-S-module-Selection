@@ -10,13 +10,14 @@ $translate = $plugins->get('translate');
 $form->prepare();
 ?>
 
-<dialog class="popup popup-dialog dialog-send-message dialog-selection">
+<dialog class="popup popup-dialog dialog-send-message dialog-selection" aria-labelledby="dialog-selection-send-heading">
     <div class="dialog-background">
         <div class="dialog-panel">
             <div class="dialog-header">
-                <h3><?= $translate('Send message to selection owner') ?></h3>
-                <button type="button" class="dialog-header-close-button" title="<?= $translate('Close') ?>" autofocus="autofocus">
-                    <span class="dialog-close">X</span>
+                <h2 id="dialog-selection-send-heading"><?= $translate('Send message to selection owner') ?></h2>
+                <button type="button" class="dialog-header-close-button">
+                    <span class="dialog-close" aria-hidden="true">X</span>
+                    <span class="dialog-close-label"><?= $this->translate('Close') ?></span>
                 </button>
             </div>
             <div class="dialog-contents">
