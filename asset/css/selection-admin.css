@@ -115,39 +115,21 @@
 
     /* Dialog */
     dialog.dialog-send-message.dialog-selection {
-        width: 500px;
-        max-width: 90%;
-    }
-    dialog.dialog-selection .dialog-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 0.5em;
-        margin-bottom: 1em;
-    }
-    dialog.dialog-selection .dialog-header h3 {
-        margin: 0;
-    }
-    dialog.dialog-selection .dialog-header-close-button {
-        background: none;
-        border: none;
-        font-size: 1.5em;
-        cursor: pointer;
+        width: inherit;
     }
     dialog.dialog-selection button[name=submit],
-    dialog.dialog-selection input[name=submit] {
+    dialog.dialog-selection input[name=submit],
+    dialog.dialog-selection .dialog-header-close-button {
         float: right;
-        margin-top: 1em;
     }
-    dialog.dialog-selection label.required::after {
+    dialog.dialog-send-message.dialog-selection label.required::after {
         display: none;
     }
     form#selection-send-message-form > div:last-child,
     form#selection-send-message-form #submit_field {
         background-color: #fff;
     }
-    form#selection-send-message-form .field-meta {
+    form#selection-send-message-form #submit_field .field-meta {
         display: none;
     }
 }
