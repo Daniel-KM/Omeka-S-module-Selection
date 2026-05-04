@@ -108,6 +108,18 @@ class SelectionTest extends TestCase
         $this->assertTrue($this->selection->isDynamic());
     }
 
+    public function testDefaultIsDefaultIsFalse(): void
+    {
+        $this->assertFalse($this->selection->isDefault());
+    }
+
+    public function testSetIsDefault(): void
+    {
+        $this->selection->setIsDefault(true);
+
+        $this->assertTrue($this->selection->isDefault());
+    }
+
     public function testSetSearchQueryMakesSelectionDynamic(): void
     {
         $this->assertFalse($this->selection->isDynamic());

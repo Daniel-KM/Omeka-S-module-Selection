@@ -67,10 +67,10 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
+            return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'isDefault', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
         }
 
-        return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
+        return ['__isInitialized__', 'id', 'owner', 'isPublic', 'isValidated', 'isDynamic', 'isDefault', 'label', 'comment', 'searchQuery', 'selectionResources', 'structure', 'created', 'modified'];
     }
 
     /**
@@ -278,6 +278,28 @@ class Selection extends \Selection\Entity\Selection implements \Doctrine\ORM\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDynamic', []);
 
         return parent::isDynamic();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setIsDefault(bool $isDefault): \Selection\Entity\Selection
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsDefault', [$isDefault]);
+
+        return parent::setIsDefault($isDefault);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isDefault(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isDefault', []);
+
+        return parent::isDefault();
     }
 
     /**

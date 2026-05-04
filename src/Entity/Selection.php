@@ -51,6 +51,10 @@ use Omeka\Entity\User;
  *         @Index(
  *             name="is_validated",
  *             columns={"is_validated"}
+ *          ),
+ *         @Index(
+ *             name="is_default",
+ *             columns={"is_default"}
  *          )
  *     },
  *     uniqueConstraints={
@@ -129,6 +133,23 @@ class Selection extends AbstractEntity
      * )
      */
     protected $isDynamic = false;
+
+    /**
+     * Marks the selection as the default favorites basket of its owner. At
+     * most one selection should have this flag per owner; uniqueness is
+     * enforced by the adapter.
+     *
+     * @var bool
+     *
+     * @Column(
+     *      type="boolean",
+     *      nullable=false,
+     *      options={
+     *          "default":0
+     *      }
+     * )
+     */
+    protected $isDefault = false;
 
     /**
      * @var string
@@ -266,6 +287,17 @@ class Selection extends AbstractEntity
     public function isDynamic(): bool
     {
         return $this->isDynamic;
+    }
+
+    public function setIsDefault(bool $isDefault): self
+    {
+        $this->isDefault = (bool) $isDefault;
+        return $this;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->isDefault;
     }
 
     public function setLabel(string $label): self

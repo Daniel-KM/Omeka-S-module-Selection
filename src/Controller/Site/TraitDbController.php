@@ -1370,10 +1370,19 @@ trait TraitDbController
     }
 
     /**
-     * Get default selection, the first non-dynamic one.
+     * Get default selection: the one flagged is_default if any, else the
+     * first non-dynamic one.
      */
     protected function getSelectionStaticFirst(User $user): ?SelectionRepresentation
     {
+        $default = $this->api()->searchOne('selections', [
+            'owner_id' => $user->getId(),
+            'is_dynamic' => false,
+            'is_default' => true,
+        ])->getContent();
+        if ($default) {
+            return $default;
+        }
         return $this->api()->searchOne('selections', [
             'owner_id' => $user->getId(),
             'is_dynamic' => false,
@@ -1385,9 +1394,23 @@ trait TraitDbController
      */
     protected function createSelectionStatic(User $user): SelectionRepresentation
     {
+        $siteSettings = $this->siteSettings();
+        $myFavorites = (bool) $siteSettings->get('selection_my_favorites', true);
+        if ($myFavorites) {
+            $label = trim((string) $siteSettings->get('selection_label_visitor', ''));
+            if ($label === '') {
+                $label = (string) $this->translate('Favorites'); // @translate
+            }
+        } else {
+            $label = trim((string) $siteSettings->get('selection_label_user', ''));
+            if ($label === '') {
+                $label = (string) $this->translate('Selection'); // @translate
+            }
+        }
         return $this->api()->create('selections', [
             'o:owner' => ['o:id' => $user->getId()],
-            'o:label' => $this->siteSettings()->get('selection_label_user', $this->translate('Selection')), // @translate
+            'o:label' => $label,
+            'o:is_default' => $myFavorites,
         ])->getContent();
     }
 }

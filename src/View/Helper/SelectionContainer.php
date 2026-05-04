@@ -67,24 +67,45 @@ class SelectionContainer extends AbstractHelper
     }
 
     /**
-     * Simplify selections for views. Create a new one if none.
+     * Simplify selections for views. Ensure the default favorites basket exists
+     * when site setting "selection_my_favorites" is enabled, and place it first
+     * so simple favorite buttons target it consistently.
      */
     protected function normalizeSelections(User $user): array
     {
         $view = $this->getView();
 
         try {
+            /** @var \Selection\Api\Representation\SelectionRepresentation[] $selections */
             $selections = $this->api->search('selections', ['owner_id' => $user->getId()])->getContent();
         } catch (Exception $e) {
             $selections = [];
         }
 
-        if (!$selections && $view->siteSetting('selection_my_favorites', true)) {
-            $selection = $this->api->create('selections', [
-                'o:owner' => ['o:id' => $user->getId()],
-                'o:label' => $view->siteSetting('selection_label_user', $view->translate('Selection')), // @translate
-            ])->getContent();
-            $selections[] = $selection;
+        if ($view->siteSetting('selection_my_favorites', true)) {
+            $default = null;
+            foreach ($selections as $selection) {
+                if ($selection->isDefault() && !$selection->isDynamic()) {
+                    $default = $selection;
+                    break;
+                }
+            }
+            if (!$default) {
+                $default = $this->createDefaultSelection($user, $selections);
+                if ($default) {
+                    $selections[] = $default;
+                }
+            }
+            if ($default) {
+                // Place the default favorites basket first.
+                $ordered = [$default];
+                foreach ($selections as $selection) {
+                    if ($selection->id() !== $default->id()) {
+                        $ordered[] = $selection;
+                    }
+                }
+                $selections = $ordered;
+            }
         }
 
         $result = [];
@@ -93,9 +114,44 @@ class SelectionContainer extends AbstractHelper
                 'id' => $selection->id(),
                 'label' => $selection->label(),
                 'structure' => $selection->structure(),
+                'is_default' => $selection->isDefault(),
             ];
         }
         return $result;
+    }
+
+    /**
+     * Create the default favorites basket for the user. If a non-default
+     * selection already uses the favorites label, promote it instead of
+     * creating a new one to avoid duplicates and label collisions.
+     */
+    protected function createDefaultSelection(User $user, array $selections): ?\Selection\Api\Representation\SelectionRepresentation
+    {
+        $view = $this->getView();
+        $label = (string) $view->siteSetting('selection_label_visitor', $view->translate('Favorites')); // @translate
+        $label = trim($label) !== '' ? $label : (string) $view->translate('Favorites'); // @translate
+
+        foreach ($selections as $selection) {
+            if ($selection->label() === $label) {
+                try {
+                    return $this->api->update('selections', $selection->id(), [
+                        'o:is_default' => true,
+                    ], [], ['isPartial' => true])->getContent();
+                } catch (Exception $e) {
+                    return null;
+                }
+            }
+        }
+
+        try {
+            return $this->api->create('selections', [
+                'o:owner' => ['o:id' => $user->getId()],
+                'o:label' => $label,
+                'o:is_default' => true,
+            ])->getContent();
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     /**

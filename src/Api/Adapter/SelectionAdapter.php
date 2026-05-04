@@ -50,6 +50,7 @@ class SelectionAdapter extends AbstractEntityAdapter
         'is_public' => 'isPublic',
         'is_validated' => 'isValidated',
         'is_dynamic' => 'isDynamic',
+        'is_default' => 'isDefault',
         'created' => 'created',
         'modified' => 'modified',
     ];
@@ -60,6 +61,7 @@ class SelectionAdapter extends AbstractEntityAdapter
         'is_public' => 'isPublic',
         'is_validated' => 'isValidated',
         'is_dynamic' => 'isDynamic',
+        'is_default' => 'isDefault',
         'label' => 'label',
         'comment' => 'comment',
         'search_query' => 'searchQuery',
@@ -133,6 +135,15 @@ class SelectionAdapter extends AbstractEntityAdapter
                 $this->createNamedParameter($qb, (bool) $query['is_dynamic'])
             ));
         }
+
+        if (isset($query['is_default'])
+            && (is_numeric($query['is_default']) || is_bool($query['is_default']))
+        ) {
+            $qb->andWhere($expr->eq(
+                'omeka_root.isDefault',
+                $this->createNamedParameter($qb, (bool) $query['is_default'])
+            ));
+        }
     }
 
     public function hydrate(
@@ -166,6 +177,10 @@ class SelectionAdapter extends AbstractEntityAdapter
 
         if ($this->shouldHydrate($request, 'o:label')) {
             $entity->setLabel(trim((string) $request->getValue('o:label')));
+        }
+
+        if ($this->shouldHydrate($request, 'o:is_default')) {
+            $entity->setIsDefault((bool) $request->getValue('o:is_default'));
         }
 
         if ($this->shouldHydrate($request, 'o:comment')) {
@@ -245,6 +260,12 @@ class SelectionAdapter extends AbstractEntityAdapter
         $searchQuery = trim((string) $entity->getSearchQuery());
         if ($searchQuery && $entity->getSelectionResources()->count()) {
             $errorStore->addError('o:search_query', 'The selection cannot have selection resources when a query is set.'); // @translate
+        }
+        if ($entity->isDefault()
+            && $owner
+            && !$this->isUnique($entity, ['owner' => $owner, 'isDefault' => true])
+        ) {
+            $errorStore->addError('o:is_default', 'Only one default selection is allowed per owner.'); // @translate
         }
     }
 

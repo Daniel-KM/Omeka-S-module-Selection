@@ -67,10 +67,10 @@ class SelectionResource extends \Selection\Entity\SelectionResource implements \
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'owner', 'resource', 'selection', 'created'];
+            return ['__isInitialized__', 'id', 'selection', 'resource', 'owner', 'created'];
         }
 
-        return ['__isInitialized__', 'id', 'owner', 'resource', 'selection', 'created'];
+        return ['__isInitialized__', 'id', 'selection', 'resource', 'owner', 'created'];
     }
 
     /**
@@ -195,23 +195,23 @@ class SelectionResource extends \Selection\Entity\SelectionResource implements \
     /**
      * {@inheritDoc}
      */
-    public function setOwner(\Omeka\Entity\User $owner): \Selection\Entity\SelectionResource
+    public function setSelection(?\Selection\Entity\Selection $selection): \Selection\Entity\SelectionResource
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOwner', [$owner]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSelection', [$selection]);
 
-        return parent::setOwner($owner);
+        return parent::setSelection($selection);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getOwner(): ?\Omeka\Entity\User
+    public function getSelection(): ?\Selection\Entity\Selection
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwner', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSelection', []);
 
-        return parent::getOwner();
+        return parent::getSelection();
     }
 
     /**
@@ -239,23 +239,23 @@ class SelectionResource extends \Selection\Entity\SelectionResource implements \
     /**
      * {@inheritDoc}
      */
-    public function setSelection(?\Selection\Entity\Selection $selection): \Selection\Entity\SelectionResource
+    public function setOwner(\Omeka\Entity\User $owner): \Selection\Entity\SelectionResource
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSelection', [$selection]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOwner', [$owner]);
 
-        return parent::setSelection($selection);
+        return parent::setOwner($owner);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSelection(): ?\Selection\Entity\Selection
+    public function getOwner(): ?\Omeka\Entity\User
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSelection', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOwner', []);
 
-        return parent::getSelection();
+        return parent::getOwner();
     }
 
     /**

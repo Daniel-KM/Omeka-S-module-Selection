@@ -83,6 +83,7 @@ class SelectionRepresentation extends AbstractEntityRepresentation
             'o:is_public' => $this->isPublic(),
             'o:is_validated' => $this->isValidated(),
             'o:is_dynamic' => $this->isDynamic(),
+            'o:is_default' => $this->isDefault(),
             'o:label' => $this->label(),
             'o:comment' => $this->comment(),
             'o:search_query' => $searchQuery,
@@ -128,6 +129,11 @@ class SelectionRepresentation extends AbstractEntityRepresentation
     public function isDynamic(): bool
     {
         return $this->resource->isDynamic();
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->resource->isDefault();
     }
 
     public function label(): ?string

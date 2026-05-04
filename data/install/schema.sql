@@ -4,6 +4,7 @@ CREATE TABLE `selection` (
     `is_public` TINYINT(1) DEFAULT 0 NOT NULL,
     `is_validated` TINYINT(1) DEFAULT NULL,
     `is_dynamic` TINYINT(1) DEFAULT 0 NOT NULL,
+    `is_default` TINYINT(1) DEFAULT 0 NOT NULL,
     `label` VARCHAR(190) NOT NULL,
     `comment` LONGTEXT DEFAULT NULL,
     `search_query` LONGTEXT DEFAULT NULL,
@@ -13,6 +14,7 @@ CREATE TABLE `selection` (
     INDEX `IDX_96A50CD77E3C61F9` (`owner_id`),
     INDEX `is_public` (`is_public`),
     INDEX `is_validated` (`is_validated`),
+    INDEX `is_default` (`is_default`),
     UNIQUE INDEX `UNIQ_96A50CD77E3C61F9EA750E85D978C7C` (`owner_id`, `label`, `is_dynamic`),
     PRIMARY KEY(`id`)
 ) DEFAULT CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci` ENGINE = `InnoDB`;
