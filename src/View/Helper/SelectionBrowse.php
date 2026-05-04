@@ -40,7 +40,9 @@ class SelectionBrowse extends AbstractHelper
         $user = $view->identity();
 
         $query ??= $view->params()->fromQuery();
-        if (!$user) {
+        // Always restrict to public selections unless the caller explicitly
+        // opted in to private ones (e.g. owner browsing their own selections).
+        if (!array_key_exists('is_public', $query)) {
             $query['is_public'] = true;
         }
 

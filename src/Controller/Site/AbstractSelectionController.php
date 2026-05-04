@@ -66,10 +66,9 @@ abstract class AbstractSelectionController extends AbstractActionController
         // The selection are not related to site for now.
         $query['site_id'] = $site->id();
 
-        // The rights are automatically managed, so it is a quick check.
-        if (!$user) {
-            $query['is_public'] = true;
-        }
+        // Public list: show only public selections, even for authenticated
+        // users. Their own selections are listed under /guest/selection.
+        $query['is_public'] = true;
 
         $response = $this->api()->search('selections', $query);
         $this->paginator($response->getTotalResults());
