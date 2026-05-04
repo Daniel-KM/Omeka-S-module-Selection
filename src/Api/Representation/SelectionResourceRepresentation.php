@@ -104,11 +104,19 @@ class SelectionResourceRepresentation extends AbstractEntityRepresentation
         return $this->resource->getCreated();
     }
 
-    public function primaryMedia(): ?MediaRepresentation
+    public function primaryMedia()
     {
         $linkedResource = $this->resource();
-        return $linkedResource
-            ? $linkedResource->primaryMedia()
-            : null;
+        if (!$linkedResource) {
+            return null;
+        }
+        $primary = $linkedResource->primaryMedia();
+        if ($primary) {
+            return $primary;
+        }
+        $eventManager = $this->getEventManager();
+        $args = $eventManager->prepareArgs(['resource' => $linkedResource, 'primary' => null]);
+        $eventManager->trigger('rep.resource.primary_media', $this, $args);
+        return $args['primary'];
     }
 }

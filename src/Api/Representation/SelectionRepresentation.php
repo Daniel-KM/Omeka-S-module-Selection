@@ -421,20 +421,59 @@ class SelectionRepresentation extends AbstractEntityRepresentation
         return null;
     }
 
-    public function primaryMedia(): ?MediaRepresentation
+    public function thumbnailDisplayUrl($type)
     {
-        // Return the first viewable media if one exists.
+        $asset = $this->thumbnail();
+        if ($asset) {
+            return $asset->assetUrl();
+        }
+        $media = $this->primaryMedia();
+        if ($media) {
+            return $media->thumbnailUrl($type);
+        }
+        return null;
+    }
+
+    /**
+     * First resource of the selection as a representation, or null.
+     */
+    public function primaryResource(): ?\Omeka\Api\Representation\AbstractResourceEntityRepresentation
+    {
         foreach ($this->resource->getSelectionResources() as $selectionResource) {
             $resource = $selectionResource->getResource();
             if ($resource instanceof \Omeka\Entity\Media) {
                 return $this->getAdapter('media')->getRepresentation($resource);
             }
-            $representation = $this->getAdapter('resources')->getRepresentation($resource);
-            if ($representation) {
-                $media = $representation->primaryMedia();
-                if ($media) {
-                    return $media;
-                }
+            if (class_exists(\DigitalObject\Entity\DigitalObject::class)
+                && $resource instanceof \DigitalObject\Entity\DigitalObject
+            ) {
+                return $this->getAdapter('digital_objects')->getRepresentation($resource);
+            }
+            $rep = $this->getAdapter('resources')->getRepresentation($resource);
+            if ($rep) {
+                return $rep;
+            }
+        }
+        return null;
+    }
+
+    public function primaryMedia()
+    {
+        // Pure delegation: iterate selected resources and return the first
+        // non-null primaryMedia(). Each representation knows what to return
+        // (Item -> first Media, Media/DigitalObject -> $this, etc.). A filter
+        // event lets modules supply a fallback (e.g. DigitalObject linked to an
+        // item without native media).
+        $eventManager = $this->getEventManager();
+        foreach ($this->resources() as $representation) {
+            $primary = $representation->primaryMedia();
+            if (!$primary) {
+                $args = $eventManager->prepareArgs(['resource' => $representation, 'primary' => null]);
+                $eventManager->trigger('rep.resource.primary_media', $this, $args);
+                $primary = $args['primary'];
+            }
+            if ($primary) {
+                return $primary;
             }
         }
         return null;

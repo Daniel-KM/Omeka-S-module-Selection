@@ -22,6 +22,7 @@ $plugins = $this->getHelperPluginManager();
 $url = $plugins->get('url');
 $partial = $plugins->get('partial');
 $escape = $plugins->get('escapeHtml');
+$thumbnail = $plugins->get('thumbnail');
 $assetUrl = $plugins->get('assetUrl');
 $translate = $plugins->get('translate');
 $pageTitle = $plugins->get('pageTitle');
@@ -122,7 +123,7 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
     <li class="selection resource selection-<?= $isPublic ? 'public' : 'private' ?> selection-<?= $isValidatedClass ?>" data-id="<?= $selection->id() ?>">
         <?php
         $linkContent = sprintf('%s<span class="resource-name">%s</span>',
-            $selection->thumbnail('medium'),
+            $thumbnail($selection, 'medium'),
             $escape($heading));
         echo $selection->linkRaw($linkContent, null, ['class' => 'resource-link']);
         ?>
