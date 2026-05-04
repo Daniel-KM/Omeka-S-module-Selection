@@ -40,6 +40,22 @@ if (isset($selection) && is_object($selection)) {
 }
 $currentRecords = $records[$selectionId] ?? [];
 
+// Honor the order stored in selection.structure[/].resources if available.
+$structureOrder = is_object($selection)
+    ? ($selection->structure()['/']['resources'] ?? null)
+    : ($selections[$selectionId]['structure']['/']['resources'] ?? null);
+if ($structureOrder && $currentRecords) {
+    $sorted = [];
+    foreach ($structureOrder as $rid) {
+        $rid = (int) $rid;
+        if (isset($currentRecords[$rid])) {
+            $sorted[$rid] = $currentRecords[$rid];
+            unset($currentRecords[$rid]);
+        }
+    }
+    $currentRecords = $sorted + $currentRecords;
+}
+
 $recordsByType = array_column($currentRecords, 'resource_name', 'id');
 $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'annotations' => 0];
 
@@ -67,7 +83,10 @@ $baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => '
 
     <?php $this->trigger('view.browse.before'); ?>
 
-    <ul class="resource-list">
+    <ul class="resource-list selection-sortable"
+        data-selection-id="<?= (int) $selectionId ?>"
+        data-group="/"
+        data-url-reorder="<?= $escapeAttr($url('site/selection', ['site-slug' => $site->slug(), 'action' => 'reorder'])) ?>">
         <?php foreach ($currentRecords as $resourceId => $record):
             try {
                 $resource = $record['resource'] ?? $api->read($record['resource_name'], ['id' => $resourceId])->getContent();

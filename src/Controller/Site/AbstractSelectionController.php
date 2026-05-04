@@ -582,6 +582,39 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
+     * Reorder resources within a selection group (default group: root "/").
+     *
+     * Expected POST body: selection_id, group (optional, default "/"),
+     * ids[] ordered list of resource ids.
+     */
+    public function reorderAction()
+    {
+        if (!$this->getRequest()->isXmlHttpRequest()) {
+            return $this->jsonErrorNotFound();
+        }
+        if ($this->selectionMode() === 'none') {
+            return $this->jsonPermissionDenied();
+        }
+
+        $params = $this->params();
+        $selectionId = (int) $params->fromPost('selection_id', 0);
+        $group = (string) $params->fromPost('group', '/');
+        $ids = $params->fromPost('ids', []);
+        if (!is_array($ids)) {
+            return $this->jSend(JSend::FAIL, null,
+                $this->translate('Missing ordered ids.') // @translate
+            );
+        }
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        $ids = array_filter($ids);
+
+        $user = $this->identity();
+        return $user
+            ? $this->reorderDb($selectionId, $group, $ids, $user)
+            : $this->reorderSession($selectionId, $group, $ids);
+    }
+
+    /**
      * Move a group in a selection.
      */
     public function moveGroupAction()
@@ -811,6 +844,32 @@ abstract class AbstractSelectionController extends AbstractActionController
             'is_multiple' => $isMultiple,
             'resources' => $resources,
         ];
+    }
+
+    /**
+     * Merge a desired order with the current set of resource ids: items in the
+     * desired order come first (only if they exist in current), then any
+     * remaining current items preserve their previous order at the end.
+     */
+    protected function mergeReorder(array $current, array $desired): array
+    {
+        $currentSet = array_flip(array_map('intval', $current));
+        $ordered = [];
+        foreach ($desired as $id) {
+            $id = (int) $id;
+            if (isset($currentSet[$id])) {
+                $ordered[] = $id;
+                unset($currentSet[$id]);
+            }
+        }
+        foreach ($current as $id) {
+            $id = (int) $id;
+            if (isset($currentSet[$id])) {
+                $ordered[] = $id;
+                unset($currentSet[$id]);
+            }
+        }
+        return $ordered;
     }
 
     /**

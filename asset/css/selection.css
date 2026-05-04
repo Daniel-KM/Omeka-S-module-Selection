@@ -265,4 +265,15 @@
     .selection-favorite.is-selected .selection-favorite-icon {
         color: var(--selection-favorite-color, #000);
     }
+
+    /* Drag-reorder. */
+    ul.selection-sortable-active > li {
+        cursor: grab;
+    }
+    ul.selection-sortable-active > li.sortable-ghost {
+        opacity: .4;
+    }
+    ul.selection-sortable-active > li.sortable-chosen {
+        cursor: grabbing;
+    }
 }

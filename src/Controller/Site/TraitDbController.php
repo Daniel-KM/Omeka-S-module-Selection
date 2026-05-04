@@ -960,6 +960,41 @@ trait TraitDbController
     }
 
     /**
+     * Reorder resources within a DB selection group.
+     */
+    protected function reorderDb(int $selectionId, string $group, array $ids, User $user)
+    {
+        try {
+            $selection = $selectionId
+                ? $this->api()->read('selections', $selectionId)->getContent()
+                : ($this->getSelectionStaticFirst($user) ?? $this->createSelectionStatic($user));
+        } catch (\Exception $e) {
+            return $this->jsonErrorNotFound();
+        }
+        if ($selection->owner() && $selection->owner()->id() !== $user->getId()) {
+            return $this->jsonPermissionDenied();
+        }
+        $structure = $selection->structure();
+        $current = array_map('intval', $structure[$group]['resources'] ?? []);
+        if (!$current) {
+            $current = array_keys($selection->resources());
+        }
+        if (!$current) {
+            return $this->jSend(JSend::SUCCESS, ['order' => []]);
+        }
+        $newOrder = $this->mergeReorder($current, $ids);
+        $structure[$group] = [
+            'id' => $structure[$group]['id'] ?? '',
+            'path' => $structure[$group]['path'] ?? $group,
+            'resources' => $newOrder,
+        ] + ($structure[$group] ?? []);
+        $this->api()->update('selections', $selection->id(), [
+            'o:structure' => $structure,
+        ], [], ['isPartial' => true]);
+        return $this->jSend(JSend::SUCCESS, ['order' => $newOrder]);
+    }
+
+    /**
      * Move resource(s) between groups of a selection.
      */
     protected function moveDb(array $resources, bool $isMultiple, User $user)

@@ -1033,5 +1033,41 @@
             });
         }
 
+        /**
+         * Drag-reorder resources within a selection list.
+         *
+         * Activates on any <ul class="selection-sortable"> with attributes
+         * data-selection-id, data-group, data-url-reorder. Requires
+         * Sortable.js.
+         */
+        if (typeof Sortable !== 'undefined') {
+            document.querySelectorAll('ul.selection-sortable').forEach(function(list) {
+                Sortable.create(list, {
+                    animation: 150,
+                    draggable: '> li',
+                    onEnd: function() {
+                        const ids = Array.from(list.querySelectorAll('> li[data-id]'))
+                            .map(function(li) { return li.dataset.id; })
+                            .filter(Boolean);
+                        $.ajax({
+                            url: list.dataset.urlReorder,
+                            method: 'POST',
+                            traditional: true,
+                            data: {
+                                selection_id: list.dataset.selectionId || 0,
+                                group: list.dataset.group || '/',
+                                ids: ids,
+                            },
+                        }).fail(function(xhr) {
+                            if (typeof CommonDialog !== 'undefined' && CommonDialog.jSendFail) {
+                                CommonDialog.jSendFail(xhr);
+                            }
+                        });
+                    },
+                });
+                list.classList.add('selection-sortable-active');
+            });
+        }
+
     });
 })();

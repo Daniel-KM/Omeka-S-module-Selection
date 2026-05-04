@@ -403,6 +403,29 @@ trait TraitSessionController
     }
 
     /**
+     * Reorder resources within a session selection group.
+     */
+    protected function reorderSession(int $selectionId, string $group, array $ids)
+    {
+        $selectionContainer = $this->selectionContainer();
+        $selectionId = $selectionId ?: array_key_first($selectionContainer->selections ?? []);
+        if (!$selectionId || empty($selectionContainer->selections[$selectionId])) {
+            return $this->jsonErrorNotFound();
+        }
+        $structure = $selectionContainer->selections[$selectionId]['structure'] ?? [];
+        $current = array_map('intval', $structure[$group]['resources'] ?? []);
+        if (!$current) {
+            return $this->jSend(JSend::SUCCESS, ['order' => []]);
+        }
+        $newOrder = $this->mergeReorder($current, $ids);
+        $structure[$group]['resources'] = $newOrder;
+        $structure[$group]['id'] = $structure[$group]['id'] ?? '';
+        $structure[$group]['path'] = $structure[$group]['path'] ?? $group;
+        $selectionContainer->selections[$selectionId]['structure'] = $structure;
+        return $this->jSend(JSend::SUCCESS, ['order' => $newOrder]);
+    }
+
+    /**
      * Move resource(s) between groups of a selection.
      */
     protected function moveSession(array $resources, bool $isMultiple)

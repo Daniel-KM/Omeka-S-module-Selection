@@ -150,7 +150,7 @@ return  [
                             'route' => '/selection[/:action]',
                             'constraints' => [
                                 // Set groups first for regex.
-                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add|convert-dialog|convert',
+                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reorder|reset|toggle|update|add|convert-dialog|convert',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -167,7 +167,7 @@ return  [
                                 // "show" is used for public display of a selection.
                                 // "view" is used for internal display when the
                                 // selection is not public.
-                                'action' => 'browse|delete|edit|show|view|validate|add-group|rename-group|move-group|remove-group|include|exclude|move|reset|toggle|update',
+                                'action' => 'browse|delete|edit|show|view|validate|add-group|rename-group|move-group|remove-group|include|exclude|move|reorder|reset|toggle|update',
                                 'id' => '\d+',
                             ],
                             'defaults' => [

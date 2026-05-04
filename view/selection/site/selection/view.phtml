@@ -37,6 +37,7 @@ $this->headLink()
     ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
     ->appendStylesheet($assetUrl('css/selection.css', 'Selection'));
 $this->headScript()
+    ->appendFile($assetUrl('vendor/sortablejs/Sortable.min.js', 'Omeka'), 'text/javascript', ['defer' => 'defer'])
     ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
     ->appendFile($assetUrl('js/selection.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
 
