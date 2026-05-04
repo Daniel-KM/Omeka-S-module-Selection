@@ -265,6 +265,68 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
+     * Display the user favorites (default selection) or the visitor session
+     * favorites as a single flat list. The page is private and not shareable.
+     * Available only when the favorites feature is enabled (mode "simple" or
+     * site setting "selection_my_favorites").
+     */
+    public function favoritesAction()
+    {
+        $siteSettings = $this->siteSettings();
+        $mode = $this->selectionMode();
+        $myFavorites = (bool) $siteSettings->get('selection_my_favorites', true);
+        if ($mode !== 'simple' && !$myFavorites) {
+            throw new \Omeka\Api\Exception\PermissionDeniedException();
+        }
+
+        $site = $this->currentSite();
+        $user = $this->identity();
+
+        if ($user) {
+            $selection = null;
+            try {
+                $selections = $this->api()
+                    ->search('selections', [
+                        'owner_id' => $user->getId(),
+                        'is_default' => true,
+                        'limit' => 1,
+                    ])
+                    ->getContent();
+                $selection = reset($selections) ?: null;
+            } catch (\Exception $e) {
+                $selection = null;
+            }
+            $selectionId = $selection ? $selection->id() : 0;
+            $sessionSelections = [];
+            $records = [];
+            $isSession = false;
+        } else {
+            /** @var \Laminas\Session\Container $container */
+            $container = $this->selectionContainer();
+            $sessionSelections = $container->selections ?? [];
+            $selection = reset($sessionSelections) ?: null;
+            $selectionId = $selection ? (int) $selection['id'] : 0;
+            $records = $container->records ?? [];
+            $isSession = true;
+        }
+
+        return new ViewModel([
+            'site' => $site,
+            'user' => $user,
+            'selection' => $selection,
+            'resource' => is_object($selection) ? $selection : null,
+            'selectionId' => $selectionId,
+            'selections' => $sessionSelections,
+            'records' => $records,
+            'isGuestActive' => $this->isGuestActive,
+            'isSession' => $isSession,
+            'mode' => $mode,
+            'disposition' => 'flat',
+            'allowIndividualSelect' => false,
+        ]);
+    }
+
+    /**
      * Toggle select/unselect resource(s) for a selection.
      */
     public function toggleAction()

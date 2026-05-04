@@ -159,6 +159,17 @@ return  [
                             ],
                         ],
                     ],
+                    'favorites' => [
+                        'type' => \Laminas\Router\Http\Literal::class,
+                        'options' => [
+                            'route' => '/favorites',
+                            'defaults' => [
+                                '__NAMESPACE__' => 'Selection\Controller\Site',
+                                'controller' => 'Selection',
+                                'action' => 'favorites',
+                            ],
+                        ],
+                    ],
                     'selection-id' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
@@ -214,6 +225,17 @@ return  [
                                         '__NAMESPACE__' => 'Selection\Controller\Site',
                                         'controller' => 'Guest',
                                         'action' => 'view',
+                                    ],
+                                ],
+                            ],
+                            'favorites' => [
+                                'type' => \Laminas\Router\Http\Literal::class,
+                                'options' => [
+                                    'route' => '/favorites',
+                                    'defaults' => [
+                                        '__NAMESPACE__' => 'Selection\Controller\Site',
+                                        'controller' => 'Guest',
+                                        'action' => 'favorites',
                                     ],
                                 ],
                             ],

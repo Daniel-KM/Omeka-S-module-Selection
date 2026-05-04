@@ -1,0 +1,66 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Omeka\Entity\User|null $user
+ * @var \Selection\Api\Representation\SelectionRepresentation|array|null $selection
+ * @var int $selectionId
+ * @var array $selections
+ * @var array $records
+ * @var bool $isGuestActive
+ * @var bool $isSession
+ * @var string $mode
+ * @var string $disposition
+ * @var bool $allowIndividualSelect
+ */
+
+$plugins = $this->getHelperPluginManager();
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$escape = $plugins->get('escapeHtml');
+$siteSetting = $plugins->get('siteSetting');
+$partial = $plugins->get('partial');
+
+$this->headLink()
+    ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
+    ->appendStylesheet($assetUrl('css/selection.css', 'Selection'));
+$this->headScript()
+    ->appendFile($assetUrl('js/common-dialog.js', 'Common'), 'text/javascript', ['defer' => 'defer'])
+    ->appendFile($assetUrl('js/selection.js', 'Selection'), 'text/javascript', ['defer' => 'defer']);
+
+$this->htmlElement('body')->appendAttribute('class', 'selection favorites browse');
+
+$labelFavorites = $isSession
+    ? $siteSetting('selection_label_visitor', $translate('Favorites'))
+    : $siteSetting('selection_label_user', $translate('Favorites'));
+$labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate('Favorites');
+?>
+
+<?= $this->pageTitle($labelFavorites, 2) ?>
+
+<?php if ($isSession): ?>
+<?php $labelWarning = $siteSetting('selection_warning_anonymous', $translate('This selection is stored in the session cookie. It will be lost if the cookie is cleared.')); ?>
+<p class="selection-warning-anonymous">
+    <strong><?= $translate('Warning') ?></strong>
+    <?= $escape($labelWarning) ?>
+</p>
+<?php endif; ?>
+
+<?php if (!$selection): ?>
+<p class="selection-empty"><?= $translate('No favorites yet.') // @translate ?></p>
+<?php else: ?>
+<?= $partial('selection/site/selection/list-flat', [
+    'site' => $site,
+    'user' => $user,
+    'selection' => $selection,
+    'selectionId' => $selectionId,
+    'selections' => $selections,
+    'records' => $records,
+    'isGuestActive' => $isGuestActive,
+    'isSession' => $isSession,
+    'mode' => 'simple',
+    'disposition' => $disposition,
+    'allowIndividualSelect' => $allowIndividualSelect,
+    'canReorder' => false,
+]) ?>
+<?php endif; ?>

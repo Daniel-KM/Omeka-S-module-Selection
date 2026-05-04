@@ -175,6 +175,7 @@ class Module extends AbstractModule
                     'browse',
                     'show',
                     'view',
+                    'favorites',
                 ]
             )
             ->allow(
@@ -188,6 +189,7 @@ class Module extends AbstractModule
                     'browse',
                     'show',
                     'view',
+                    'favorites',
                     'add',
                     'edit',
                     'delete',

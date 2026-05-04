@@ -13,7 +13,10 @@
  * @var string $mode
  * @var string $disposition
  * @var bool $allowIndividualSelect
+ * @var bool $canReorder
  */
+
+$canReorder = $canReorder ?? true;
 
 // Flat list of resources of a selection.
 
@@ -83,10 +86,12 @@ $baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => '
 
     <?php $this->trigger('view.browse.before'); ?>
 
-    <ul class="resource-list selection-sortable"
+    <ul class="resource-list<?= $canReorder ? ' selection-sortable' : '' ?>"
+        <?php if ($canReorder): ?>
         data-selection-id="<?= (int) $selectionId ?>"
         data-group="/"
-        data-url-reorder="<?= $escapeAttr($url('site/selection', ['site-slug' => $site->slug(), 'action' => 'reorder'])) ?>">
+        data-url-reorder="<?= $escapeAttr($url('site/selection', ['site-slug' => $site->slug(), 'action' => 'reorder'])) ?>"
+        <?php endif; ?>>
         <?php foreach ($currentRecords as $resourceId => $record):
             try {
                 $resource = $record['resource'] ?? $api->read($record['resource_name'], ['id' => $resourceId])->getContent();
