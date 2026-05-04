@@ -352,7 +352,7 @@ class Module extends AbstractModule
 
         // No need to listen user.logout: session is automatically destroyed.
 
-        // Flag the need to convert the session basket to user selections.
+        // Flag the need to convert the session favorites to user selections.
         // Attached via wildcard because the event is triggered from multiple
         // sources (core LoginController, Guest ValidateLogin plugin, Guest
         // ApiController, SSO modules, etc.).
@@ -378,10 +378,10 @@ class Module extends AbstractModule
     }
 
     /**
-     * Flag the session for a pending conversion of the basket to user
-     * selections when a visitor logs in with a non-empty session basket. When
-     * site setting "selection_convert_auto" is enabled, the basket is merged
-     * silently into the user default selection instead of flagging.
+     * Flag the session for a pending conversion of the favorites to user
+     * selections when a visitor logs in with non-empty session favorites. When
+     * site setting "selection_convert_auto" is enabled, the favorites are
+     * merged silently into the user default selection instead of flagging.
      */
     public function onUserLogin(Event $event): void
     {

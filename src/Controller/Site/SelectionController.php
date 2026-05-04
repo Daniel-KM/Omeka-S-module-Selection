@@ -96,9 +96,9 @@ class SelectionController extends AbstractSelectionController
     }
 
     /**
-     * Return the HTML modal offering to convert the anonymous basket into user
-     * selections after login. Empty/unauthenticated cases return JSend payloads
-     * the client-side code handles gracefully.
+     * Return the HTML modal offering to convert the anonymous favorites into
+     * user selections after login. Empty/unauthenticated cases return JSend
+     * payloads the client-side code handles gracefully.
      */
     public function convertDialogAction()
     {
@@ -134,7 +134,7 @@ class SelectionController extends AbstractSelectionController
         }
 
         $defaultName = sprintf(
-            $this->translate('Basket of %s'), // @translate
+            $this->translate('My favorites of %s'), // @translate
             (new DateTime())->format('Y-m-d')
         );
 
@@ -151,8 +151,8 @@ class SelectionController extends AbstractSelectionController
 
     /**
      * Process the user's choice from the convert dialog: new, merge, discard or
-     * dismiss. On success, the session basket is cleared and the pending flag
-     * is unset so the prompt is not shown again on the next page load.
+     * dismiss. On success, the session favorites are cleared and the pending
+     * flag is unset so the prompt is not shown again on the next page load.
      */
     public function convertAction()
     {
@@ -216,7 +216,7 @@ class SelectionController extends AbstractSelectionController
             $label = trim((string) ($data['name'] ?? ''));
             if (!strlen($label)) {
                 $label = sprintf(
-                    $this->translate('Basket of %s'), // @translate
+                    $this->translate('My favorites of %s'), // @translate
                     (new DateTime())->format('Y-m-d')
                 );
             }

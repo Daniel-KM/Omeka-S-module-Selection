@@ -90,7 +90,7 @@ at /s/my-site/guest/selection.
 
 ### Themes with resource blocks
 
-Add the block for the basket in the pages you need.
+Add the block for the favorites in the pages you need.
 
 ### Themes without resource blocks (before Omeka S v4)
 

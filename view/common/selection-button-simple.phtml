@@ -24,11 +24,11 @@ $urlSelection = $url('site/selection', [
 ], ['force_canonical' => false]);
 ?>
 <button type="button"
-    class="selection-bookmark<?= $selected ? ' is-selected' : '' ?>"
+    class="selection-favorite<?= $selected ? ' is-selected' : '' ?>"
     data-resource-id="<?= $resourceId ?>"
     data-url="<?= $escapeAttr($urlSelection) ?>"
     aria-pressed="<?= $selected ? 'true' : 'false' ?>"
     title="<?= $escapeAttr($translate('Add to my favorites')) // @translate ?>">
-    <span class="selection-bookmark-icon <?= $selected ? 'fas' : 'far' ?> fa-bookmark" aria-hidden="true"></span>
-    <span class="selection-bookmark-label"><?= $translate('Favorite') // @translate ?></span>
+    <span class="selection-favorite-icon <?= $selected ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></span>
+    <span class="selection-favorite-label visually-hidden"><?= $translate('My favorites') // @translate ?></span>
 </button>

@@ -79,8 +79,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Checkbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Auto-convert anonymous basket on login', // @translate
-                    'info' => 'When enabled, the anonymous basket is appended silently to the user default selection at login, without showing the convert dialog.', // @translate
+                    'label' => 'Auto-convert anonymous favorites on login', // @translate
+                    'info' => 'When enabled, the anonymous favorites are appended silently to the user default selection at login, without showing the convert dialog.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_convert_auto',

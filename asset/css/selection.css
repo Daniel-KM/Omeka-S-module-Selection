@@ -237,9 +237,9 @@
         flex-shrink: 0;
     }
 
-    /* Simple mode: single bookmark toggle button. */
+    /* Simple mode: single favorite (star) toggle button. */
 
-    .selection-bookmark {
+    .selection-favorite {
         background: transparent;
         border: 0;
         cursor: pointer;
@@ -248,10 +248,21 @@
         align-items: center;
         gap: .4em;
     }
-    .selection-bookmark .selection-bookmark-icon {
+    .selection-favorite .selection-favorite-icon {
         font-size: 1.2em;
     }
-    .selection-bookmark.is-selected .selection-bookmark-icon {
-        color: var(--selection-bookmark-color, #f0a500);
+    .selection-favorite .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+    .selection-favorite.is-selected .selection-favorite-icon {
+        color: var(--selection-favorite-color, #000);
     }
 }

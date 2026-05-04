@@ -893,9 +893,9 @@
         });
 
         /**
-         * Toggle favorite bookmark button (simple mode).
+         * Toggle favorite (star) button (simple mode).
          */
-        $(document).on('click', '.selection-bookmark', function(e) {
+        $(document).on('click', '.selection-favorite', function(e) {
             e.preventDefault();
             e.stopPropagation();
             const button = $(this);
@@ -921,7 +921,7 @@
                 const nowSelected = newValue === 'selected';
                 button.toggleClass('is-selected', nowSelected);
                 button.attr('aria-pressed', nowSelected ? 'true' : 'false');
-                const icon = button.find('.selection-bookmark-icon');
+                const icon = button.find('.selection-favorite-icon');
                 icon.toggleClass('fas', nowSelected).toggleClass('far', !nowSelected);
                 if (nowSelected && !selected) {
                     updateSelectionCount(1);
@@ -934,7 +934,7 @@
         });
 
         /**
-         * Auto-open convert dialog after login when visitor basket is pending.
+         * Auto-open convert dialog after login when visitor favorites pending.
          */
         (function() {
             const anchor = document.getElementById('selection-convert-auto');

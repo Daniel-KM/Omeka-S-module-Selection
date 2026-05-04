@@ -25,14 +25,14 @@ $escapeHtmlAttr = $plugins->get('escapeHtmlAttr');
             </div>
             <div class="dialog-contents">
                 <div class="dialog-heading">
-                    <h4><?= $escapeHtml($translate('Your anonymous basket')) // @translate ?></h4>
+                    <h4><?= $escapeHtml($translate('Your anonymous favorites')) // @translate ?></h4>
                 </div>
                 <div class="dialog-message"></div>
                 <div class="dialog-body">
                     <p><?= sprintf(
                         $translatePlural(
-                            'You have %d item in your basket.', // @translate
-                            'You have %d items in your basket.', // @translate
+                            'You have %d item in your favorites.', // @translate
+                            'You have %d items in your favorites.', // @translate
                             $count
                         ),
                         $count
@@ -71,11 +71,11 @@ $escapeHtmlAttr = $plugins->get('escapeHtmlAttr');
             <div class="dialog-footer">
                 <?php if ($mode === 'simple'): ?>
                     <button type="button" class="dialog-button" data-action="new"><?= $translate('Add to favorites') // @translate ?></button>
-                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard basket') // @translate ?></button>
+                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard favorites') // @translate ?></button>
                 <?php else: ?>
                     <button type="button" class="dialog-button dialog-ok" data-action="submit"><?= $translate('Confirm') // @translate ?></button>
                     <button type="button" class="dialog-button" data-action="dismiss"><?= $translate('Later') // @translate ?></button>
-                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard basket') // @translate ?></button>
+                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard favorites') // @translate ?></button>
                 <?php endif ?>
             </div>
         </div>
