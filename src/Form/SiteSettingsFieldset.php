@@ -251,14 +251,25 @@ class SiteSettingsFieldset extends Fieldset
                 ],
             ])
             ->add([
-                'name' => 'selection_label',
+                'name' => 'selection_label_visitor',
                 'type' => Element\Text::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Label for the page Selection', // @translate
+                    'label' => 'Label for selection (anonymous visitors)', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'selection_label',
+                    'id' => 'selection_label_visitor',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_label_user',
+                'type' => Element\Text::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Label for selection (authenticated users)', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_label_user',
                 ],
             ])
             ->add([

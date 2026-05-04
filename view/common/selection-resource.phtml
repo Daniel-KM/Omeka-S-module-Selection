@@ -44,7 +44,7 @@ $medias = $resource->getControllerName() === 'item' ? $resource->media() : [];
 
 $openDetails = (bool) $siteSetting('selection_resource_show_open', true);
 
-$labelSelection = $siteSetting('selection_label', $translate('Selection'));
+$labelSelection = $this->selectionLabel() ?: $translate('Selection');
 ?>
 
 <details class="selection selection-details" <?= $openDetails ? 'open="open"' : '' ?>>

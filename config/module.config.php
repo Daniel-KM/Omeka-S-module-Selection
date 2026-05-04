@@ -51,6 +51,7 @@ return  [
             'selectionContainer' => Service\ViewHelper\SelectionContainerFactory::class,
             'selectionLinkBrowse' => Service\ViewHelper\SelectionLinkBrowseFactory::class,
             'selectionMode' => Service\ViewHelper\SelectionModeFactory::class,
+            'selectionLabel' => Service\ViewHelper\SelectionLabelFactory::class,
             'selectionConvertInjector' => Service\ViewHelper\SelectionConvertInjectorFactory::class,
         ],
     ],
@@ -96,6 +97,7 @@ return  [
         'factories' => [
             'selectionContainer' => Service\ControllerPlugin\SelectionContainerFactory::class,
             'selectionMode' => Service\ControllerPlugin\SelectionModeFactory::class,
+            'selectionLabel' => Service\ControllerPlugin\SelectionLabelFactory::class,
         ],
     ],
     'navigation' => [
@@ -320,7 +322,8 @@ return  [
             'selection_resource_show_open_list' => true,
             'selection_individual_select' => 'auto',
             'selection_append_items_browse_individual' => false,
-            'selection_label' => 'Selection', // @translate
+            'selection_label_visitor' => 'Favorites', // @translate
+            'selection_label_user' => 'Selection', // @translate
             'selection_label_guest_link' => 'My selection', // @translate
             'selection_warning_anonymous' => 'This selection is stored in the session cookie. It will be lost if the cookie is cleared.', // @translate
         ],

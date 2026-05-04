@@ -24,7 +24,7 @@ $escape = $plugins->get('escapeHtml');
 $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
 
-$labelSelection = $siteSetting('selection_label', $translate('Selection'));
+$labelSelection = $this->selectionLabel() ?: $translate('Selection');
 ?>
 
 <a class="selection browse <?= $class ?? '' ?>" href="<?= $urlBrowse ?>"><?= $escape($labelSelection) ?></a>

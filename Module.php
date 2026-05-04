@@ -813,7 +813,7 @@ class Module extends AbstractModule
         $siteSettings = $services->get('Omeka\Settings\Site');
 
         $widget = [];
-        $widget['label'] = $siteSettings->get('selection_label', $translate('Selection')); // @translate
+        $widget['label'] = $siteSettings->get('selection_label_user', $translate('Selection')); // @translate
         $widget['content'] = $partial('guest/site/guest/widget/selection');
 
         $widgets = $event->getParam('widgets');

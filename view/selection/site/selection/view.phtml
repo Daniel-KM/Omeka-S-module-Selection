@@ -52,7 +52,7 @@ if (isset($selection) && is_object($selection)) {
 
 $owner = $selection->owner();
 
-$labelSelection = $siteSetting('selection_label', $translate('Selection'));
+$labelSelection = $this->selectionLabel() ?: $translate('Selection');
 ?>
 
 <?php if ($breadcrumbs && !$hasGuestNav): ?>
