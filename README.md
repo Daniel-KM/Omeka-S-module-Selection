@@ -82,6 +82,49 @@ users and possibly for visitors.
 A resource can be selected in multiple selections, but only once by selection.
 
 
+Visitor favorites and conversion
+--------------------------------
+
+The module exposes two site settings that control how selections behave for
+anonymous visitors and for authenticated users:
+
+| Setting                    | Values                              | Default    |
+|----------------------------|-------------------------------------|------------|
+| `selection_mode_visitor`   | `none`, `simple`, `standard`, `nested` | `none`     |
+| `selection_mode_user`      | `simple`, `standard`, `nested`      | `standard` |
+
+- `none` (visitor only): anonymous visitors cannot build a list.
+- `simple`: star/favorite button UX with a single list per user. The button
+  toggles the resource in the unique favorites list, with no label or group
+  management.
+- `standard`: multiple named selections per user (historical behavior).
+- `nested`: multiple selections with a directory-like hierarchy. A parent
+  picker is planned; for now conversion behaves like `standard`.
+
+### Conversion dialog at login
+
+When the anonymous favorites contain items and the visitor authenticates, a
+conversion dialog is offered. The available options depend on
+`selection_mode_user`:
+
+- `simple`: items are added directly to the user favorites list.
+- `standard`: the user may create a new selection from the favorites or merge
+  them into an existing one.
+- `nested`: same options as `standard` (parent picker is future work).
+
+### Dismiss behavior
+
+Dismissing the dialog sets a per-session flag. The prompt is not shown again
+during the current session, but reappears at the next login while the
+favorites still contain items.
+
+### Backward compatibility
+
+The former settings `selection_mode` and `selection_disable_anonymous` are
+migrated automatically on upgrade to the new `selection_mode_user` and
+`selection_mode_visitor` settings. No manual action is required.
+
+
 Integration in a theme
 ----------------------
 
