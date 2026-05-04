@@ -50,6 +50,8 @@ return  [
             'selectionReset' => Service\ViewHelper\SelectionResetFactory::class,
             'selectionContainer' => Service\ViewHelper\SelectionContainerFactory::class,
             'selectionLinkBrowse' => Service\ViewHelper\SelectionLinkBrowseFactory::class,
+            'selectionMode' => Service\ViewHelper\SelectionModeFactory::class,
+            'selectionConvertInjector' => Service\ViewHelper\SelectionConvertInjectorFactory::class,
         ],
     ],
     'form_elements' => [
@@ -93,6 +95,7 @@ return  [
     'controller_plugins' => [
         'factories' => [
             'selectionContainer' => Service\ControllerPlugin\SelectionContainerFactory::class,
+            'selectionMode' => Service\ControllerPlugin\SelectionModeFactory::class,
         ],
     ],
     'navigation' => [
@@ -143,7 +146,7 @@ return  [
                             'route' => '/selection[/:action]',
                             'constraints' => [
                                 // Set groups first for regex.
-                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add',
+                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reset|toggle|update|add|convert-dialog|convert',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -300,12 +303,12 @@ return  [
         ],
         // TODO Move "selection_share" to main settings?
         'site_settings' => [
-            'selection_mode' => 'single',
+            'selection_mode_visitor' => 'none',
+            'selection_mode_user' => 'standard',
             'selection_disposition' => 'flat',
             'selection_share' => '',
             'selection_share_redirect' => '',
             'selection_share_redirect_search' => '',
-            'selection_disable_anonymous' => false,
             'selection_hide_login' => false,
             'selection_selectable_resources' => [
                 'items',

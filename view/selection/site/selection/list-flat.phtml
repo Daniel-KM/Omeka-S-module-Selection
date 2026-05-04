@@ -91,7 +91,7 @@ $baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => '
             </div>
             <?php endif; ?>
             <ul class="actions">
-                <?php if ($mode === 'single'): ?>
+                <?php if ($mode === 'simple'): ?>
                 <li><button type="button" class="delete selection-button selection-exclude" data-id="<?= $record['id'] ?>" data-url="<?= "$baseUrl/exclude?id=$resourceId" ?>"><?= $deleteText ?></button></li>
                 <?php else: ?>
                 <li><?= $selectionButtonToSelect($resource) ?>

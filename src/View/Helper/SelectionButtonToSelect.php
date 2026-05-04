@@ -51,7 +51,7 @@ class SelectionButtonToSelect extends AbstractHelper
         $url = $plugins->get('url');
         $siteSlug = $site->slug();
 
-        $mode = $siteSetting('selection_mode', 'single');
+        $mode = $view->selectionMode();
         $disposition = $siteSetting('selection_disposition', 'flat') ?: 'flat';
 
         if ($user) {
@@ -115,7 +115,7 @@ class SelectionButtonToSelect extends AbstractHelper
 
         if ($disposition === 'hierarchy' || $disposition === 'grouped') {
             $selections = $api->search('selections', ['owner_id' => $user->getId()])->getContent();
-            if ($mode === 'single' && count($selections) > 1) {
+            if ($mode === 'simple' && count($selections) > 1) {
                 $selections = [reset($selections)];
             }
             foreach ($selections as $selection) {
@@ -148,7 +148,7 @@ class SelectionButtonToSelect extends AbstractHelper
                 ['resource_id' => $resourceId, 'selection_id' => array_keys($selections), 'return_scalar' => 'selection']
             )->getContent();
             $result['selecteds'] = array_combine($result['selecteds'], $result['selecteds']);
-            $result['value_options'] = $mode === 'single' && count($selections) > 1
+            $result['value_options'] = $mode === 'simple' && count($selections) > 1
                 ? array_slice($selections, 0, 1, true)
                 : $selections;
         }
@@ -167,7 +167,7 @@ class SelectionButtonToSelect extends AbstractHelper
         $resourceId = $resource->id();
 
         if ($disposition === 'hierarchy' || $disposition === 'grouped') {
-            if ($mode === 'single' && count($selections) > 1) {
+            if ($mode === 'simple' && count($selections) > 1) {
                 $selections = [reset($selections)];
             }
             foreach ($selections as $selection) {
@@ -198,7 +198,7 @@ class SelectionButtonToSelect extends AbstractHelper
                     $result['selecteds'][$selection['id']] = $selection['id'];
                 }
             }
-            $result['value_options'] = ($mode === 'single' && count($labels) > 1)
+            $result['value_options'] = ($mode === 'simple' && count($labels) > 1)
                 ? array_slice($labels, 0, 1, true)
                 : $labels;
         }

@@ -48,8 +48,11 @@ class Selection extends AbstractBlockLayout implements TemplateableBlockLayoutIn
 
     public function render(PhpRenderer $view, SitePageBlockRepresentation $block, $templateViewScript = self::PARTIAL_NAME)
     {
+        if ($view->selectionMode() === 'none') {
+            return '';
+        }
+
         $plugins = $view->getHelperPluginManager();
-        $setting = $plugins->get('setting');
 
         $user = $view->identity();
 
@@ -85,7 +88,7 @@ class Selection extends AbstractBlockLayout implements TemplateableBlockLayoutIn
             'records' => $selectionContainer->records,
             'isGuestActive' => $plugins->has('guestWidget'),
             'isSession' => !$user,
-            'mode' => $setting('selection_mode'),
+            'mode' => $view->selectionMode(),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
         ];

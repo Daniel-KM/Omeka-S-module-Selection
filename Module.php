@@ -39,6 +39,12 @@ class Module extends AbstractModule
     {
         parent::onBootstrap($event);
 
+        $event->getApplication()->getEventManager()->attach(
+            MvcEvent::EVENT_FINISH,
+            [$this, 'onFinishInjectConvertMarker'],
+            -100
+        );
+
         /**
          * @var \Omeka\Permissions\Acl $acl
          */
@@ -346,6 +352,16 @@ class Module extends AbstractModule
 
         // No need to listen user.logout: session is automatically destroyed.
 
+        // Flag the need to convert the session basket to user selections.
+        // Attached via wildcard because the event is triggered from multiple
+        // sources (core LoginController, Guest ValidateLogin plugin, Guest
+        // ApiController, SSO modules, etc.).
+        $sharedEventManager->attach(
+            '*',
+            'user.login',
+            [$this, 'onUserLogin']
+        );
+
         // Guest integration.
         $sharedEventManager->attach(
             \Guest\Controller\Site\GuestController::class,
@@ -359,6 +375,78 @@ class Module extends AbstractModule
             'form.add_elements',
             [$this, 'handleSiteSettings']
         );
+    }
+
+    /**
+     * Flag the session for a pending conversion of the basket to user
+     * selections when a visitor logs in with a non-empty session basket.
+     */
+    public function onUserLogin(Event $event): void
+    {
+        $container = new \Laminas\Session\Container('Selection');
+        $records = $container->records ?? [];
+        $hasItems = false;
+        foreach ($records as $items) {
+            if (!empty($items)) {
+                $hasItems = true;
+                break;
+            }
+        }
+        if (!$hasItems) {
+            return;
+        }
+        $flag = new \Laminas\Session\Container('SelectionConvert');
+        $flag->pending = true;
+        unset($flag->dismissed);
+    }
+
+    /**
+     * Inject a marker div pointing at the convert-dialog URL right before
+     * </body> when the session flag SelectionConvert::pending is set. The
+     * front-end JS picks it up and opens the modal without requiring theme
+     * cooperation.
+     */
+    public function onFinishInjectConvertMarker(MvcEvent $event): void
+    {
+        $routeMatch = $event->getRouteMatch();
+        if (!$routeMatch) {
+            return;
+        }
+        $routeName = (string) $routeMatch->getMatchedRouteName();
+        if (strncmp($routeName, 'site', 4) !== 0) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        if (!$response instanceof \Laminas\Http\PhpEnvironment\Response) {
+            return;
+        }
+
+        $headers = $response->getHeaders();
+        if ($headers->has('Content-Type')) {
+            $contentType = (string) $headers->get('Content-Type')->getFieldValue();
+            if ($contentType !== '' && stripos($contentType, 'text/html') === false) {
+                return;
+            }
+        }
+
+        $body = $response->getContent();
+        if (!is_string($body)) {
+            return;
+        }
+        $pos = strripos($body, '</body>');
+        if ($pos === false) {
+            return;
+        }
+
+        $services = $event->getApplication()->getServiceManager();
+        $view = $services->get('ViewRenderer');
+        $marker = $view->selectionConvertInjector();
+        if ($marker === '') {
+            return;
+        }
+
+        $response->setContent(substr($body, 0, $pos) . $marker . substr($body, $pos));
     }
 
     /**
@@ -660,22 +748,19 @@ class Module extends AbstractModule
     {
         /**
          * @var \Omeka\Settings\SiteSettings $siteSettings
-         * @var \Omeka\Entity\User $user
          * @var \Laminas\View\Renderer\PhpRenderer $view
          * @var \Omeka\Api\Representation\AbstractResourceEntityRepresentation $resource
          * @see \Selection\View\Helper\SelectionButton
          */
 
-        $services = $this->getServiceLocator();
-        $siteSettings = $services->get('Omeka\Settings\Site');
-
-        $user = $services->get('Omeka\AuthenticationService')->getIdentity();
-        $disableAnonymous = (bool) $siteSettings->get('selection_disable_anonymous');
-        if ($disableAnonymous && !$user) {
+        $view = $event->getTarget();
+        if ($view->selectionMode() === 'none') {
             return;
         }
 
-        $view = $event->getTarget();
+        $services = $this->getServiceLocator();
+        $siteSettings = $services->get('Omeka\Settings\Site');
+
         $resource = $view->resource;
         $resourceName = $resource->resourceName();
 
@@ -696,21 +781,18 @@ class Module extends AbstractModule
     {
         /**
          * @var \Omeka\Settings\SiteSettings $siteSettings
-         * @var \Omeka\Entity\User $user
          * @var \Laminas\View\Renderer\PhpRenderer $view
          * @see \Selection\View\Helper\SelectionList
          */
 
-        $services = $this->getServiceLocator();
-        $siteSettings = $services->get('Omeka\Settings\Site');
-
-        $user = $services->get('Omeka\AuthenticationService')->getIdentity();
-        $disableAnonymous = (bool) $siteSettings->get('selection_disable_anonymous');
-        if ($disableAnonymous && !$user) {
+        $view = $event->getTarget();
+        if ($view->selectionMode() === 'none') {
             return;
         }
 
-        $view = $event->getTarget();
+        $services = $this->getServiceLocator();
+        $siteSettings = $services->get('Omeka\Settings\Site');
+
         $resource = $view->resource;
         $resourceName = $resource->resourceName();
 

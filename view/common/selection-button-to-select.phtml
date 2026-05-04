@@ -28,7 +28,7 @@ $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
 $escapeAttr = $plugins->get('escapeHtmlAttr');
 
-if (!$user && $siteSetting('selection_disable_anonymous')) {
+if ($this->selectionMode() === 'none') {
     if (!$siteSetting('selection_hide_login')): ?>
         <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
     <?php endif;
@@ -45,7 +45,7 @@ $placeholder = $escapeAttr($placeholder ?? $translate('Choose a selection'));
 <details class="selection-groups" <?= $openDetails ? 'open="open"' : '' ?>>
     <summary><?= $escape($translate('Add to a selection')) ?></summary>
     <div id="selector-group" class="selector-group selection-mode-<?= $mode ?> inactive" data-resource-id="<?= $resource->id() ?>" data-url="<?= $urlSelection ?>" data-url-selections="<?= $urlSelections ?>">
-        <select name="group" class="chosen-select"<?= $mode === 'multiple' ? ' multiple="multiple"' : '' ?> aria-label="<?= $placeholder ?>" placeholder="<?= $placeholder ?>" data-placeholder="<?= $placeholder ?>" data-message-success="<?= $escapeAttr($messageSuccess) ?>" data-message-error="<?= $escapeAttr($messageError) ?>" data-is-multiple-selection="1">
+        <select name="group" class="chosen-select"<?= in_array($mode, ['standard', 'nested'], true) ? ' multiple="multiple"' : '' ?> aria-label="<?= $placeholder ?>" placeholder="<?= $placeholder ?>" data-placeholder="<?= $placeholder ?>" data-message-success="<?= $escapeAttr($messageSuccess) ?>" data-message-error="<?= $escapeAttr($messageError) ?>" data-is-multiple-selection="1">
             <?php // Required for chosen. When there are multiple select, it cannot be without any select. ?>
             <option value=""></option>
             <?php foreach ($valueOptions as $key => $label): ?>

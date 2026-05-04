@@ -892,5 +892,147 @@
             }
         });
 
+        /**
+         * Toggle favorite bookmark button (simple mode).
+         */
+        $(document).on('click', '.selection-bookmark', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = $(this);
+            const resourceId = button.data('resource-id');
+            const baseUrl = button.data('url');
+            if (!resourceId || !baseUrl) {
+                return;
+            }
+            const selected = button.hasClass('is-selected');
+            const action = selected ? 'exclude' : 'include';
+            const url = baseUrl.replace(/\/?$/, '/') + action;
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: { id: resourceId },
+            })
+            .done(function(data) {
+                if (!data || data.status !== 'success') {
+                    return;
+                }
+                const selectionResource = data.data && data.data.selection_resource
+                    ? data.data.selection_resource : null;
+                const newValue = selectionResource ? selectionResource.value : (selected ? 'unselected' : 'selected');
+                const nowSelected = newValue === 'selected';
+                button.toggleClass('is-selected', nowSelected);
+                button.attr('aria-pressed', nowSelected ? 'true' : 'false');
+                const icon = button.find('.selection-bookmark-icon');
+                icon.toggleClass('fas', nowSelected).toggleClass('far', !nowSelected);
+                if (nowSelected && !selected) {
+                    updateSelectionCount(1);
+                } else if (!nowSelected && selected) {
+                    updateSelectionCount(-1);
+                }
+                $(document).trigger('o:selection-updated', data);
+            })
+            .fail(CommonDialog.jSendFail);
+        });
+
+        /**
+         * Auto-open convert dialog after login when visitor basket is pending.
+         */
+        (function() {
+            const anchor = document.getElementById('selection-convert-auto');
+            if (!anchor) return;
+            const dialogUrl = anchor.dataset.url;
+            if (!dialogUrl) return;
+
+            const convertUrl = dialogUrl.replace(/\/convert-dialog$/, '/convert');
+
+            $.ajax({
+                url: dialogUrl,
+                method: 'GET',
+                dataType: 'html',
+            })
+            .done(function(html) {
+                const trimmed = (html || '').trim();
+                if (!trimmed || trimmed.charAt(0) === '{') {
+                    anchor.remove();
+                    return;
+                }
+                const wrap = document.createElement('div');
+                wrap.innerHTML = html;
+                document.body.appendChild(wrap);
+                const dialog = wrap.querySelector('dialog.selection-convert-dialog');
+                if (dialog && typeof dialog.showModal === 'function') {
+                    dialog.showModal();
+                }
+                bindSelectionConvertDialog(wrap, dialog, convertUrl);
+                if (dialog) {
+                    dialog.addEventListener('cancel', function() {
+                        $.ajax({url: convertUrl, method: 'POST', data: {action: 'dismiss'}});
+                    }, { once: true });
+                }
+                anchor.remove();
+            })
+            .fail(function() {
+                anchor.remove();
+            });
+        })();
+
+        function bindSelectionConvertDialog(wrap, dialog, convertUrl) {
+            const $dialog = $(wrap).find('.selection-convert-dialog');
+            if (!$dialog.length) return;
+
+            $dialog.on('click', 'button[data-action]', function(e) {
+                e.preventDefault();
+                const act = $(this).data('action');
+                const $buttons = $dialog.find('button[data-action]');
+                if ($buttons.prop('disabled')) {
+                    return;
+                }
+                const payload = {};
+
+                if (act === 'dismiss' || act === 'discard') {
+                    payload.action = act;
+                } else if (act === 'new') {
+                    payload.action = 'new';
+                } else if (act === 'submit') {
+                    const $selected = $dialog.find('input[name="action"]:checked');
+                    const chosen = $selected.length ? $selected.val() : 'new';
+                    payload.action = chosen;
+                    if (chosen === 'new') {
+                        const name = $dialog.find('input[name="name"]').val();
+                        if (name) payload.name = name;
+                    } else if (chosen === 'merge') {
+                        const selectionId = $dialog.find('select[name="selection_id"]').val();
+                        if (selectionId) payload.selection_id = selectionId;
+                    }
+                } else {
+                    return;
+                }
+
+                $buttons.prop('disabled', true);
+                $.ajax({
+                    url: convertUrl,
+                    method: 'POST',
+                    data: payload,
+                })
+                .done(function(data) {
+                    if (data && data.status === 'success') {
+                        if (dialog && typeof dialog.close === 'function') {
+                            dialog.close();
+                        }
+                        $(wrap).remove();
+                        $(document).trigger('o:selection-converted', data);
+                    } else {
+                        $buttons.prop('disabled', false);
+                    }
+                })
+                .fail(function(xhr) {
+                    $buttons.prop('disabled', false);
+                    if (typeof CommonDialog !== 'undefined' && CommonDialog.jSendFail) {
+                        CommonDialog.jSendFail(xhr);
+                    }
+                });
+            });
+        }
+
     });
 })();

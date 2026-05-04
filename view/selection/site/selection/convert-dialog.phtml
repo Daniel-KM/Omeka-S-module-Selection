@@ -1,0 +1,83 @@
+<?php
+/**
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var string $mode
+ * @var \Selection\Api\Representation\SelectionRepresentation[] $selections
+ * @var int $count
+ * @var string $defaultName
+ */
+
+$plugins = $this->getHelperPluginManager();
+$assetUrl = $plugins->get('assetUrl');
+$translate = $plugins->get('translate');
+$translatePlural = $plugins->get('translatePlural');
+$escapeHtml = $plugins->get('escapeHtml');
+$escapeHtmlAttr = $plugins->get('escapeHtmlAttr');
+?>
+<dialog class="dialog-common selection-convert-dialog" data-is-dynamic="1">
+    <div class="dialog-background">
+        <div class="dialog-panel">
+            <div class="dialog-header">
+                <button type="button" class="dialog-header-close-button" data-action="dismiss" title="<?= $escapeHtmlAttr($translate('Close')) ?>">
+                    <span class="dialog-close">&#x1F5D9;</span>
+                    <span class="dialog-close-label"><?= $escapeHtml($translate('Close')) ?></span>
+                </button>
+            </div>
+            <div class="dialog-contents">
+                <div class="dialog-heading">
+                    <h4><?= $escapeHtml($translate('Your anonymous basket')) // @translate ?></h4>
+                </div>
+                <div class="dialog-message"></div>
+                <div class="dialog-body">
+                    <p><?= sprintf(
+                        $translatePlural(
+                            'You have %d item in your basket.', // @translate
+                            'You have %d items in your basket.', // @translate
+                            $count
+                        ),
+                        $count
+                    ) ?></p>
+                    <?php if ($mode === 'simple'): ?>
+                        <p><?= $translate('Items will be added to your favorites.') // @translate ?></p>
+                    <?php else: ?>
+                        <fieldset>
+                            <label>
+                                <input type="radio" name="action" value="new" checked>
+                                <?= $translate('Create a new selection') // @translate ?>
+                                <input type="text" name="name"
+                                    value="<?= $escapeHtmlAttr($defaultName) ?>">
+                            </label>
+                            <?php if ($selections): ?>
+                                <?php // TODO Nested convert: the Selection entity has no parent
+                                      // field; supporting nesting would require
+                                      // writing to the structure JSON column.
+                                      // Flat merge only for now. ?>
+                                <label>
+                                    <input type="radio" name="action" value="merge">
+                                    <?= $translate('Add to an existing selection') // @translate ?>
+                                    <select name="selection_id">
+                                        <?php foreach ($selections as $selection): ?>
+                                            <option value="<?= $selection->id() ?>">
+                                                <?= $escapeHtml($selection->displayTitle()) ?>
+                                            </option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </label>
+                            <?php endif ?>
+                        </fieldset>
+                    <?php endif ?>
+                </div>
+            </div>
+            <div class="dialog-footer">
+                <?php if ($mode === 'simple'): ?>
+                    <button type="button" class="dialog-button" data-action="new"><?= $translate('Add to favorites') // @translate ?></button>
+                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard basket') // @translate ?></button>
+                <?php else: ?>
+                    <button type="button" class="dialog-button dialog-ok" data-action="submit"><?= $translate('Confirm') // @translate ?></button>
+                    <button type="button" class="dialog-button" data-action="dismiss"><?= $translate('Later') // @translate ?></button>
+                    <button type="button" class="dialog-button" data-action="discard"><?= $translate('Discard basket') // @translate ?></button>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+</dialog>

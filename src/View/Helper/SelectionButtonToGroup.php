@@ -56,9 +56,9 @@ class SelectionButtonToGroup extends AbstractHelper
         $resourceId = $resource->id();
 
         // TODO Manage mode in selection button to group?
-        // This helper cannot be used in mode multiple.
-        $mode = $siteSetting('selection_mode', 'single');
-        if ($mode !== 'single') {
+        // This helper cannot be used in modes standard or nested.
+        $mode = $view->selectionMode();
+        if ($mode !== 'simple') {
             return '';
         }
 

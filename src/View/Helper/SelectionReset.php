@@ -40,7 +40,7 @@ class SelectionReset extends AbstractHelper
             $urlReset = $this->isGuestActive && $user
                 ? $url('site/guest/selection-id', ['id' => $selection->id(), 'action' => 'reset'], true)
                 : $url('site/selection-id', ['id' => $selection->id(), 'action' => 'reset'], true);
-        } elseif ($view->setting('selection_mode', 'single') === 'single') {
+        } elseif ($view->selectionMode() === 'simple') {
             $urlReset = $this->isGuestActive && $user
                 ? $url('site/guest/selection', ['action' => 'reset'], true)
                 : $url('site/selection', ['action' => 'reset'], true);

@@ -92,12 +92,12 @@ abstract class AbstractSelectionController extends AbstractActionController
     public function browseAction()
     {
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        $mode = $this->selectionMode();
+        if ($mode === 'none') {
             throw new \Omeka\Api\Exception\PermissionDeniedException();
         }
 
-        $mode = $this->siteSettings()->get('selection_mode', 'single');
-        if ($mode === 'single') {
+        if ($mode === 'simple') {
             $params = $this->params()->fromRoute();
             $params['action'] = 'view';
             // TODO For now, there is always a user.
@@ -131,7 +131,7 @@ abstract class AbstractSelectionController extends AbstractActionController
     {
         $user = $this->identity();
         if (!$user) {
-            if ($this->siteSettings()->get('selection_disable_anonymous')) {
+            if ($this->selectionMode() === 'none') {
                 throw new \Omeka\Api\Exception\PermissionDeniedException();
             }
             return $this->viewSession();
@@ -150,7 +150,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -169,7 +169,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -188,7 +188,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -207,7 +207,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -231,7 +231,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -255,7 +255,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -274,7 +274,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -300,7 +300,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -338,7 +338,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -403,7 +403,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -495,7 +495,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -591,7 +591,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 
@@ -726,7 +726,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if (!$user && $this->siteSettings()->get('selection_disable_anonymous')) {
+        if ($this->selectionMode() === 'none') {
             return $this->jsonPermissionDenied();
         }
 

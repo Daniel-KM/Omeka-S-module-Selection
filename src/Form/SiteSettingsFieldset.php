@@ -30,18 +30,36 @@ class SiteSettingsFieldset extends Fieldset
             ->setOption('element_groups', $this->elementGroups)
 
             ->add([
-                'name' => 'selection_mode',
+                'name' => 'selection_mode_visitor',
                 'type' => CommonElement\OptionalRadio::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Mode of creation of selections', // @translate
+                    'label' => 'Selection mode for anonymous visitors', // @translate
                     'value_options' => [
-                        'single' => 'Single selection', // @translate'
-                        'multiple' => 'Multiple selections (unavailable for anonymous)', // @translate'],
+                        'none' => 'Disabled', // @translate
+                        'simple' => 'Simple favorites (single list, star button)', // @translate
+                        'standard' => 'Multiple flat selections', // @translate
+                        'nested' => 'Nested selections', // @translate
                     ],
                 ],
                 'attributes' => [
-                    'id' => 'selection_mode',
+                    'id' => 'selection_mode_visitor',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_mode_user',
+                'type' => CommonElement\OptionalRadio::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Selection mode for authenticated users', // @translate
+                    'value_options' => [
+                        'simple' => 'Simple favorites (single list, star button)', // @translate
+                        'standard' => 'Multiple flat selections', // @translate
+                        'nested' => 'Nested selections', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection_mode_user',
                 ],
             ])
             // TODO Add a third view with a button to let user choose disposition.
@@ -94,18 +112,6 @@ class SiteSettingsFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'selection_share_redirect',
-                ],
-            ])
-
-            ->add([
-                'name' => 'selection_disable_anonymous',
-                'type' => Element\Checkbox::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Disable selection stored in session for anonymous visitors', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'selection_disable_anonymous',
                 ],
             ])
 

@@ -58,7 +58,7 @@ trait TraitDbController
             'user' => $user,
             'isGuestActive' => $this->isGuestActive,
             'isSession' => false,
-            'mode' => $this->settings()->get('selection_mode'),
+            'mode' => $this->selectionMode(),
             'disposition' => $this->currentDisposition($query),
             'allowIndividualSelect' => $this->allowIndividualSelect(),
             'selectionShare' => $selectionShare,
@@ -105,7 +105,7 @@ trait TraitDbController
             'records' => $selectionContainer->records,
             'isGuestActive' => $this->isGuestActive,
             'isSession' => false,
-            'mode' => $this->settings()->get('selection_mode'),
+            'mode' => $this->selectionMode(),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
             'selectionShare' => $selectionShare,
@@ -539,10 +539,10 @@ trait TraitDbController
      */
     protected function resetDb(User $user)
     {
-        $mode = $this->settings()->get('selection_mode', 'single');
+        $mode = $this->selectionMode();
 
         $selection = $this->checkSelectionFromRouteOrInit($user);
-        if (!$selection && $mode !== 'single') {
+        if (!$selection && $mode !== 'simple') {
             return $this->jsonErrorNotFound();
         }
 

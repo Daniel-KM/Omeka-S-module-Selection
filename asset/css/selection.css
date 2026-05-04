@@ -236,4 +236,22 @@
         margin-right: 12px;
         flex-shrink: 0;
     }
+
+    /* Simple mode: single bookmark toggle button. */
+
+    .selection-bookmark {
+        background: transparent;
+        border: 0;
+        cursor: pointer;
+        padding: .25em .5em;
+        display: inline-flex;
+        align-items: center;
+        gap: .4em;
+    }
+    .selection-bookmark .selection-bookmark-icon {
+        font-size: 1.2em;
+    }
+    .selection-bookmark.is-selected .selection-bookmark-icon {
+        color: var(--selection-bookmark-color, #f0a500);
+    }
 }
