@@ -905,8 +905,7 @@
                 return;
             }
             const selected = button.hasClass('is-selected');
-            const action = selected ? 'exclude' : 'include';
-            const url = baseUrl.replace(/\/?$/, '/') + action;
+            const url = baseUrl.replace(/\/?$/, '/') + 'toggle';
             $.ajax({
                 url: url,
                 method: 'POST',

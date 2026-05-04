@@ -307,6 +307,7 @@ return  [
         'site_settings' => [
             'selection_mode_visitor' => 'none',
             'selection_mode_user' => 'standard',
+            'selection_my_favorites' => true,
             'selection_convert_auto' => true,
             'selection_disposition' => 'flat',
             'selection_share' => '',

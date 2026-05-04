@@ -63,6 +63,18 @@ class SiteSettingsFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'selection_my_favorites',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Default selection "My favorites"', // @translate
+                    'info' => 'When enabled, every user (existing and new) gets a default selection "My favorites" on first interaction.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_my_favorites',
+                ],
+            ])
+            ->add([
                 'name' => 'selection_convert_auto',
                 'type' => Element\Checkbox::class,
                 'options' => [

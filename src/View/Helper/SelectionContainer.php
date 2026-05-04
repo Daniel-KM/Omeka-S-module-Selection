@@ -79,7 +79,7 @@ class SelectionContainer extends AbstractHelper
             $selections = [];
         }
 
-        if (!$selections) {
+        if (!$selections && $view->siteSetting('selection_my_favorites', true)) {
             $selection = $this->api->create('selections', [
                 'o:owner' => ['o:id' => $user->getId()],
                 'o:label' => $view->siteSetting('selection_label_user', $view->translate('Selection')), // @translate
