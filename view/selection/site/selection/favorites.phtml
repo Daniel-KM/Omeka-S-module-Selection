@@ -30,10 +30,8 @@ $this->headScript()
 
 $this->htmlElement('body')->appendAttribute('class', 'selection favorites browse');
 
-$labelFavorites = $isSession
-    ? $siteSetting('selection_label_visitor', $translate('Favorites'))
-    : $siteSetting('selection_label_user', $translate('Favorites'));
-$labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate('Favorites');
+$labelFavorites = $siteSetting('selection_label_favorites', $translate('My favorites')); // @translate
+$labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate('My favorites'); // @translate
 ?>
 
 <?= $this->pageTitle($labelFavorites, 2) ?>

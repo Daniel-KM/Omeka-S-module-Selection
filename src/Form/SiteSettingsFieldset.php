@@ -297,6 +297,18 @@ class SiteSettingsFieldset extends Fieldset
                 ],
             ])
             ->add([
+                'name' => 'selection_label_favorites',
+                'type' => Element\Text::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Label for the favorites page', // @translate
+                    'info' => 'Title of the dedicated /favorites page, distinct from the selection label.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_label_favorites',
+                ],
+            ])
+            ->add([
                 'name' => 'selection_label_guest_link',
                 'type' => Element\Text::class,
                 'options' => [

@@ -350,6 +350,7 @@ return  [
             'selection_append_items_browse_individual' => false,
             'selection_label_visitor' => 'Favorites', // @translate
             'selection_label_user' => 'Selection', // @translate
+            'selection_label_favorites' => 'My favorites', // @translate
             'selection_label_guest_link' => 'My selection', // @translate
             'selection_warning_anonymous' => 'This selection is stored in the session cookie. It will be lost if the cookie is cleared.', // @translate
         ],
