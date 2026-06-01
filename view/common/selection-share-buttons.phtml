@@ -1,0 +1,112 @@
+<?php
+/**
+ * Render Sharing buttons for a selection using the public selection URL (route
+ * "site/selection-id", action "show") instead of the current page URL, so the
+ * selection sharing works with any theme, not only a theme override.
+ *
+ * The Sharing module is optional: when it is absent or when no sharing method
+ * is enabled for the site, nothing is rendered. Its view helper is invoked once
+ * for its side effects (registering the social SDK scripts and assets); its
+ * generic output is discarded because it would share the current URL.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Selection\Api\Representation\SelectionRepresentation $selection
+ * @var \Omeka\Api\Representation\SiteRepresentation|null $site
+ * @var bool|null $displayAsButton
+ */
+
+$plugins = $this->getHelperPluginManager();
+$sharing = $plugins->has('sharing') ? $plugins->get('sharing') : null;
+if (!$sharing) {
+    return;
+}
+
+$siteSetting = $plugins->get('siteSetting');
+$enabledMethods = $siteSetting('sharing_methods') ?: [];
+if (!$enabledMethods) {
+    return;
+}
+
+$escape = $plugins->get('escapeHtml');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
+$translate = $plugins->get('translate');
+$url = $plugins->get('url');
+
+// Register the social SDK scripts and the Sharing assets (side effects only).
+$sharing();
+
+$siteSlug = isset($site) && $site ? $site->slug() : $plugins->get('currentSite')()->slug();
+$displayAsButton = isset($displayAsButton)
+    ? (bool) $displayAsButton
+    : (bool) $siteSetting('sharing_display_as_button');
+
+$shareUrl = $url('site/selection-id', ['site-slug' => $siteSlug, 'id' => $selection->id()], ['force_canonical' => true]);
+$shareTitle = $selection->label() ?: $this->headTitle()->renderTitle();
+$notShareable = !$selection->isPublic();
+
+$emailSubject = sprintf('%s · %s', $shareTitle, $this->setting('installation_title', 'Omeka S'));
+$emailBody = $shareUrl;
+
+if ($notShareable):
+?>
+<?php if ($displayAsButton): ?>
+<details class="button-details sharing-details sharing-disabled">
+    <summary class="button" title="<?= $escapeAttr($translate('Publish the selection to share it')) // @translate ?>" aria-label="<?= $escapeAttr($translate('Share')) ?>"><span class="fas fa-share-alt" aria-hidden="true"></span> <span class="sharing-label"><?= $escape($translate('Share')) ?></span></summary>
+    <ul id="sharing-buttons">
+        <li class="sharing-info"><?= $escape($translate('Publish the selection to share it.')) // @translate ?></li>
+    </ul>
+</details>
+<?php endif; ?>
+<?php return; endif; ?>
+
+<?php if ($displayAsButton): ?>
+<details class="button-details sharing-details">
+    <summary class="button" title="<?= $escapeAttr($translate('Share this record on social networks')) // @translate ?>" aria-label="<?= $escapeAttr($translate('Share')) ?>"><span class="fas fa-share-alt" aria-hidden="true"></span> <span class="sharing-label"><?= $escape($translate('Share')) ?></span></summary>
+<?php endif; ?>
+
+<ul id="sharing-buttons">
+    <?php if (in_array('fb', $enabledMethods)): ?>
+    <li id="sharing-fb" class="sharing-button">
+        <div class="fb-share-button" data-href="<?= $escapeAttr($shareUrl) ?>" data-layout="button"></div>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('twitter', $enabledMethods)): ?>
+    <li id="sharing-twitter" class="sharing-button">
+        <a href="https://twitter.com/share?url=<?= $escapeAttr(rawurlencode($shareUrl)) ?>" class="twitter-share-button" aria-label="<?= $escapeAttr($translate('Share on Twitter')) ?>"><?= $escape($translate('Twitter')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('pinterest', $enabledMethods)): ?>
+    <li id="sharing-pinterest" class="sharing-button">
+        <a data-pin-do="buttonBookmark" href="https://www.pinterest.com/pin/create/button/?url=<?= $escapeAttr(rawurlencode($shareUrl)) ?>&description=<?= $escapeAttr(rawurlencode($shareTitle)) ?>" aria-label="<?= $escapeAttr($translate('Share on Pinterest')) ?>"><?= $escape($translate('Pinterest')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('tumblr', $enabledMethods)): ?>
+    <li id="sharing-tumblr" class="sharing-button">
+        <a class="tumblr-share-button" data-color="blue" href="https://embed.tumblr.com/share?url=<?= $escapeAttr(rawurlencode($shareUrl)) ?>" aria-label="<?= $escapeAttr($translate('Share on Tumblr')) ?>"><?= $escape($translate('Tumblr')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('instagram', $enabledMethods)): ?>
+    <li id="sharing-instagram" class="sharing-button">
+        <a href="instagram-stories://share" class="instagram-share-button" data-url="<?= $escapeAttr($shareUrl) ?>" title="<?= $escapeAttr($translate('Share to Instagram Stories')) ?>"><?= $escape($translate('Instagram')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('linkedin', $enabledMethods)): ?>
+    <li id="sharing-linkedin" class="sharing-button">
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= $escapeAttr(rawurlencode($shareUrl)) ?>" class="linkedin-share-button" target="_blank" rel="noopener" title="<?= $escapeAttr($translate('Share on LinkedIn')) ?>"><?= $escape($translate('LinkedIn')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('email', $enabledMethods)): ?>
+    <li id="sharing-email" class="sharing-button">
+        <a href="mailto:?subject=<?= $escapeAttr(rawurlencode($emailSubject)) ?>&body=<?= $escapeAttr(rawurlencode($emailBody)) ?>"><?= $escape($translate('Email')) ?></a>
+    </li>
+    <?php endif; ?>
+    <?php if (in_array('embed', $enabledMethods)): ?>
+    <li id="sharing-embed" class="sharing-button">
+        <button type="button" class="embed-share-button" data-embed-url="<?= $escapeAttr($shareUrl) ?>"><?= $escape($translate('Get embed code')) ?></button>
+    </li>
+    <?php endif; ?>
+</ul>
+
+<?php if ($displayAsButton): ?>
+</details>
+<?php endif; ?>

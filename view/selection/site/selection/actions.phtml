@@ -59,6 +59,7 @@ $isValidatedClass = $isValidated === null ? 'validated-not-yet' : ($isValidated 
         <li><button type="button" class="button <?= $isValidatedClass ?>" data-url="<?= $baseUrl  ?>/validate" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($msgs[$isValidatedClass]) ?></button></li>
             <?php endif; ?>
         <?php endif; ?>
+        <li class="sharing"><?= $this->partial('common/selection-share-buttons', ['selection' => $selection, 'site' => $site]) ?></li>
         <?php if (!empty($bulkExporters)): ?>
         <li><button type="button" class="button export" data-url="<?= $baseUrl ?>/export"><?= $escape($translate('Export resources')) ?></button>
             <ul>
