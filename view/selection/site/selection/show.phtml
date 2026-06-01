@@ -33,6 +33,7 @@ $assetUrl = $plugins->get('assetUrl');
 $translate = $plugins->get('translate');
 
 $breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
+$sharing = $plugins->has('sharing') ? $plugins->get('sharing') : null;
 
 // May be included in main layout.
 $this->headLink()
@@ -60,6 +61,33 @@ $owner = $selection->owner();
 <?= $this->pageTitle($selection->label() ?: $translate('[Selection without title]'), 2) ?>
 
 <h3><?= $escape($owner ? $owner->name() : $translate('[Anonymous]')) ?></h3>
+
+<div class="block block-resource block-toolbar selection-toolbar">
+<?= $partial('common/selection-publish-button', [
+    'selection' => $selection,
+    'site' => $site,
+    'user' => $user ?? null,
+    'selectionShare' => $selectionShare ?? '',
+    'canPublishAll' => $canPublishAll ?? false,
+    'canValidateAll' => $canValidateAll ?? false,
+]) ?>
+<?php
+// Sharing button (same template as the item/show toolbar), with the selection
+// URL. Visible to everyone only when the selection is public.
+if ($sharing && $selection->isPublic()):
+    $sharing();
+    echo $partial('common/share-buttons', [
+        'enabledMethods' => $this->siteSetting('sharing_methods'),
+        'itemId' => false,
+        'mediaId' => false,
+        'pageId' => false,
+        'siteSlug' => $site->slug(),
+        'displayAsButton' => (bool) $this->siteSetting('sharing_display_as_button'),
+        'selection' => $selection,
+    ]);
+endif;
+?>
+</div>
 
 <?php if ($user && ($canValidateAll || ($owner && $user->getId() === $owner->getId()))): // Display the actions button only when useful. ?>
 <?= $partial('selection/site/selection/actions') ?>

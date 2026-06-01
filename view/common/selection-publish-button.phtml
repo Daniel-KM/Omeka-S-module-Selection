@@ -1,0 +1,43 @@
+<?php
+/**
+ * Publish / unpublish button (make the selection visible to the public) for the
+ * connected owner. Reusable outside the Actions block: it is wrapped in an
+ * ".actions" container so the module handler (selection.js, selector
+ * ".selection .actions button.publish") applies without any change to the
+ * JavaScript.
+ *
+ * @var \Laminas\View\Renderer\PhpRenderer $this
+ * @var \Selection\Api\Representation\SelectionRepresentation $selection
+ * @var \Omeka\Api\Representation\SiteRepresentation $site
+ * @var \Omeka\Entity\User|null $user
+ * @var string $selectionShare Default is empty; may be "", "moderate", "open".
+ * @var bool $canPublishAll
+ * @var bool $canValidateAll
+ */
+
+$plugins = $this->getHelperPluginManager();
+$escape = $plugins->get('escapeHtml');
+$translate = $plugins->get('translate');
+$escapeAttr = $plugins->get('escapeHtmlAttr');
+
+$user = $user ?? null;
+$selectionShare = $selectionShare ?? '';
+$canPublishAll = !empty($canPublishAll);
+$canValidateAll = !empty($canValidateAll);
+
+$owner = $selection->owner();
+$canPublish = $canPublishAll
+    || ($user && $owner && in_array($selectionShare, ['moderate', 'open'], true) && $user->getId() === $owner->id());
+if (!$canPublish) {
+    return;
+}
+
+$baseUrl = $selection->siteUrl($site->slug());
+$isPublic = $selection->isPublic();
+$publishConfirm = $selectionShare === 'moderate' && !$canValidateAll
+    ? $translate('Do you want to make this selection visible to the public? It will be moderated.')
+    : $translate('Do you want to make this selection visible to the public?');
+?>
+<div class="actions selection-publish-actions">
+    <button type="button" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $escapeAttr($baseUrl) ?>/edit" data-msg-publish="<?= $escapeAttr($translate('Publish')) ?>" data-msg-unpublish="<?= $escapeAttr($translate('Unpublish')) ?>" data-msg-publish-confirm="<?= $escapeAttr($publishConfirm) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($translate('Do you want to make this selection invisible to the public?')) ?>"><?= $escape($isPublic ? $translate('Unpublish') : $translate('Publish')) ?></button>
+</div>
