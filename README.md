@@ -65,54 +65,92 @@ vendor/bin/phpunit -c modules/Selection/phpunit.xml --testdox
 Usage
 -----
 
-The list of all public selections of all users can be browsed at "/s/my-site/selection".
+URL scheme:
 
-Own selections of the user can be browsed at "/s/my-site/selection/browse".
-For guest users (module [Guest]), the url is "/s/my-site/guest/selection".
+| URL                              | Purpose                                    |
+|----------------------------------|--------------------------------------------|
+| `/s/:slug/selection`             | Public list of all public selections.      |
+| `/s/:slug/selection/{id}`        | Public view of a published selection.      |
+| `/s/:slug/guest/selection`       | Personal browse: own (db) or session.      |
+| `/s/:slug/guest/selection/{id}`  | Personal view: own selection.              |
+| `/s/:slug/guest/favorites`       | Personal favorites (single starred basket).|
 
-To fill a selection, the resource blocks "Selection button" or Selection Select"
-can be used. Other resource blocks allow to display the user list of selections.
-On a click, the item is added to the selection or in a specific group, or
-removed.
+The personal area lives entirely under `/guest/*` regardless of whether the
+[Guest] module is installed; anonymous visitors are served from session
+storage, authenticated users from the database. AJAX/operations endpoints
+(`add`, `toggle`, `include`, `exclude`, `move`, `reorder`, `reset`, etc.)
+share the public `/selection` and `/selection/{id}` prefixes.
 
-The full list of resources in the selection is
-available at "/s/my-site/selection/browse". This page is available for any registered
-users and possibly for visitors.
+To fill a selection, the resource blocks "Selection button" or "Selection
+Select" can be used. Other resource blocks allow to display the user list
+of selections. On a click, the item is added to the selection or in a
+specific group, or removed.
 
 A resource can be selected in multiple selections, but only once by selection.
 
 
-Visitor favorites and conversion
---------------------------------
+Two-axis configuration
+----------------------
 
-The module exposes two site settings that control how selections behave for
-anonymous visitors and for authenticated users:
+Selection has two orthogonal features, each toggled per role (anonymous
+visitor and authenticated user):
 
-| Setting                    | Values                              | Default    |
-|----------------------------|-------------------------------------|------------|
-| `selection_mode_visitor`   | `none`, `simple`, `standard`, `nested` | `none`     |
-| `selection_mode_user`      | `simple`, `standard`, `nested`      | `standard` |
+| Axis        | Site setting                       | Default (visitor / user) | What it does |
+|-------------|------------------------------------|--------------------------|--------------|
+| Favorites   | `selection_favorites_visitor` / `_user` | off / on            | Single starred basket per role. Star button on resources, dedicated `/favorites` page. |
+| Selections  | `selection_selections_visitor` / `_user` | off / on            | Multiple named lists. Multi-select dropdown on resources, `/selection` index page. |
 
-- `none` (visitor only): anonymous visitors cannot build a list.
-- `simple`: star/favorite button UX with a single list per user. The button
-  toggles the resource in the unique favorites list, with no label or group
-  management.
-- `standard`: multiple named selections per user (historical behavior).
-- `nested`: multiple selections with a directory-like hierarchy. A parent
-  picker is planned; for now conversion behaves like `standard`.
+Other related settings:
 
-### Conversion dialog at login
+| Setting                          | Default        | Effect |
+|----------------------------------|----------------|--------|
+| `selection_disposition`          | `flat`         | Per-list rendering: `flat`, `grouped`, `hierarchy`. |
+| `selection_convert_auto`         | `true`         | Silent merge of anonymous data on login. See below. |
+| `selection_label_favorites`      | `My favorites` | Title of `/guest/favorites` page. |
+| `selection_label_selections`     | `Selections`   | Title of `/selection` index page. |
 
-When the anonymous favorites contain items and the visitor authenticates, a
-conversion dialog is offered. The available options depend on
-`selection_mode_user`:
+### Use cases
 
-- `simple`: items are added directly to the user favorites list.
-- `standard`: the user may create a new selection from the favorites or merge
-  them into an existing one.
-- `nested`: same options as `standard` (parent picker is future work).
+| Goal                                  | Favorites visitor | Favorites user | Selections visitor | Selections user |
+|---------------------------------------|-------------------|----------------|--------------------|-----------------|
+| Simple cart everywhere                | on                | on             | off                | off             |
+| Research tool (lists only)            | off               | off            | off / on           | on              |
+| Hybrid (default basket + power users) | on                | on             | off                | on              |
+| Public site, no saving                | off               | off            | off                | off             |
 
-### Dismiss behavior
+### Buttons
+
+- `selectionButtonFavorite($resource)`: explicit star button (favorites axis).
+- `selectionButton($resource)`: multi-select dropdown (selections axis only).
+  Returns nothing if selections are disabled.
+- A theme places either or both, depending on the site configuration. There is
+  no automatic dispatch — pick the buttons that match the configured axes.
+
+The same view helpers are exposed as resource-page block layouts:
+`selectionButtonFavorite` and `selectionButton`.
+
+### Pages
+
+- `/s/:slug/guest/favorites` — single starred basket (own for users, session
+  for anonymous). Not shareable. Rendered as a flat list. Only the exclude
+  action is offered.
+- `/s/:slug/selection` — public index of all public selections (read-only).
+- `/s/:slug/guest/selection` — personal browse. Available only when the
+  selections axis is enabled. If only the favorites axis is enabled, this URL
+  redirects to `/guest/favorites`.
+
+### Conversion at login
+
+When an anonymous visitor logs in with non-empty session data, the conversion
+follows this matrix:
+
+| User favorites | User selections | `convert_auto` | Behavior |
+|----------------|-----------------|----------------|----------|
+| off            | off             | -              | Session discarded. |
+| on             | off             | -              | Silent merge into the user default favorites basket. |
+| on             | on              | true           | Silent merge into favorites basket (same as above). |
+| on             | on              | false          | Modal dialog: new selection / merge into existing / discard. |
+| off            | on              | -              | Modal dialog (always). |
 
 Dismissing the dialog sets a per-session flag. The prompt is not shown again
 during the current session, but reappears at the next login while the
@@ -120,16 +158,28 @@ favorites still contain items.
 
 ### Backward compatibility
 
-The former settings `selection_mode` and `selection_disable_anonymous` are
-migrated automatically on upgrade to the new `selection_mode_user` and
-`selection_mode_visitor` settings. No manual action is required.
+Legacy settings are migrated on upgrade:
+
+- 3.4.18: `selection_mode` and `selection_disable_anonymous` →
+  `selection_mode_visitor` / `selection_mode_user`.
+- 3.4.19: `selection_mode_visitor` / `selection_mode_user` /
+  `selection_my_favorites` / `selection_label_visitor` / `selection_label_user`
+  → the two-axis settings above. Disposition is bumped to `hierarchy` when the
+  legacy mode was `nested`.
+- 3.4.20: routes were clarified. The personal area is now exclusively under
+  `/guest/selection` and `/guest/favorites`. Top-level `/favorites` and
+  `/selection/browse` were removed. Update bookmarks, theme overrides and
+  external links accordingly. Site settings are not affected.
+
+No manual action is required for site settings, but theme overrides that
+emitted legacy URLs must be adapted.
 
 
 Integration in a theme
 ----------------------
 
-The selection is viewable at /s/my-site/selection or, when module Guest is used,
-at /s/my-site/guest/selection.
+The public list of selections is viewable at /s/my-site/selection. Personal
+browse is at /s/my-site/guest/selection (available regardless of module Guest).
 
 ### Themes with resource blocks
 
@@ -288,8 +338,11 @@ TODO
 - [ ] Allow to query multiple ids (owner id, resource id, selection id) in the api.
 - [x] Add a modified date of a selection (from the selection itself, not only from the list of selected resources).
 - [ ] Add a third view with a button to let user choose disposition.
+- [ ] Make `selection_disposition` (flat / grouped / hierarchy) configurable per role (visitor vs user) and possibly per axis (favorites vs selections). Currently a single global value for the whole site.
+- [ ] Model the three basket modes (single / multiple / hierarchy) as an explicit choice rather than letting them emerge implicitly from the combination of favorites/selections toggles and `selection_disposition`.
 - [ ] For moderation, manage the case where the user modify the list of resources or changes the label.
 - [ ] Add options to display selected resources (show) as item/browse.
+- [ ] Add a block layout to render a specific public selection by id (currently only via route `site/selection-id`).
 
 
 Warning
