@@ -266,6 +266,17 @@ class Module extends AbstractModule
             );
             throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
         }
+
+        // Optional dependency: when module Menu is installed, require a minimum
+        // version compatible with the current Selection navigation integration.
+        $menuModule = $services->get('Omeka\ModuleManager')->getModule('Menu');
+        if ($menuModule && !$this->isModuleVersionAtLeast('Menu', '3.4.15')) {
+            $message = new \Omeka\Stdlib\Message(
+                $translator->translate('The module %1$s should be upgraded to version %2$s or later.'), // @translate
+                'Menu', '3.4.15'
+            );
+            throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $message);
+        }
     }
 
     protected function postInstall(): void

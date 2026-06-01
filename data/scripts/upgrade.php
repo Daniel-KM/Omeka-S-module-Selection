@@ -37,6 +37,18 @@ if (!method_exists($this, 'checkModuleActiveVersion') || !$this->checkModuleActi
     throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $translate('Missing requirement. Unable to upgrade.')); // @translate
 }
 
+// Optional dependency: when module Menu is installed, require a minimum version
+// compatible with the current Selection navigation integration.
+$menuModule = $services->get('Omeka\ModuleManager')->getModule('Menu');
+if ($menuModule && !$this->isModuleVersionAtLeast('Menu', '3.4.15')) {
+    $message = new \Omeka\Stdlib\Message(
+        $translate('The module %1$s should be upgraded to version %2$s or later.'), // @translate
+        'Menu', '3.4.15'
+    );
+    $messenger->addError($message);
+    throw new \Omeka\Module\Exception\ModuleCannotInstallException((string) $translate('Missing requirement. Unable to upgrade.')); // @translate
+}
+
 if (version_compare($oldVersion, '3.3.4.1', '<')) {
     $sqls = '';
     $sm = $connection->getSchemaManager();
@@ -606,6 +618,71 @@ if (version_compare($oldVersion, '3.4.18', '<')) {
 
     $message = new PsrMessage(
         'The selection modes and labels for visitors and users are now configured separately in site settings.' // @translate
+    );
+    $messenger->addWarning($message);
+}
+
+if (version_compare($oldVersion, '3.4.19', '<')) {
+    // Two-axis configuration: Favorites (single basket) and Selections
+    // (multiple named lists) are now orthogonal toggles per role. Migrate the
+    // legacy mode (none|simple|standard|nested) and the my_favorites flag.
+    $siteIds = array_keys($api->search('sites', [], ['returnScalar' => 'id'])->getContent());
+    foreach ($siteIds as $siteId) {
+        $siteSettings->setTargetId($siteId);
+        $modeVisitor = $siteSettings->get('selection_mode_visitor', 'none');
+        $modeUser = $siteSettings->get('selection_mode_user', 'standard');
+        $myFavorites = (bool) $siteSettings->get('selection_my_favorites', true);
+        $disposition = $siteSettings->get('selection_disposition', 'flat');
+        $labelVisitor = $siteSettings->get('selection_label_visitor', '');
+        $labelUser = $siteSettings->get('selection_label_user', '');
+        $labelFavorites = $siteSettings->get('selection_label_favorites', '');
+
+        // Visitor axis.
+        $favoritesVisitor = $modeVisitor === 'simple'
+            || ($modeVisitor !== 'none' && $myFavorites);
+        $selectionsVisitor = in_array($modeVisitor, ['standard', 'nested'], true);
+        $siteSettings->set('selection_favorites_visitor', $favoritesVisitor);
+        $siteSettings->set('selection_selections_visitor', $selectionsVisitor);
+
+        // User axis.
+        $favoritesUser = $modeUser === 'simple' || $myFavorites;
+        $selectionsUser = in_array($modeUser, ['standard', 'nested'], true);
+        $siteSettings->set('selection_favorites_user', $favoritesUser);
+        $siteSettings->set('selection_selections_user', $selectionsUser);
+
+        // Disposition: keep current value, but bump to hierarchy if the legacy
+        // mode was nested and the disposition was the default flat.
+        if (($modeVisitor === 'nested' || $modeUser === 'nested') && $disposition === 'flat') {
+            $siteSettings->set('selection_disposition', 'hierarchy');
+        }
+
+        // Labels: prefer existing label_favorites, otherwise reuse
+        // label_visitor (which previously titled the favorites page in simple
+        // mode). label_selections inherits from the previous label_user.
+        if ($labelFavorites === '' || $labelFavorites === null) {
+            $siteSettings->set('selection_label_favorites', $labelVisitor ?: $labelUser ?: 'My favorites');
+        }
+        $siteSettings->set('selection_label_selections', $labelUser ?: 'Selections');
+
+        $siteSettings->delete('selection_mode_visitor');
+        $siteSettings->delete('selection_mode_user');
+        $siteSettings->delete('selection_my_favorites');
+        $siteSettings->delete('selection_label_visitor');
+        $siteSettings->delete('selection_label_user');
+    }
+
+    $message = new PsrMessage(
+        'Selection options now use two orthogonal axes per role: "Favorites" (single basket) and "Selections" (multiple named lists). Existing settings have been migrated. Review them in site settings.' // @translate
+    );
+    $messenger->addWarning($message);
+
+    // Routes are now split: /selection is the public read area (index +
+    // public show + AJAX/ops). Personal area moved entirely under /guest/*:
+    // /guest/selection (own browse), /guest/selection/{id} (own view) and
+    // /guest/favorites. Top-level /favorites was removed. Update bookmarks,
+    // theme overrides, and any external link that pointed to the legacy URLs.
+    $message = new PsrMessage(
+        'Selection routes have been clarified: the personal area is now exclusively under "/guest/selection" and "/guest/favorites". Update your bookmarks, theme overrides and external links accordingly.' // @translate
     );
     $messenger->addWarning($message);
 }
