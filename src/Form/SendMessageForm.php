@@ -4,8 +4,9 @@ namespace Selection\Form;
 
 use Laminas\Form\Element;
 use Laminas\Form\Form;
+use Laminas\InputFilter\InputFilterProviderInterface;
 
-class SendMessageForm extends Form
+class SendMessageForm extends Form implements InputFilterProviderInterface
 {
     public function init(): void
     {
@@ -39,14 +40,27 @@ class SendMessageForm extends Form
                 'type' => Element\Textarea::class,
                 'options' => [
                     'label' => 'Message', // @translate
-                    'label_attributes' => [
-                        'class' => 'required',
-                    ],
                 ],
                 'attributes' => [
                     'id' => 'body',
                     'rows' => 10,
                     'required' => true,
+                ],
+            ])
+            ->add([
+                'name' => 'myself',
+                'type' => Element\Radio::class,
+                'options' => [
+                    'label' => 'Copy to me', // @translate
+                    'value_options' => [
+                        '' => 'No copy', // @translate
+                        'cc' => 'Copy (cc)', // @translate
+                        'bcc' => 'Hidden copy (bcc)', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection-send-myself',
+                    'value' => '',
                 ],
             ])
             ->add([
@@ -63,5 +77,22 @@ class SendMessageForm extends Form
                 ],
             ])
         ;
+    }
+
+    public function getInputFilterSpecification(): array
+    {
+        // The "required" html attribute does not drive Laminas validation:
+        // declare the input filter explicitly. "subject" is optional and
+        // "myself" is a radio whose empty option means "no copy".
+        return [
+            'subject' => [
+                'required' => false,
+                'allow_empty' => true,
+            ],
+            'myself' => [
+                'required' => false,
+                'allow_empty' => true,
+            ],
+        ];
     }
 }

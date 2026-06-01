@@ -39,6 +39,9 @@ class SelectionController extends AbstractActionController
         $messageData = [
             'subject' => $this->fillMessage($subject),
             'body' => $this->fillMessage($body),
+            // When a support reply-to is set, the answering admin is no longer
+            // the reply-to, so default to a discreet copy (bcc); else none.
+            'myself' => $settings->get('selection_reply_to_email') ? 'bcc' : '',
         ];
 
         /** @var \Selection\Form\SendMessageForm $formSendMessage */
@@ -390,8 +393,18 @@ class SelectionController extends AbstractActionController
             ? [$replyToEmail => '']
             : [$user->getEmail() => (string) $user->getName()];
 
+        // Optional copy to the answering admin, exclusive (cc or bcc).
+        $cc = null;
+        $bcc = null;
+        $myself = $params->fromPost('myself');
+        if ($myself === 'cc') {
+            $cc = [$user->getEmail() => (string) $user->getName()];
+        } elseif ($myself === 'bcc') {
+            $bcc = [$user->getEmail() => (string) $user->getName()];
+        }
+
         /** @see \Common\Mvc\Controller\Plugin\SendEmail */
-        $result = $this->sendEmail($body, $subject, $to, null, null, null, $replyTo);
+        $result = $this->sendEmail($body, $subject, $to, null, $cc, $bcc, $replyTo);
         if (!$result) {
             return $this->jSend()->error(null, $this->translate(
                 'Sorry, the message cannot be sent. Contact the administrator.' // @translate
