@@ -51,7 +51,7 @@ class SelectionButtonToSelect extends AbstractHelper
         $url = $plugins->get('url');
         $siteSlug = $site->slug();
 
-        $mode = $view->selectionMode();
+        $mode = $view->selectionEffectiveMode();
         $disposition = $siteSetting('selection_disposition', 'flat') ?: 'flat';
 
         if ($user) {

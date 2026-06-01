@@ -28,7 +28,7 @@ $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
 $escapeAttr = $plugins->get('escapeHtmlAttr');
 
-if ($this->selectionMode() === 'none') {
+if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
     if (!$siteSetting('selection_hide_login')): ?>
         <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
     <?php endif;

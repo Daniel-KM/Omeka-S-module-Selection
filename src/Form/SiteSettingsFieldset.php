@@ -19,7 +19,9 @@ class SiteSettingsFieldset extends Fieldset
     protected $label = 'Selection module'; // @translate
 
     protected $elementGroups = [
-        'selection' => 'Selection', // @translate
+        'favorites' => 'Favorites', // @translate
+        'selections' => 'Selections', // @translate
+        'selection' => 'Selection (other)', // @translate
         'themes_old' => 'Old themes', // @translate
     ];
 
@@ -30,48 +32,73 @@ class SiteSettingsFieldset extends Fieldset
             ->setOption('element_groups', $this->elementGroups)
 
             ->add([
-                'name' => 'selection_mode_visitor',
-                'type' => CommonElement\OptionalRadio::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Selection mode for anonymous visitors', // @translate
-                    'value_options' => [
-                        'none' => 'Disabled', // @translate
-                        'simple' => 'Simple favorites (single list, star button)', // @translate
-                        'standard' => 'Multiple flat selections', // @translate
-                        'nested' => 'Nested selections', // @translate
-                    ],
-                ],
-                'attributes' => [
-                    'id' => 'selection_mode_visitor',
-                ],
-            ])
-            ->add([
-                'name' => 'selection_mode_user',
-                'type' => CommonElement\OptionalRadio::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Selection mode for authenticated users', // @translate
-                    'value_options' => [
-                        'simple' => 'Simple favorites (single list, star button)', // @translate
-                        'standard' => 'Multiple flat selections', // @translate
-                        'nested' => 'Nested selections', // @translate
-                    ],
-                ],
-                'attributes' => [
-                    'id' => 'selection_mode_user',
-                ],
-            ])
-            ->add([
-                'name' => 'selection_my_favorites',
+                'name' => 'selection_favorites_visitor',
                 'type' => Element\Checkbox::class,
                 'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Default selection "My favorites"', // @translate
-                    'info' => 'When enabled, every user (existing and new) gets a default selection "My favorites" on first interaction.', // @translate
+                    'element_group' => 'favorites',
+                    'label' => 'Enable favorites for anonymous visitors', // @translate
+                    'info' => 'Add a star button on resources and a /favorites page. Stored in the visitor session cookie.', // @translate
                 ],
                 'attributes' => [
-                    'id' => 'selection_my_favorites',
+                    'id' => 'selection_favorites_visitor',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_favorites_user',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'favorites',
+                    'label' => 'Enable favorites for authenticated users', // @translate
+                    'info' => 'Add a star button on resources and a /favorites page. A default selection holds the favorites.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_favorites_user',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_label_favorites',
+                'type' => Element\Text::class,
+                'options' => [
+                    'element_group' => 'favorites',
+                    'label' => 'Label for the favorites page', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_label_favorites',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_selections_visitor',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selections',
+                    'label' => 'Enable multi-selections for anonymous visitors', // @translate
+                    'info' => 'Allow visitors to create multiple named lists. Independent of favorites.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_selections_visitor',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_selections_user',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selections',
+                    'label' => 'Enable multi-selections for authenticated users', // @translate
+                    'info' => 'Allow users to create multiple named lists. Independent of favorites.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_selections_user',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_label_selections',
+                'type' => Element\Text::class,
+                'options' => [
+                    'element_group' => 'selections',
+                    'label' => 'Label for the selections page', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_label_selections',
                 ],
             ])
             ->add([
@@ -92,12 +119,11 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalRadio::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Default disposition of page Selection', // @translate
-                    'info' => 'When the url query argument "disposition" is set, it overrides this option.', // @ŧranslate
+                    'label' => 'Default layout of resources inside a single selection', // @translate
                     'value_options' => [
-                        'flat' => 'List of resources', // @translate
-                        'grouped' => 'List of selections', // @translate
-                        'hierarchy' => 'Nested selections', // @translate
+                        'flat' => 'Flat: plain list of resources', // @translate
+                        'grouped' => 'Grouped: resources grouped into manual named groups', // @translate
+                        'hierarchy' => 'Hierarchy: nested tree of groups and resources', // @translate
                     ],
                 ],
                 'attributes' => [
@@ -109,12 +135,12 @@ class SiteSettingsFieldset extends Fieldset
                 'name' => 'selection_share',
                 'type' => CommonElement\OptionalRadio::class,
                 'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Allow users to share their own selections', // @translate
-                    'value_options' => [
-                        '' => 'Only admins', // @translate
-                        'moderate' => 'Any user with moderation', // @translate
-                        'open' => 'Any user without moderation', // @translate
+                'element_group' => 'selection',
+                'label' => 'Allow users to share their own selections', // @translate
+                'value_options' => [
+                        '' => 'Only admins can publish', // @translate
+                        'moderate' => 'Any user may request publication; an admin must validate', // @translate
+                        'open' => 'Any user may publish without validation', // @translate
                     ],
                 ],
                 'attributes' => [
@@ -126,10 +152,11 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalSelect::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Redirect public selection page', // @translate
+                    'label' => 'Redirect public dynamic selection page', // @translate
+                    'info' => 'A dynamic selection is a saved search query. This option controls the page used to replay the query when the public selection url is opened.', // @translate
                     'value_options' => [
-                        '' => 'Default selection page', // @translate
-                        'items_browse' => 'Items browse page', // @translate
+                        '' => 'Default selection page (no redirect)', // @translate
+                        'items_browse' => 'Items browse page of the site', // @translate
                         'advanced_search_site' => 'Advanced search page of the site', // @translate
                     ] + $this->searchConfigs,
                     'empty_option' => '',
@@ -144,8 +171,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Checkbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Display a login button when selection is disabled for anonymous', // @translate
-                    'info' => 'When selection is disabled for anonymous visitors, display a login button instead of hiding the selection.', // @translate
+                    'label' => 'Hide login button for anonymous visitors', // @translate
+                    'info' => 'By default, when anonymous selection is disabled, a login button is shown to invite visitors to sign in. Enable this option to hide this login button.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_hide_login',
@@ -157,7 +184,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Limit selections to specific resources', // @translate
+                    'label' => 'Resource types that can be added to favorites or selections', // @translate
+                    'info' => 'Only checked resource types will display the favorite or selection button on their page. Default is items only.', // @translate
                     'value_options' => [
                         'items' => 'Items', // @translate
                         'media' => 'Medias', // @translate
@@ -174,7 +202,7 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Number::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Maximum resources per selection', // @translate
+                    'label' => 'Maximum number of resources per selection', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_max_resources',
@@ -189,7 +217,7 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
                     'element_group' => 'themes_old',
-                    'label' => 'Display selection button', // @translate
+                    'label' => 'Auto-insert the selection button on resource pages', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
@@ -209,7 +237,7 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalMultiCheckbox::class,
                 'options' => [
                     'element_group' => 'themes_old',
-                    'label' => 'Display selection list', // @translate
+                    'label' => 'Auto-insert the user selection list on resource pages', // @translate
                     'value_options' => [
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
@@ -229,7 +257,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Checkbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Open the selection block by default in resource page', // @translate
+                    'label' => 'Open the selection block by default on resource pages', // @translate
+                    'info' => 'When the resource-page block "Selection" is collapsible, this option controls whether it is open or closed on first display.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_resource_show_open',
@@ -240,7 +269,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Checkbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Open the selection list block by default in resource page', // @translate
+                    'label' => 'Open the user selection list by default on resource pages', // @translate
+                    'info' => 'Same as above for the resource-page block that displays the user list of selections.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_resource_show_open_list',
@@ -251,11 +281,12 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => CommonElement\OptionalRadio::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Add individual checkboxes for modules Bulk Export and Contact Us', // @translate
+                    'label' => 'Show per-resource checkboxes on the selection page for Bulk Export and Contact Us', // @translate
+                    'info' => 'Adds a checkbox next to each resource of a selection so the user can pick a subset before exporting (Bulk Export) or contacting (Contact Us).', // @translate
                     'value_options' => [
-                        'auto' => 'When needed', // @translate
-                        'no' => 'No', // @translate
-                        'yes' => 'Yes', // @translate
+                        'auto' => 'Auto: only when Bulk Export or Contact Us is installed and active on the page', // @translate
+                        'no' => 'Never show the checkboxes', // @translate
+                        'yes' => 'Always show the checkboxes', // @translate
                     ],
                 ],
                 'attributes' => [
@@ -267,45 +298,11 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Checkbox::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Add a checkbox to select resources individually in lists (browse and search)', // @translate
-                    'info' => 'This option is used only with the module Advanced Search for now.', // @translate
+                    'label' => 'Add a checkbox on items in browse and search results pages to select them individually', // @translate
+                    'info' => 'Currently only effective when the module Advanced Search is installed and used on the page.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_append_items_browse_individual',
-                ],
-            ])
-            ->add([
-                'name' => 'selection_label_visitor',
-                'type' => Element\Text::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Label for selection (anonymous visitors)', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'selection_label_visitor',
-                ],
-            ])
-            ->add([
-                'name' => 'selection_label_user',
-                'type' => Element\Text::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Label for selection (authenticated users)', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'selection_label_user',
-                ],
-            ])
-            ->add([
-                'name' => 'selection_label_favorites',
-                'type' => Element\Text::class,
-                'options' => [
-                    'element_group' => 'selection',
-                    'label' => 'Label for the favorites page', // @translate
-                    'info' => 'Title of the dedicated /favorites page, distinct from the selection label.', // @translate
-                ],
-                'attributes' => [
-                    'id' => 'selection_label_favorites',
                 ],
             ])
             ->add([
@@ -313,7 +310,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Label for the link in guest account', // @translate
+                    'label' => 'Label of the navigation link displayed in the guest account', // @translate
+                    'info' => 'Text used for the link that points to the personal selection page in the guest account navigation menu.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_label_guest_link',
@@ -324,7 +322,8 @@ class SiteSettingsFieldset extends Fieldset
                 'type' => Element\Text::class,
                 'options' => [
                     'element_group' => 'selection',
-                    'label' => 'Warning for selection by anonymous', // @translate
+                    'label' => 'Warning message shown above the selection page for anonymous visitors', // @translate
+                    'info' => 'Reminds anonymous visitors that their selection is stored in the session cookie and lost when the cookie is cleared.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_warning_anonymous',

@@ -51,7 +51,9 @@ return  [
             'selectionContainer' => Service\ViewHelper\SelectionContainerFactory::class,
             'selectionLinkBrowse' => Service\ViewHelper\SelectionLinkBrowseFactory::class,
             'selectionButtonFavorite' => Service\ViewHelper\SelectionButtonFavoriteFactory::class,
-            'selectionMode' => Service\ViewHelper\SelectionModeFactory::class,
+            'selectionFavoritesEnabled' => Service\ViewHelper\SelectionFavoritesEnabledFactory::class,
+            'selectionSelectionsEnabled' => Service\ViewHelper\SelectionSelectionsEnabledFactory::class,
+            'selectionEffectiveMode' => Service\ViewHelper\SelectionEffectiveModeFactory::class,
             'selectionLabel' => Service\ViewHelper\SelectionLabelFactory::class,
             'selectionConvertInjector' => Service\ViewHelper\SelectionConvertInjectorFactory::class,
         ],
@@ -99,7 +101,8 @@ return  [
     'controller_plugins' => [
         'factories' => [
             'selectionContainer' => Service\ControllerPlugin\SelectionContainerFactory::class,
-            'selectionMode' => Service\ControllerPlugin\SelectionModeFactory::class,
+            'selectionFavoritesEnabled' => Service\ControllerPlugin\SelectionFavoritesEnabledFactory::class,
+            'selectionSelectionsEnabled' => Service\ControllerPlugin\SelectionSelectionsEnabledFactory::class,
             'selectionLabel' => Service\ControllerPlugin\SelectionLabelFactory::class,
         ],
     ],
@@ -331,10 +334,17 @@ return  [
         ],
         // TODO Move "selection_share" to main settings?
         'site_settings' => [
-            'selection_mode_visitor' => 'none',
-            'selection_mode_user' => 'standard',
-            'selection_my_favorites' => true,
+            // Favorites: a single starred basket per role. One toggle per role.
+            'selection_favorites_visitor' => false,
+            'selection_favorites_user' => true,
+            // Selections: multi-list management. One toggle per role.
+            'selection_selections_visitor' => false,
+            'selection_selections_user' => true,
+            // Conversion of session favorites/selections into user account on
+            // login: silent merge for favorites, dialog for selections unless
+            // this flag is true (then auto-create a new selection).
             'selection_convert_auto' => true,
+            // Per-list rendering for selections (flat / grouped / hierarchy).
             'selection_disposition' => 'flat',
             'selection_share' => '',
             'selection_share_redirect' => '',
@@ -350,9 +360,8 @@ return  [
             'selection_resource_show_open_list' => true,
             'selection_individual_select' => 'auto',
             'selection_append_items_browse_individual' => false,
-            'selection_label_visitor' => 'Favorites', // @translate
-            'selection_label_user' => 'Selection', // @translate
             'selection_label_favorites' => 'My favorites', // @translate
+            'selection_label_selections' => 'Selections', // @translate
             'selection_label_guest_link' => 'My selection', // @translate
             'selection_warning_anonymous' => 'This selection is stored in the session cookie. It will be lost if the cookie is cleared.', // @translate
         ],

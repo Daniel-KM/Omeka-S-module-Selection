@@ -57,7 +57,7 @@ class SelectionButtonToGroup extends AbstractHelper
 
         // TODO Manage mode in selection button to group?
         // This helper cannot be used in modes standard or nested.
-        $mode = $view->selectionMode();
+        $mode = $view->selectionEffectiveMode();
         if ($mode !== 'simple') {
             return '';
         }

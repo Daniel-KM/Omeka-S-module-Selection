@@ -5,7 +5,7 @@ namespace Selection\View\Helper;
 use Laminas\View\Helper\AbstractHelper;
 use Omeka\Settings\SiteSettings;
 
-class SelectionMode extends AbstractHelper
+class SelectionFavoritesEnabled extends AbstractHelper
 {
     protected SiteSettings $siteSettings;
 
@@ -15,17 +15,17 @@ class SelectionMode extends AbstractHelper
     }
 
     /**
-     * Returns effective selection mode for current user context.
-     *
-     * One of: 'none', 'simple', 'standard', 'nested'.
+     * Whether the favorites (single starred basket) feature is enabled for the
+     * current user context.
      */
-    public function __invoke(?bool $isAuthenticated = null): string
+    public function __invoke(?bool $isAuthenticated = null): bool
     {
         if ($isAuthenticated === null) {
             $isAuthenticated = (bool) $this->getView()->identity();
         }
-        return $isAuthenticated
-            ? (string) $this->siteSettings->get('selection_mode_user', 'standard')
-            : (string) $this->siteSettings->get('selection_mode_visitor', 'none');
+        return (bool) $this->siteSettings->get(
+            $isAuthenticated ? 'selection_favorites_user' : 'selection_favorites_visitor',
+            $isAuthenticated
+        );
     }
 }

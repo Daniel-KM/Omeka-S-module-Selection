@@ -23,21 +23,14 @@ $plugins = $this->getHelperPluginManager();
 $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
 
-$mode = $this->selectionMode();
-
-if ($mode === 'none') {
-    if (!$siteSetting('selection_hide_login')): ?>
+// selectionButton renders the multi-selection button only. For the favorites
+// star button, themes call selectionButtonFavorite explicitly. When neither
+// axis is enabled, an optional login link can be displayed.
+$selections = $this->selectionSelectionsEnabled();
+if (!$selections) {
+    if (!$this->selectionFavoritesEnabled() && !$siteSetting('selection_hide_login')): ?>
         <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
     <?php endif;
-    return;
-}
-
-if ($mode === 'simple') {
-    echo $this->partial('common/selection-button-simple', [
-        'resource' => $resource,
-        'site' => $site,
-        'user' => $user,
-    ]);
     return;
 }
 

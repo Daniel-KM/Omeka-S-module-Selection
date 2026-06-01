@@ -47,7 +47,7 @@ class SelectionContainer extends AbstractHelper
         } else {
             $defaultSelection = [
                 'id' => 1,
-                'label' => $view->siteSetting('selection_label_visitor', $view->translate('Favorites')), // @translate
+                'label' => $view->siteSetting('selection_label_favorites', $view->translate('My favorites')), // @translate
                 'structure' => [],
             ];
             if (empty($container->init)) {
@@ -82,7 +82,7 @@ class SelectionContainer extends AbstractHelper
             $selections = [];
         }
 
-        if ($view->siteSetting('selection_my_favorites', true)) {
+        if ($view->siteSetting('selection_favorites_user', true)) {
             $default = null;
             foreach ($selections as $selection) {
                 if ($selection->isDefault() && !$selection->isDynamic()) {
@@ -128,8 +128,8 @@ class SelectionContainer extends AbstractHelper
     protected function createDefaultSelection(User $user, array $selections): ?\Selection\Api\Representation\SelectionRepresentation
     {
         $view = $this->getView();
-        $label = (string) $view->siteSetting('selection_label_visitor', $view->translate('Favorites')); // @translate
-        $label = trim($label) !== '' ? $label : (string) $view->translate('Favorites'); // @translate
+        $label = (string) $view->siteSetting('selection_label_favorites', $view->translate('My favorites')); // @translate
+        $label = trim($label) !== '' ? $label : (string) $view->translate('My favorites'); // @translate
 
         foreach ($selections as $selection) {
             if ($selection->label() === $label) {

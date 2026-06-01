@@ -91,15 +91,16 @@ abstract class AbstractSelectionController extends AbstractActionController
     public function browseAction()
     {
         $user = $this->identity();
-        $mode = $this->selectionMode();
-        if ($mode === 'none') {
+        $favorites = $this->selectionFavoritesEnabled();
+        $selections = $this->selectionSelectionsEnabled();
+        if (!$favorites && !$selections) {
             throw new \Omeka\Api\Exception\PermissionDeniedException();
         }
 
-        if ($mode === 'simple') {
+        // Favorites-only: redirect /selection to the dedicated /favorites view.
+        if ($favorites && !$selections) {
             $params = $this->params()->fromRoute();
-            $params['action'] = 'view';
-            // TODO For now, there is always a user.
+            $params['action'] = 'favorites';
             return $user
                 ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
                 : $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
@@ -130,7 +131,7 @@ abstract class AbstractSelectionController extends AbstractActionController
     {
         $user = $this->identity();
         if (!$user) {
-            if ($this->selectionMode() === 'none') {
+            if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
                 throw new \Omeka\Api\Exception\PermissionDeniedException();
             }
             return $this->viewSession();
@@ -149,7 +150,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -168,7 +169,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -187,7 +188,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -206,7 +207,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -230,7 +231,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -254,7 +255,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -271,15 +272,13 @@ abstract class AbstractSelectionController extends AbstractActionController
      */
     public function favoritesAction()
     {
-        $siteSettings = $this->siteSettings();
-        $mode = $this->selectionMode();
-        $myFavorites = (bool) $siteSettings->get('selection_my_favorites', true);
-        if ($mode !== 'simple' && !$myFavorites) {
+        if (!$this->selectionFavoritesEnabled()) {
             throw new \Omeka\Api\Exception\PermissionDeniedException();
         }
 
         $site = $this->currentSite();
         $user = $this->identity();
+        $mode = $this->effectiveMode();
 
         if ($user) {
             $selection = null;
@@ -335,7 +334,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -361,7 +360,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -399,7 +398,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -464,7 +463,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -556,7 +555,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -653,7 +652,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         if (!$this->getRequest()->isXmlHttpRequest()) {
             return $this->jsonErrorNotFound();
         }
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -685,7 +684,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -820,7 +819,7 @@ abstract class AbstractSelectionController extends AbstractActionController
         }
 
         $user = $this->identity();
-        if ($this->selectionMode() === 'none') {
+        if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
             return $this->jsonPermissionDenied();
         }
 
@@ -983,7 +982,10 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
-     * Format a resource to be stored.
+     * Format a resource as a flat record consumed by the JSend payload of
+     * include/exclude/toggle endpoints. The selectionRecords helper returns a
+     * nested structure indexed by [selectionId][resourceId]; here we extract
+     * the inner record so the JS receives `id`, `value`, etc. at the top.
      */
     protected function normalizeResource(
         AbstractResourceEntityRepresentation $resource,
@@ -1005,7 +1007,34 @@ abstract class AbstractSelectionController extends AbstractActionController
         ];
 
         $selectionRecords = $this->viewHelpers()->get('selectionRecords');
-        return $selectionRecords(null, [$selectionResource], $isSelected);
+        $records = $selectionRecords(null, [$selectionResource], $isSelected);
+        foreach ($records as $bySelection) {
+            $record = reset($bySelection);
+            if (is_array($record)) {
+                return $record;
+            }
+        }
+        return [];
+    }
+
+    /**
+     * Compute a legacy-style mode string from the two-axis configuration so
+     * that templates relying on $mode ('none'/'simple'/'standard'/'nested')
+     * keep working.
+     */
+    protected function effectiveMode(?bool $isAuthenticated = null): string
+    {
+        $favorites = $this->selectionFavoritesEnabled($isAuthenticated);
+        $selections = $this->selectionSelectionsEnabled($isAuthenticated);
+        if (!$favorites && !$selections) {
+            return 'none';
+        }
+        if ($favorites && !$selections) {
+            return 'simple';
+        }
+        return $this->siteSettings()->get('selection_disposition', 'flat') === 'hierarchy'
+            ? 'nested'
+            : 'standard';
     }
 
     protected function currentDisposition(array $query = []): string

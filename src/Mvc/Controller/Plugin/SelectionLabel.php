@@ -15,15 +15,15 @@ class SelectionLabel extends AbstractPlugin
     }
 
     /**
-     * Returns the configured selection label for the current user context.
+     * Returns the configured label for the favorites or selections page.
+     *
+     * @param string $type 'favorites' or 'selections'
      */
-    public function __invoke(?bool $isAuthenticated = null): string
+    public function __invoke(string $type = 'favorites'): string
     {
-        if ($isAuthenticated === null) {
-            $isAuthenticated = (bool) $this->getController()->identity();
-        }
-        return $isAuthenticated
-            ? (string) $this->siteSettings->get('selection_label_user', 'Selection')
-            : (string) $this->siteSettings->get('selection_label_visitor', 'Favorites');
+        $key = $type === 'selections' ? 'selection_label_selections' : 'selection_label_favorites';
+        $default = $type === 'selections' ? 'Selections' : 'My favorites';
+        $label = (string) $this->siteSettings->get($key, '');
+        return $label !== '' ? $label : $default;
     }
 }

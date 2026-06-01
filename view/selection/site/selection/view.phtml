@@ -53,7 +53,7 @@ if (isset($selection) && is_object($selection)) {
 
 $owner = $selection->owner();
 
-$labelSelection = $this->selectionLabel() ?: $translate('Selection');
+$labelSelection = $this->selectionLabel('selections');
 ?>
 
 <?php if ($breadcrumbs && !$hasGuestNav): ?>

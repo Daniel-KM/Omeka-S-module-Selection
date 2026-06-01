@@ -917,7 +917,9 @@
                 }
                 const selectionResource = data.data && data.data.selection_resource
                     ? data.data.selection_resource : null;
-                const newValue = selectionResource ? selectionResource.value : (selected ? 'unselected' : 'selected');
+                const newValue = selectionResource && selectionResource.value
+                    ? selectionResource.value
+                    : (selected ? 'unselected' : 'selected');
                 const nowSelected = newValue === 'selected';
                 button.toggleClass('is-selected', nowSelected);
                 button.attr('aria-pressed', nowSelected ? 'true' : 'false');

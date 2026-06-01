@@ -178,6 +178,20 @@ class Module extends AbstractModule
                     'favorites',
                 ]
             )
+            // Allow "index" and "browse" on Guest controller for anonymous so
+            // those actions can redirect to login (otherwise the ACL throws a
+            // 500 before the controller code runs). The /guest/selection
+            // route defaults to action "browse".
+            ->allow(
+                null,
+                [
+                    'Selection\Controller\Site\Guest',
+                ],
+                [
+                    'index',
+                    'browse',
+                ]
+            )
             ->allow(
                 $roles,
                 [
@@ -380,10 +394,15 @@ class Module extends AbstractModule
     }
 
     /**
-     * Flag the session for a pending conversion of the favorites to user
-     * selections when a visitor logs in with non-empty session favorites. When
-     * site setting "selection_convert_auto" is enabled, the favorites are
-     * merged silently into the user default selection instead of flagging.
+     * Convert anonymous session favorites/selections to user account on login.
+     *
+     * Flow:
+     *   - If user has favorites enabled and session has resources, merge them
+     *     silently into the user default favorites basket.
+     *   - Else, if user has selections enabled and session has resources,
+     *     either flag a pending dialog or auto-create a new selection
+     *     (selection_convert_auto).
+     *   - Else (neither enabled), discard the session.
      */
     public function onUserLogin(Event $event): void
     {
@@ -402,10 +421,11 @@ class Module extends AbstractModule
 
         $services = $this->getServiceLocator();
         $siteSettings = $services->get('Omeka\Settings\Site');
-        if (!$siteSettings->get('selection_convert_auto', false)) {
-            $flag = new \Laminas\Session\Container('SelectionConvert');
-            $flag->pending = true;
-            unset($flag->dismissed);
+        $favoritesEnabled = (bool) $siteSettings->get('selection_favorites_user', true);
+        $selectionsEnabled = (bool) $siteSettings->get('selection_selections_user', true);
+
+        if (!$favoritesEnabled && !$selectionsEnabled) {
+            $container->exchangeArray([]);
             return;
         }
 
@@ -419,45 +439,78 @@ class Module extends AbstractModule
         }
 
         $api = $services->get('Omeka\ApiManager');
-        try {
-            $existing = $api->search('selections', [
-                'owner_id' => $user->getId(),
-                'limit' => 1,
-            ])->getContent();
-            $selection = $existing
-                ? reset($existing)
-                : $api->create('selections', [
-                    'o:owner' => ['o:id' => $user->getId()],
-                    'o:label' => $siteSettings->get('selection_label_user', 'Selection'),
-                ])->getContent();
+        $convertAuto = (bool) $siteSettings->get('selection_convert_auto', true);
 
-            $existingIds = $selection->resources();
-            foreach ($resourceIds as $rid) {
-                if (isset($existingIds[$rid])) {
-                    continue;
-                }
-                try {
-                    $api->create('selection_resources', [
-                        'o:selection' => ['o:id' => $selection->id()],
-                        'o:resource' => ['o:id' => $rid],
-                    ]);
-                } catch (
-                    \Omeka\Api\Exception\NotFoundException
-                    | \Omeka\Api\Exception\PermissionDeniedException
-                    | \Omeka\Api\Exception\ValidationException $e
-                ) {
-                    // Skip resource unavailable since anonymous session.
-                }
+        // Favorites enabled: silent merge into the default favorites basket.
+        // Selections enabled too: only ask via dialog when convert_auto is
+        // false. With convert_auto true, the favorites merge handles it.
+        if ($favoritesEnabled && (!$selectionsEnabled || $convertAuto)) {
+            try {
+                $defaultLabel = $siteSettings->get('selection_label_favorites', 'My favorites');
+                $selection = $this->getOrCreateDefaultSelection($api, $user, $defaultLabel);
+                $this->mergeResourcesIntoSelection($api, $selection, $resourceIds);
+            } catch (\Exception $e) {
+                $this->flagPendingConvert();
+                return;
             }
-        } catch (\Exception $e) {
-            // On failure, fall back to manual conversion via dialog.
-            $flag = new \Laminas\Session\Container('SelectionConvert');
-            $flag->pending = true;
-            unset($flag->dismissed);
+            $container->exchangeArray([]);
+            $this->clearPendingConvert();
             return;
         }
 
-        $container->exchangeArray([]);
+        // Selections enabled but no favorites: ask via dialog (or auto-create
+        // a new selection if convert_auto).
+        $this->flagPendingConvert();
+    }
+
+    private function getOrCreateDefaultSelection($api, \Omeka\Entity\User $user, string $defaultLabel)
+    {
+        $existing = $api->search('selections', [
+            'owner_id' => $user->getId(),
+            'is_default' => true,
+            'limit' => 1,
+        ])->getContent();
+        if ($existing) {
+            return reset($existing);
+        }
+        return $api->create('selections', [
+            'o:owner' => ['o:id' => $user->getId()],
+            'o:label' => $defaultLabel,
+            'o:is_default' => true,
+        ])->getContent();
+    }
+
+    private function mergeResourcesIntoSelection($api, $selection, array $resourceIds): void
+    {
+        $existingIds = $selection->resources();
+        foreach ($resourceIds as $rid) {
+            if (isset($existingIds[$rid])) {
+                continue;
+            }
+            try {
+                $api->create('selection_resources', [
+                    'o:selection' => ['o:id' => $selection->id()],
+                    'o:resource' => ['o:id' => $rid],
+                ]);
+            } catch (
+                \Omeka\Api\Exception\NotFoundException
+                | \Omeka\Api\Exception\PermissionDeniedException
+                | \Omeka\Api\Exception\ValidationException $e
+            ) {
+                // Skip resource unavailable since anonymous session.
+            }
+        }
+    }
+
+    private function flagPendingConvert(): void
+    {
+        $flag = new \Laminas\Session\Container('SelectionConvert');
+        $flag->pending = true;
+        unset($flag->dismissed);
+    }
+
+    private function clearPendingConvert(): void
+    {
         $flag = new \Laminas\Session\Container('SelectionConvert');
         $flag->pending = false;
         unset($flag->dismissed);
@@ -817,7 +870,7 @@ class Module extends AbstractModule
          */
 
         $view = $event->getTarget();
-        if ($view->selectionMode() === 'none') {
+        if (!$view->selectionFavoritesEnabled() && !$view->selectionSelectionsEnabled()) {
             return;
         }
 
@@ -849,7 +902,7 @@ class Module extends AbstractModule
          */
 
         $view = $event->getTarget();
-        if ($view->selectionMode() === 'none') {
+        if (!$view->selectionFavoritesEnabled() && !$view->selectionSelectionsEnabled()) {
             return;
         }
 

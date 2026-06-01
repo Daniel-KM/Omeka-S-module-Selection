@@ -59,7 +59,7 @@ trait TraitSessionController
             'records' => $selectionContainer->records,
             'isGuestActive' => false,
             'isSession' => true,
-            'mode' => $this->selectionMode(),
+            'mode' => $this->effectiveMode(),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
             'selectionShare' => $selectionShare,
@@ -214,7 +214,7 @@ trait TraitSessionController
      */
     protected function resetSession()
     {
-        $mode = $this->selectionMode();
+        $favoritesOnly = $this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled();
 
         /**
          * Read selection from session.
@@ -225,7 +225,7 @@ trait TraitSessionController
         $selectionContainer = $this->selectionContainer();
 
         $selection = $this->checkSelectionFromRouteOrInitSession($selectionContainer);
-        if (!$selection && $mode !== 'simple') {
+        if (!$selection && !$favoritesOnly) {
             return $this->jsonErrorNotFound();
         }
 

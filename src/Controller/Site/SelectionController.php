@@ -85,7 +85,7 @@ class SelectionController extends AbstractSelectionController
             'selectionId' => $selection->id(),
             'isGuestActive' => $this->isGuestActive,
             'isSession' => false,
-            'mode' => $this->selectionMode(),
+            'mode' => $this->effectiveMode(),
             'disposition' => $disposition,
             'allowIndividualSelect' => $allowIndividualSelect,
             'selectionShare' => $selectionShare,
@@ -117,8 +117,9 @@ class SelectionController extends AbstractSelectionController
             return $this->jSend(JSend::SUCCESS, ['empty' => true]);
         }
 
-        $mode = $this->selectionMode(true);
-        if ($mode === 'none') {
+        $favorites = $this->selectionFavoritesEnabled(true);
+        $selectionsEnabled = $this->selectionSelectionsEnabled(true);
+        if (!$favorites && !$selectionsEnabled) {
             return $this->jSend(
                 JSend::FAIL,
                 null,
@@ -126,8 +127,9 @@ class SelectionController extends AbstractSelectionController
             );
         }
 
+        $mode = $this->effectiveMode(true);
         $selections = [];
-        if ($mode !== 'simple') {
+        if ($selectionsEnabled) {
             $selections = $this->api()->search('selections', [
                 'owner_id' => $user->getId(),
             ])->getContent();
@@ -198,8 +200,9 @@ class SelectionController extends AbstractSelectionController
             return $this->jSend(JSend::SUCCESS, ['empty' => true]);
         }
 
-        $mode = $this->selectionMode(true);
-        if ($mode === 'none') {
+        $favorites = $this->selectionFavoritesEnabled(true);
+        $selectionsEnabled = $this->selectionSelectionsEnabled(true);
+        if (!$favorites && !$selectionsEnabled) {
             return $this->jSend(
                 JSend::FAIL,
                 null,
@@ -209,7 +212,8 @@ class SelectionController extends AbstractSelectionController
 
         $api = $this->api();
 
-        if ($mode === 'simple') {
+        // No multi-selections: merge into the user's default favorites basket.
+        if ($favorites && !$selectionsEnabled) {
             $selection = $this->getSelectionStaticFirst($user)
                 ?: $this->createSelectionStatic($user);
         } elseif ($action === 'new') {
