@@ -51,12 +51,12 @@ $isValidatedClass = $isValidated === null ? 'validated-not-yet' : ($isValidated 
     <ul class="actions">
         <?php // TODO Fixme Add actions for grouped and hierarchy. ?>
         <?php if ($selection->userIsAllowed('update')): ?>
-        <li><button type="button" class="button rename" data-url="<?= $baseUrl ?>/edit" data-msg="<?= $escapeAttr($translate('Set the new name of the selection')) ?>"><?= $escape($translate('Rename')) ?></button></li>
+        <li><button type="button" aria-haspopup="dialog" class="button rename" data-url="<?= $baseUrl ?>/edit" data-msg="<?= $escapeAttr($translate('Set the new name of the selection')) ?>"><?= $escape($translate('Rename')) ?></button></li>
             <?php if ($canPublish): ?>
-        <li><button type="button" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $baseUrl  ?>/edit" data-msg-publish="<?= $escapeAttr($msgs['publish']) ?>" data-msg-unpublish="<?= $escapeAttr($msgs['unpublish']) ?>" data-msg-publish-confirm="<?= $escapeAttr($msgs['publish-confirm']) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($msgs['unpublish-confirm']) ?>"><?= $escape($isPublic ? $msgs['unpublish'] : $msgs['publish']) ?></button></li>
+        <li><button type="button" aria-haspopup="dialog" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $baseUrl  ?>/edit" data-msg-publish="<?= $escapeAttr($msgs['publish']) ?>" data-msg-unpublish="<?= $escapeAttr($msgs['unpublish']) ?>" data-msg-publish-confirm="<?= $escapeAttr($msgs['publish-confirm']) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($msgs['unpublish-confirm']) ?>"><?= $escape($isPublic ? $msgs['unpublish'] : $msgs['publish']) ?></button></li>
             <?php endif; ?>
             <?php if ($requireModeration && $canValidateAll): ?>
-        <li><button type="button" class="button <?= $isValidatedClass ?>" data-url="<?= $baseUrl  ?>/validate" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($msgs[$isValidatedClass]) ?></button></li>
+        <li><button type="button" aria-haspopup="dialog" class="button <?= $isValidatedClass ?>" data-url="<?= $baseUrl  ?>/validate" data-msg-validated-true="<?= $escapeAttr($msgs['validated-true']) ?>" data-msg-validated-false="<?= $escapeAttr($msgs['validated-false']) ?>" data-msg-validated-not-yet="<?= $escapeAttr($msgs['validated-not-yet']) ?>"><?= $escape($msgs[$isValidatedClass]) ?></button></li>
             <?php endif; ?>
         <?php endif; ?>
         <li class="sharing"><?= $this->partial('common/selection-share-buttons', ['selection' => $selection, 'site' => $site]) ?></li>
@@ -73,7 +73,7 @@ $isValidatedClass = $isValidated === null ? 'validated-not-yet' : ($isValidated 
         <?php endif; ?>
         </li>
         <?php if ($selection->userIsAllowed('delete')): ?>
-        <li><button type="button" class="button delete selection-delete" data-url="<?= $baseUrl ?>/delete" data-msg="<?= $escapeAttr($translate('Delete this selection')) ?>"><?= $escape($translate('Delete selection')) ?></button></li>
+        <li><button type="button" aria-haspopup="dialog" class="button delete selection-delete" data-url="<?= $baseUrl ?>/delete" data-msg="<?= $escapeAttr($translate('Delete this selection')) ?>"><?= $escape($translate('Delete selection')) ?></button></li>
         <?php endif; ?>
     </ul>
 </details>

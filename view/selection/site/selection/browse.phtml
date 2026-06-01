@@ -70,7 +70,7 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 <div class="selection-list-actions">
     <ul class="actions">
         <li>
-            <button type="button" class="button add" data-msg-selection-name="<?= $escapeAttr($translate('Set title of the new selection')) ?>" data-url="<?= $url('site/selection', ['action' => 'add'], true) ?>"><?= $escape($translate('Create a new selection')) ?></button>
+            <button type="button" aria-haspopup="dialog" class="button add" data-msg-selection-name="<?= $escapeAttr($translate('Set title of the new selection')) ?>" data-url="<?= $url('site/selection', ['action' => 'add'], true) ?>"><?= $escape($translate('Create a new selection')) ?></button>
         </li>
     </ul>
 </div>

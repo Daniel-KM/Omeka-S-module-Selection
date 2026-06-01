@@ -100,7 +100,7 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
     <div class="selection-list-actions">
         <ul class="actions">
             <li>
-                <button type="button" class="button add-group" data-msg-group-name="<?= $translate('Set selection name') ?>" data-url="<?= $url('site/selection-id', ['id' => $selectionId, 'action' => 'add-group'], true) ?>"><?= $translate('Create a selection') ?></button>
+                <button type="button" aria-haspopup="dialog" class="button add-group" data-msg-group-name="<?= $translate('Set selection name') ?>" data-url="<?= $url('site/selection-id', ['id' => $selectionId, 'action' => 'add-group'], true) ?>"><?= $translate('Create a selection') ?></button>
             </li>
         </ul>
     </div>

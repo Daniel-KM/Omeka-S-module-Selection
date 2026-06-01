@@ -39,5 +39,5 @@ $publishConfirm = $selectionShare === 'moderate' && !$canValidateAll
     : $translate('Do you want to make this selection visible to the public?');
 ?>
 <div class="actions selection-publish-actions">
-    <button type="button" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $escapeAttr($baseUrl) ?>/edit" data-msg-publish="<?= $escapeAttr($translate('Publish')) ?>" data-msg-unpublish="<?= $escapeAttr($translate('Unpublish')) ?>" data-msg-publish-confirm="<?= $escapeAttr($publishConfirm) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($translate('Do you want to make this selection invisible to the public?')) ?>"><?= $escape($isPublic ? $translate('Unpublish') : $translate('Publish')) ?></button>
+    <button type="button" aria-haspopup="dialog" class="button <?= $isPublic ? 'unpublish' : 'publish' ?>" data-url="<?= $escapeAttr($baseUrl) ?>/edit" data-msg-publish="<?= $escapeAttr($translate('Publish')) ?>" data-msg-unpublish="<?= $escapeAttr($translate('Unpublish')) ?>" data-msg-publish-confirm="<?= $escapeAttr($publishConfirm) ?>" data-msg-unpublish-confirm="<?= $escapeAttr($translate('Do you want to make this selection invisible to the public?')) ?>"><?= $escape($isPublic ? $translate('Unpublish') : $translate('Publish')) ?></button>
 </div>

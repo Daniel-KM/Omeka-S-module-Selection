@@ -38,13 +38,13 @@ $bulkExporters = $plugins->has('bulkExporters') ? $plugins->get('bulkExporters')
             <summary class="selection-summary group-name" aria-expanded="false"><?= $translate('Actions') ?></summary>
             <ul class="actions">
                 <?php if ($disposition === 'hierarchy'): ?>
-                <li><button type="button" class="button add-group" data-url="<?= $baseUrl ?>/add-group"><?= $escape($translate('Add a sub-selection')) ?></button></li>
+                <li><button type="button" aria-haspopup="dialog" class="button add-group" data-url="<?= $baseUrl ?>/add-group"><?= $escape($translate('Add a sub-selection')) ?></button></li>
                 <?php endif; ?>
-                <li><button type="button" class="button rename-group" data-url="<?= $baseUrl ?>/rename-group"><?= $escape($translate('Rename selection')) ?></button></li>
+                <li><button type="button" aria-haspopup="dialog" class="button rename-group" data-url="<?= $baseUrl ?>/rename-group"><?= $escape($translate('Rename selection')) ?></button></li>
                 <?php if ($disposition === 'hierarchy'): ?>
                 <li><button type="button" class="button move-group" data-url="<?= $baseUrl ?>/move-group"><?= $escape($translate('Move selection')) ?></button></li>
                 <?php endif; ?>
-                <li><button type="button" class="button delete-group" data-url="<?= $baseUrl ?>/delete-group"><?= $escape($translate('Delete selection')) ?></button></li>
+                <li><button type="button" aria-haspopup="dialog" class="button delete-group" data-url="<?= $baseUrl ?>/delete-group"><?= $escape($translate('Delete selection')) ?></button></li>
                 <li><button type="button" class="button move-resource" data-url="<?= $baseUrl ?>/move"><?= $escape($translate('Move resources')) ?></button></li>
                 <?php if ($bulkExporters): ?>
                 <li><button type="button" class="button export-selection" data-url="<?= $baseUrl ?>/export"><?= $escape($translate('Export resources')) ?></button>
