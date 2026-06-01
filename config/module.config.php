@@ -326,6 +326,7 @@ return  [
                 
                 Sincerely,
                 MAIL, // @translate
+            'selection_reply_to_email' => '',
             'selection_notify_recipients' => [],
         ],
         // TODO Move "selection_share" to main settings?

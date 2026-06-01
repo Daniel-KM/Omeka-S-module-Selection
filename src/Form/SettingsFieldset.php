@@ -2,6 +2,7 @@
 
 namespace Selection\Form;
 
+use Common\Form\Element as CommonElement;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
 
@@ -67,6 +68,19 @@ class SettingsFieldset extends Fieldset
                 'attributes' => [
                     'id' => 'selection_message_reject_body',
                     'rows' => 5,
+                ],
+            ])
+            ->add([
+                'name' => 'selection_reply_to_email',
+                'type' => CommonElement\OptionalEmail::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Reply-to address of the emails to the owner', // @translate
+                    'info' => 'Address set as reply-to. If empty, the reply-to is the email of the connected admin. The sender (from) remains the unique installation address.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_reply_to_email',
+                    'required' => false,
                 ],
             ])
         ;

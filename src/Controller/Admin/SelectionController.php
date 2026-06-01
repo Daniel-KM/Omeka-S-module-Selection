@@ -383,8 +383,15 @@ class SelectionController extends AbstractActionController
 
         $to = [$toEmail => $owner->name()];
 
+        // From stays the unique installation sender. Reply-to is the configured
+        // support address, else the connected admin, so the owner can answer.
+        $replyToEmail = $this->settings()->get('selection_reply_to_email');
+        $replyTo = $replyToEmail
+            ? [$replyToEmail => '']
+            : [$user->getEmail() => (string) $user->getName()];
+
         /** @see \Common\Mvc\Controller\Plugin\SendEmail */
-        $result = $this->sendEmail($body, $subject, $to);
+        $result = $this->sendEmail($body, $subject, $to, null, null, null, $replyTo);
         if (!$result) {
             return $this->jSend()->error(null, $this->translate(
                 'Sorry, the message cannot be sent. Contact the administrator.' // @translate
