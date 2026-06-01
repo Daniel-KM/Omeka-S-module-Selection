@@ -287,6 +287,48 @@ return  [
             ],
         ],
     ],
+    'browse_defaults' => [
+        'admin' => [
+            'selections' => [
+                'sort_by' => 'id',
+                'sort_order' => 'desc',
+            ],
+        ],
+        'public' => [
+            'selections' => [
+                'sort_by' => 'created',
+                'sort_order' => 'desc',
+            ],
+            'selection_resources' => [
+                'sort_by' => 'created',
+                'sort_order' => 'desc',
+            ],
+        ],
+    ],
+    'sort_defaults' => [
+        'admin' => [
+            'selections' => [
+                'label' => 'Title', // @translate
+                'owner_name' => 'Owner', // @translate
+                'created' => 'Created', // @translate
+                'modified' => 'Modified', // @translate
+                'is_public' => 'Public', // @translate
+                'id' => 'ID', // @translate
+            ],
+        ],
+        'public' => [
+            'selections' => [
+                'label' => 'Title', // @translate
+                'owner_name' => 'Owner', // @translate
+                'created' => 'Created', // @translate
+                'modified' => 'Modified', // @translate
+            ],
+            'selection_resources' => [
+                'created' => 'Date added', // @translate
+                'title' => 'Title', // @translate
+            ],
+        ],
+    ],
     'js_translate_strings' => [
         'Are you sure you want to delete this group?', // @translate
         'Enter new group name', // @translate
@@ -300,21 +342,21 @@ return  [
             'selection_message_approve_subject' => 'Your selection has been approved on {main_title}', // @translate
             'selection_message_approve_body' => <<<'MAIL'
                 Hello,
-                
+
                 Your selection "{selection_label}" on {main_title} has been approved and is now publicly available.
-                
+
                 You can view it at: {selection_url}
-                
+
                 Sincerely,
                 MAIL, // @translate
             'selection_message_reject_subject' => 'Your selection on {main_title}', // @translate
             'selection_message_reject_body' => <<<'MAIL'
                 Hello,
-                
+
                 Your selection "{selection_label}" on {main_title} could not be approved for publication.
-                
+
                 Please contact us if you have any question.
-                
+
                 Sincerely,
                 MAIL, // @translate
             'selection_reply_to_email' => '',
@@ -342,6 +384,7 @@ return  [
                 'items',
             ],
             'selection_max_resources' => 50,
+            'selection_per_page' => 25,
             'selection_placement_button' => [],
             'selection_placement_list' => [],
             'selection_resource_show_open' => true,

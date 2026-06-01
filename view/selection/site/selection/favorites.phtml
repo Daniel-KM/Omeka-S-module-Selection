@@ -21,6 +21,10 @@ $escape = $plugins->get('escapeHtml');
 $siteSetting = $plugins->get('siteSetting');
 $partial = $plugins->get('partial');
 
+$guestNavigation = $user && $plugins->has('guestNavigation') ? $plugins->get('guestNavigation')() : null;
+$breadcrumbs = $plugins->has('breadcrumbs') ? $plugins->get('breadcrumbs') : null;
+$hasGuestNav = $guestNavigation && $guestNavigation->getContainer()->count();
+
 $this->headLink()
     ->appendStylesheet($assetUrl('css/common-dialog.css', 'Common'))
     ->appendStylesheet($assetUrl('css/selection.css', 'Selection'));
@@ -30,9 +34,20 @@ $this->headScript()
 
 $this->htmlElement('body')->appendAttribute('class', 'selection favorites browse');
 
-$labelFavorites = $siteSetting('selection_label_favorites', $translate('My favorites')); // @translate
-$labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate('My favorites'); // @translate
+$labelFavorites = $siteSetting('selection_label_favorites', $translate('My favorites')) ?: $translate('My favorites'); // @translate
 ?>
+
+<?php if ($breadcrumbs && !$hasGuestNav): ?>
+<?= $breadcrumbs() ?>
+<?php endif; ?>
+
+<?php if ($hasGuestNav): ?>
+<nav class="navigation-guest">
+    <?= $guestNavigation->menu()->renderMenu() ?>
+</nav>
+<?php endif; ?>
+
+<?= $this->messages() ?>
 
 <?= $this->pageTitle($labelFavorites, 2) ?>
 
@@ -45,8 +60,16 @@ $labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate
 <?php endif; ?>
 
 <?php if (!$selection): ?>
+
 <p class="selection-empty"><?= $translate('No favorites yet.') // @translate ?></p>
+
 <?php else: ?>
+
+<div class="browse-controls">
+    <?= $p = $this->pagination() ?>
+    <?= $this->browse()->renderSortSelector('selection_resources') ?>
+</div>
+
 <?= $partial('selection/site/selection/list-flat', [
     'site' => $site,
     'user' => $user,
@@ -61,4 +84,7 @@ $labelFavorites = (string) $labelFavorites !== '' ? $labelFavorites : $translate
     'allowIndividualSelect' => $allowIndividualSelect,
     'canReorder' => false,
 ]) ?>
+
+<?= $p ?>
+
 <?php endif; ?>

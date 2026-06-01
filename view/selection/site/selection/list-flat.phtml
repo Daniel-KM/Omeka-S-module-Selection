@@ -36,9 +36,11 @@ $contactUs = $plugins->has('contactUs') ? $plugins->get('contactUs') : null;
 
 if (isset($selection) && is_object($selection)) {
     $selectionId = $selection->id();
-    $selectionRecords = $plugins->get('selectionRecords');
-    $records = $selectionRecords($selection);
-} else {
+    if (empty($records[$selectionId])) {
+        $selectionRecords = $plugins->get('selectionRecords');
+        $records = $selectionRecords($selection);
+    }
+} elseif (isset($selections[$selectionId])) {
     $selection = $selections[$selectionId];
 }
 $currentRecords = $records[$selectionId] ?? [];

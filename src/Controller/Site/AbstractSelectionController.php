@@ -275,6 +275,15 @@ abstract class AbstractSelectionController extends AbstractActionController
         $user = $this->identity();
         $mode = $this->effectiveMode();
 
+        $query = $this->params()->fromQuery();
+        $sortBy = (string) ($query['sort_by'] ?? 'created');
+        if (!in_array($sortBy, ['created', 'title'], true)) {
+            $sortBy = 'created';
+        }
+        $sortOrder = strtolower((string) ($query['sort_order'] ?? 'desc')) === 'asc' ? 'asc' : 'desc';
+        $page = max(1, (int) ($query['page'] ?? 1));
+        $perPage = max(1, (int) $this->siteSettings()->get('selection_per_page', 25));
+
         if ($user) {
             $selection = null;
             try {
@@ -291,17 +300,39 @@ abstract class AbstractSelectionController extends AbstractActionController
             }
             $selectionId = $selection ? $selection->id() : 0;
             $sessionSelections = [];
-            $records = [];
             $isSession = false;
+            if ($selection) {
+                $selectionRecords = $this->viewHelpers()->get('selectionRecords');
+                $allByMap = $selectionRecords($selection);
+                $allRecords = $allByMap[$selectionId] ?? [];
+            } else {
+                $allRecords = [];
+            }
         } else {
             /** @var \Laminas\Session\Container $container */
             $container = $this->selectionContainer();
             $sessionSelections = $container->selections ?? [];
             $selection = reset($sessionSelections) ?: null;
             $selectionId = $selection ? (int) $selection['id'] : 0;
-            $records = $container->records ?? [];
             $isSession = true;
+            $allRecords = $container->records[$selectionId] ?? [];
         }
+
+        // Sort: insertion order is the natural "created" order (asc); other
+        // axes do an in-memory comparison on the prepared record data.
+        if ($sortBy === 'title') {
+            uasort($allRecords, fn ($a, $b) => strnatcasecmp((string) ($a['heading'] ?? ''), (string) ($b['heading'] ?? '')));
+        }
+        if ($sortOrder === 'desc') {
+            $allRecords = array_reverse($allRecords, true);
+        }
+
+        // Paginate the prepared records.
+        $total = count($allRecords);
+        $offset = ($page - 1) * $perPage;
+        $pagedRecords = array_slice($allRecords, $offset, $perPage, true);
+
+        $this->paginator($total, $page, $perPage);
 
         return new ViewModel([
             'site' => $site,
@@ -310,12 +341,15 @@ abstract class AbstractSelectionController extends AbstractActionController
             'resource' => is_object($selection) ? $selection : null,
             'selectionId' => $selectionId,
             'selections' => $sessionSelections,
-            'records' => $records,
+            'records' => [$selectionId => $pagedRecords],
             'isGuestActive' => $this->isGuestActive,
             'isSession' => $isSession,
             'mode' => $mode,
             'disposition' => 'flat',
             'allowIndividualSelect' => false,
+            'totalResults' => $total,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
         ]);
     }
 

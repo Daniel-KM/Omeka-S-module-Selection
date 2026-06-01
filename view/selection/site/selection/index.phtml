@@ -48,10 +48,7 @@ $defaultThumbnail = sprintf('<img loading="lazy" src="%1$s" title="%2$s"/>', $as
 
 <div class="browse-controls">
     <?= $p = $this->pagination() ?>
-    <?php /*
-    <?= $hyperlink($translate('Advanced search'), $url('site/selection', ['action' => 'search'], ['query' => $query], true), ['class' => 'advanced-search']) ?>
     <?= $this->browse()->renderSortSelector('selections') ?>
-    */ ?>
 </div>
 
 <?php $this->trigger('view.browse.before'); ?>

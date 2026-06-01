@@ -211,6 +211,21 @@ class SiteSettingsFieldset extends Fieldset
                     'placeholder' => 50,
                 ],
             ])
+            ->add([
+                'name' => 'selection_per_page',
+                'type' => Element\Number::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Number of resources per page', // @translate
+                    'info' => 'Pagination size for /guest/favorites and the public show page.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_per_page',
+                    'min' => 1,
+                    'step' => 1,
+                    'placeholder' => 25,
+                ],
+            ])
 
             ->add([
                 'name' => 'selection_placement_button',
