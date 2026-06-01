@@ -33,6 +33,7 @@ $escapeAttr = $plugins->get('escapeHtmlAttr');
 $translatePlural = $plugins->get('translatePlural');
 $selectionReset = $plugins->get('selectionReset');
 $selectionButtonToSelect = $plugins->get('selectionButtonToSelect');
+$selectionButtonFavorite = $plugins->get('selectionButtonFavorite');
 $bulkExport = $plugins->has('bulkExport') ? $plugins->get('bulkExport') : null;
 $contactUs = $plugins->has('contactUs') ? $plugins->get('contactUs') : null;
 
@@ -122,7 +123,9 @@ $baseUrl = rtrim($url('site/selection-id', ['id' => $selectionId ?: '0', 'action
             </div>
             <?php endif; ?>
             <ul class="actions">
-                <?php if ($mode === 'simple'): ?>
+                <?php if ($isFavorites): ?>
+                <li><?= $selectionButtonFavorite($resource) ?></li>
+                <?php elseif ($mode === 'simple'): ?>
                 <li><button type="button" class="delete selection-button selection-exclude" data-id="<?= $record['id'] ?>" data-url="<?= "$baseUrl/exclude?id=$resourceId" ?>"><?= $deleteText ?></button></li>
                 <?php else: ?>
                 <li><?= $selectionButtonToSelect($resource) ?>

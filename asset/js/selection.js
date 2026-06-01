@@ -952,6 +952,11 @@
                 const nowSelected = newValue === 'selected';
                 button.toggleClass('is-selected', nowSelected);
                 button.attr('aria-pressed', nowSelected ? 'true' : 'false');
+                const titleAdd = button.data('title-add');
+                const titleRemove = button.data('title-remove');
+                if (titleAdd && titleRemove) {
+                    button.attr('title', nowSelected ? titleRemove : titleAdd);
+                }
                 const icon = button.find('.selection-favorite-icon');
                 icon.toggleClass('fas', nowSelected).toggleClass('far', !nowSelected);
                 if (nowSelected && !selected) {
@@ -959,6 +964,12 @@
                     maybeShowAnonymousAddDialog();
                 } else if (!nowSelected && selected) {
                     updateSelectionCount(-1);
+                    // On the favorites listing, remove the row from the DOM
+                    // when the resource is unselected.
+                    const row = button.closest('li.selection-resource');
+                    if (row.length && row.closest('ul.selection-resources').length) {
+                        row.fadeOut(150, function() { $(this).remove(); });
+                    }
                 }
                 $(document).trigger('o:selection-updated', data);
             })

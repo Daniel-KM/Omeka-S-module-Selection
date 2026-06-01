@@ -28,7 +28,9 @@ $urlSelection = $url('site/selection', [
     data-resource-id="<?= $resourceId ?>"
     data-url="<?= $escapeAttr($urlSelection) ?>"
     aria-pressed="<?= $selected ? 'true' : 'false' ?>"
-    title="<?= $escapeAttr($translate('Add to my favorites')) // @translate ?>">
+    data-title-add="<?= $escapeAttr($translate('Add to my favorites')) // @translate ?>"
+    data-title-remove="<?= $escapeAttr($translate('Remove from my favorites')) // @translate ?>"
+    title="<?= $escapeAttr($selected ? $translate('Remove from my favorites') : $translate('Add to my favorites')) // @translate ?>">
     <span class="selection-favorite-icon <?= $selected ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></span>
     <span class="selection-favorite-label visually-hidden"><?= $translate('My favorites') // @translate ?></span>
 </button>
