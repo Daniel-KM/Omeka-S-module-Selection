@@ -32,3 +32,4 @@ $urlSelection = $url('site/selection', [
     <span class="selection-favorite-icon <?= $selected ? 'fas' : 'far' ?> fa-star" aria-hidden="true"></span>
     <span class="selection-favorite-label visually-hidden"><?= $translate('My favorites') // @translate ?></span>
 </button>
+<?= $this->selectionAnonymousAddDialog() ?>

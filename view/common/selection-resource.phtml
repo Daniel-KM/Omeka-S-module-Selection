@@ -20,7 +20,10 @@ $plugins = $this->getHelperPluginManager();
 $translate = $plugins->get('translate');
 $siteSetting = $plugins->get('siteSetting');
 
-if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled()) {
+$favoritesEnabled = $this->selectionFavoritesEnabled();
+$selectionsEnabled = $this->selectionSelectionsEnabled();
+
+if (!$favoritesEnabled && !$selectionsEnabled) {
     if (!$siteSetting('selection_hide_login')): ?>
         <?= $this->partial('common/guest-login', ['label' => $translate('Log in to add to selection')]) ?>
     <?php endif;
@@ -29,6 +32,7 @@ if (!$this->selectionFavoritesEnabled() && !$this->selectionSelectionsEnabled())
 
 $escape = $plugins->get('escapeHtml');
 $selectionButton = $plugins->get('selectionButton');
+$selectionButtonFavorite = $plugins->get('selectionButtonFavorite');
 
 $selectables = $siteSetting('selection_selectable_resources', ['items']);
 $isMediaSelectable = in_array('media', $selectables);
@@ -47,6 +51,26 @@ $openDetails = (bool) $siteSetting('selection_resource_show_open', true);
 $labelSelection = $this->selectionLabel('selections');
 ?>
 
+<?= $this->selectionAnonymousAddDialog() ?>
+
+<?php if ($favoritesEnabled): ?>
+<div class="selection selection-favorites">
+    <div class="item resource">
+        <?= $selectionButtonFavorite($resource) ?>
+        <?= $resource->linkPretty() ?>
+    </div>
+    <?php if ($isMediaSelectable && count($medias)): ?>
+    <?php foreach ($medias as $media): ?>
+    <div class="media resource">
+        <?= $selectionButtonFavorite($media) ?>
+        <?= $media->linkPretty() ?>
+    </div>
+    <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+<?php endif; ?>
+
+<?php if ($selectionsEnabled): ?>
 <details class="selection selection-details" <?= $openDetails ? 'open="open"' : '' ?>>
     <summary class="selection-summary" aria-expanded="<?= $openDetails ? 'true' : 'false' ?>"><?= $escape($labelSelection) ?></summary>
     <?php if ($isMediaSelectable && count($medias)): ?>
@@ -68,3 +92,4 @@ $labelSelection = $this->selectionLabel('selections');
     </details>
     <?php endif; ?>
 </details>
+<?php endif; ?>

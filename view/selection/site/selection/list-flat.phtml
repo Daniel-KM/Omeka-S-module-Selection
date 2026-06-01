@@ -14,9 +14,11 @@
  * @var string $disposition
  * @var bool $allowIndividualSelect
  * @var bool $canReorder
+ * @var bool $isFavorites
  */
 
 $canReorder = $canReorder ?? true;
+$isFavorites = $isFavorites ?? false;
 
 // Flat list of resources of a selection.
 
@@ -65,9 +67,12 @@ $recordsByType = array_column($currentRecords, 'resource_name', 'id');
 $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'annotations' => 0];
 
 $selectText = $escapeAttr($translate('Select resource'));
-$deleteText = $escapeAttr($translate('Remove from selection'));
+$deleteText = $escapeAttr($isFavorites
+    ? $translate('Remove from favorites') // @translate
+    : $translate('Remove from selection') // @translate
+);
 
-$baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => ''], true);
+$baseUrl = rtrim($url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => ''], true), '/');
 
 // TODO Get the resources one time via api (currently only needed for thumbnail, not prepared early).
 // $resources = $selectedRecords ? $api->search('items', ['id' => array_keys($selectedRecords)])->getContent() : [];
@@ -88,7 +93,7 @@ $baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => '
 
     <?php $this->trigger('view.browse.before'); ?>
 
-    <ul class="resource-list<?= $canReorder ? ' selection-sortable' : '' ?>"
+    <ul class="resource-list selection-resources<?= $canReorder ? ' selection-sortable' : '' ?>"
         <?php if ($canReorder): ?>
         data-selection-id="<?= (int) $selectionId ?>"
         data-group="/"
@@ -144,7 +149,8 @@ $baseUrl = $url('site/selection-id', ['id' => $selectionId ?: '0', 'action' => '
     }
     ?>
 
-    <?= $currentRecords && $contactUs ? $contactUs([
+    <?php // ContactUs is meaningful for shared selections, not personal favorites. ?>
+    <?= !$isFavorites && $currentRecords && $contactUs ? $contactUs([
         'html' => '<h4>' . $translate('Select resources and send an email') . '</h4>',
     ]) : '' ?>
 

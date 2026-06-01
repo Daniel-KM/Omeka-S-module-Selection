@@ -909,9 +909,18 @@ class Module extends AbstractModule
         }
 
         $placements = $siteSettings->get('selection_placement_button', []);
-        if (in_array('before/' . $resourceName, $placements)
-            || in_array('after/' . $resourceName, $placements)
+        if (!in_array('before/' . $resourceName, $placements)
+            && !in_array('after/' . $resourceName, $placements)
         ) {
+            return;
+        }
+
+        // Render the buttons matching the enabled axes. Favorites first
+        // (visible star), then multi-selection (dropdown) when relevant.
+        if ($view->selectionFavoritesEnabled()) {
+            echo $view->selectionButtonFavorite($resource);
+        }
+        if ($view->selectionSelectionsEnabled()) {
             echo $view->selectionButton($resource);
         }
     }

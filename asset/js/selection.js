@@ -7,6 +7,34 @@
  */
 
 (function() {
+    /**
+     * Show the anonymous-add dialog once per session via CommonDialog. The
+     * config is injected server-side as window.SelectionAnonymousAddDialog only
+     * when the visitor is anonymous and the site setting is enabled.
+     */
+    function maybeShowAnonymousAddDialog() {
+        const config = window.SelectionAnonymousAddDialog;
+        if (!config || typeof CommonDialog === 'undefined' || typeof CommonDialog.dialogAlert !== 'function') {
+            return;
+        }
+        try {
+            if (window.sessionStorage && sessionStorage.getItem('selectionAnonymousAddDialogShown')) {
+                return;
+            }
+        } catch (err) { /* sessionStorage may be disabled */ }
+        try {
+            CommonDialog.dialogAlert({
+                heading: config.heading || '',
+                body: config.body || '',
+                textOk: config.textOk || 'OK',
+                textCancel: null,
+            });
+            if (window.sessionStorage) {
+                sessionStorage.setItem('selectionAnonymousAddDialogShown', '1');
+            }
+        } catch (err) { /* ignore */ }
+    }
+
     $(document).ready(function() {
 
         $(document).on('click', 'summary.selection-summary', function() {
@@ -257,6 +285,7 @@
                     // Update the count based on action result.
                     if (selectionResource.value === 'selected') {
                         updateSelectionCount(1);
+                        maybeShowAnonymousAddDialog();
                     } else if (selectionResource.value === 'unselected') {
                         updateSelectionCount(-1);
                     }
@@ -927,6 +956,7 @@
                 icon.toggleClass('fas', nowSelected).toggleClass('far', !nowSelected);
                 if (nowSelected && !selected) {
                     updateSelectionCount(1);
+                    maybeShowAnonymousAddDialog();
                 } else if (!nowSelected && selected) {
                     updateSelectionCount(-1);
                 }

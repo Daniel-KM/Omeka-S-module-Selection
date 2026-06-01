@@ -5,6 +5,7 @@ namespace Selection\Form;
 use Common\Form\Element as CommonElement;
 use Laminas\Form\Element;
 use Laminas\Form\Fieldset;
+use Omeka\Form\Element as OmekaElement;
 
 class SiteSettingsFieldset extends Fieldset
 {
@@ -342,6 +343,31 @@ class SiteSettingsFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'selection_warning_anonymous',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_anonymous_add_dialog',
+                'type' => Element\Checkbox::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Show a dialog when an anonymous visitor adds a resource', // @translate
+                    'info' => 'A modal dialog appears the first time of the session, inviting the visitor to log in or register to keep favorites.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_anonymous_add_dialog',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_anonymous_add_message',
+                'type' => OmekaElement\CkeditorInline::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Dialog message for anonymous visitor', // @translate
+                    'info' => 'Placeholders: {url_login}, {url_register}.', // @translate
+                ],
+                'attributes' => [
+                    'id' => 'selection_anonymous_add_message',
+                    'rows' => 6,
                 ],
             ])
         ;

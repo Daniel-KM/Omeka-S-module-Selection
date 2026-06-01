@@ -56,6 +56,7 @@ return  [
             'selectionEffectiveMode' => Service\ViewHelper\SelectionEffectiveModeFactory::class,
             'selectionLabel' => Service\ViewHelper\SelectionLabelFactory::class,
             'selectionConvertInjector' => Service\ViewHelper\SelectionConvertInjectorFactory::class,
+            'selectionAnonymousAddDialog' => Service\ViewHelper\SelectionAnonymousAddDialogFactory::class,
         ],
     ],
     'form_elements' => [
@@ -395,6 +396,13 @@ return  [
             'selection_label_selections' => 'Selections', // @translate
             'selection_label_guest_link' => 'My selection', // @translate
             'selection_warning_anonymous' => 'This selection is stored in the session cookie. It will be lost if the cookie is cleared.', // @translate
+            'selection_anonymous_add_dialog' => true,
+            'selection_anonymous_add_message' => <<<'TXT'
+                <p>The resource has been added to your favorites.</p>
+                <p>Warning: it will only be available as long as you do not clear your browser cookies.</p>
+                <p><strong>Want to keep your favorites and access more features?</strong></p>
+                <p><a href="{url_login}">Log in</a> or <a href="{url_register}">create an account</a>.</p>
+                TXT, // @translate
         ],
         'block_settings' => [
             'selection' => [

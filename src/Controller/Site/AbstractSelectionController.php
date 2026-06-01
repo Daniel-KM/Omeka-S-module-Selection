@@ -350,6 +350,7 @@ abstract class AbstractSelectionController extends AbstractActionController
             'totalResults' => $total,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
+            'isFavorites' => true,
         ]);
     }
 
