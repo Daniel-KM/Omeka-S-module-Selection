@@ -1,0 +1,1591 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-01 00:00+0000\n"
+"PO-Revision-Date: 2026-06-01 00:00+0000\n"
+"Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
+"Language-Team: br <LL@li.org>\n"
+"Language: br\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==1 ? 0 : n%10==1 && n%100!=11 && n%100!"
+"=71 && n%100!=91 ? 1 : n%10==2 && n%100!=12 && n%100!=72 && n%100!=92 ? 2 : "
+"(n%10==3 || n%10==4 || n%10==9) && n%100!=13 && n%100!=14 && n%100!=19 && "
+"n%100!=73 && n%100!=74 && n%100!=79 && n%100!=93 && n%100!=94 && n%100!=99 ? "
+"3 : n%1000000==0 ? 4 : 5);\n"
+"Generated-By: Babel 2.18.0\n"
+"X-Generator: Poedit 3.6\n"
+
+#: data/scripts/upgrade.php:33 data/scripts/upgrade.php:45 Module.php:264
+#: Module.php:275
+#, php-format
+msgid "The module %1$s should be upgraded to version %2$s or later."
+msgstr ""
+"Ar modul %1$s a zlefe bezañ hizivaet d'ar stumm %2$s pe unan nevesoc'h."
+
+#: data/scripts/upgrade.php:37 data/scripts/upgrade.php:49
+msgid "Missing requirement. Unable to upgrade."
+msgstr "Rekizadenn a vank. N'haller ket hizivaat."
+
+#: data/scripts/upgrade.php:200 Module.php:752 Module.php:979
+#: src/Controller/Site/TraitDbController.php:1443
+#: view/common/advanced-search/selections.phtml:17
+msgid "Selection"
+msgstr "Dibab"
+
+#: Module.php:755
+msgid "Invalid selection"
+msgstr "Dibab direizh"
+
+#: Module.php:758 view/common/selection-list.phtml:55
+msgid "No selection"
+msgstr "Tamm dibab ebet"
+
+#: src/Controller/Admin/SelectionController.php:197
+#: src/Controller/Admin/SelectionController.php:257
+#: src/Controller/Admin/SelectionController.php:321
+msgid "Method not allowed."
+msgstr "Hentenn n'eo ket aotreet."
+
+#: src/Controller/Admin/SelectionController.php:207
+#: src/Controller/Admin/SelectionController.php:267
+#: src/Controller/Admin/SelectionController.php:332
+msgid "Resource not found."
+msgstr "N'eus ket kavet ar vammenn."
+
+#: src/Controller/Admin/SelectionController.php:220
+#: src/Controller/Admin/SelectionController.php:300
+#: src/Controller/Site/AbstractSelectionController.php:1107
+msgid "An internal error occurred."
+msgstr "Ur fazi diabarzh zo c'hoarvezet."
+
+#: src/Controller/Admin/SelectionController.php:228
+#: src/Controller/Admin/SelectionController.php:291
+#: view/selection/admin/selection/show-details.phtml:81
+msgid "Undetermined"
+msgstr "Dizivizet"
+
+#: src/Controller/Admin/SelectionController.php:231
+#: src/Controller/Admin/SelectionController.php:283
+#: view/selection/admin/selection/show-details.phtml:84
+msgid "Validated"
+msgstr "Gwiriet"
+
+#: src/Controller/Admin/SelectionController.php:234
+#: src/Controller/Admin/SelectionController.php:287
+#: view/selection/admin/selection/show-details.phtml:87
+msgid "Rejected"
+msgstr "Distaolet"
+
+#: src/Controller/Admin/SelectionController.php:274
+msgid "Private selections cannot be moderated."
+msgstr "N'haller ket moderañ an dibaboù prevez."
+
+#: src/Controller/Admin/SelectionController.php:339
+msgid "Unauthorized access."
+msgstr "Moned hep aotre."
+
+#: src/Controller/Admin/SelectionController.php:348
+msgid "Empty message."
+msgstr "Kemenadenn goullo."
+
+#: src/Controller/Admin/SelectionController.php:354
+msgid "Too long message."
+msgstr "Kelaouenn re hir."
+
+#: src/Controller/Admin/SelectionController.php:369
+msgid "Too long subject."
+msgstr "Danvez re hir."
+
+#: src/Controller/Admin/SelectionController.php:376
+msgid "No owner defined for this selection."
+msgstr "Perc'henn ebet termenet evit an dibab-mañ."
+
+#: src/Controller/Admin/SelectionController.php:383
+msgid "No email defined for this selection owner."
+msgstr "Postel ebet termenet evit perc'henn an dibab-mañ."
+
+#: src/Controller/Admin/SelectionController.php:410
+msgid "Sorry, the message cannot be sent. Contact the administrator."
+msgstr ""
+"Digarezit, n'haller ket kas ar gemennadenn. Kit e darempred gant ar merour."
+
+#: src/Controller/Site/AbstractSelectionController.php:455
+#: src/Controller/Site/AbstractSelectionController.php:633
+#: src/Controller/Site/AbstractSelectionController.php:747
+msgid "The group name is unchanged."
+msgstr "N'eo ket cheñchet anv ar strollad."
+
+#: src/Controller/Site/AbstractSelectionController.php:514
+#: src/Controller/Site/AbstractSelectionController.php:606
+#: src/Controller/Site/AbstractSelectionController.php:613
+#: src/Controller/Site/AbstractSelectionController.php:735
+#: src/Controller/Site/AbstractSelectionController.php:869
+msgid "No group set."
+msgstr "Strollad ebet lakaet."
+
+#: src/Controller/Site/AbstractSelectionController.php:536
+#: src/Controller/Site/AbstractSelectionController.php:641
+msgid "The parent group does not exist."
+msgstr "Ne vez ket eus ar strollad-mamm."
+
+#: src/Controller/Site/AbstractSelectionController.php:545
+#: src/Controller/Site/AbstractSelectionController.php:651
+msgid "The group exists already."
+msgstr "Ar strollad a zo dija."
+
+#: src/Controller/Site/AbstractSelectionController.php:695
+msgid "Missing ordered ids."
+msgstr "IDoù urzhiet a vank."
+
+#: src/Controller/Site/AbstractSelectionController.php:753
+msgid "The group cannot be moved inside itself."
+msgstr "Ne c'haller ket dilec'hiañ ar strollad e-barzh e-unan."
+
+#: src/Controller/Site/AbstractSelectionController.php:766
+msgid "The group \"{name}\" does not exist."
+msgstr "Ne zo ket eus ar strollad \"{name}\"."
+
+#: src/Controller/Site/AbstractSelectionController.php:875
+msgid "The group does not exist."
+msgstr "Ne zo ket eus ar strollad."
+
+#: src/Controller/Site/AbstractSelectionController.php:1116
+msgid "Permission denied"
+msgstr "Aotreet n'eo ket"
+
+#: src/Controller/Site/SelectionController.php:110
+#: src/Controller/Site/SelectionController.php:166
+msgid "Authentication required"
+msgstr "Gwiriekadur rekis"
+
+#: src/Controller/Site/SelectionController.php:139
+#: src/Controller/Site/SelectionController.php:223
+#, php-format
+msgid "My favorites of %s"
+msgstr "Ma re wellañ eus %s"
+
+#: src/Controller/Site/SelectionController.php:173
+msgid "POST required"
+msgstr "Ret eo postañ"
+
+#: src/Controller/Site/SelectionController.php:209
+msgid "Selection disabled for this user"
+msgstr "Dizgweredet an dibab evit an implijer-mañ"
+
+#: src/Controller/Site/SelectionController.php:238
+msgid "Selection not found"
+msgstr "N'eus ket bet kavet an dibab"
+
+#: src/Controller/Site/SelectionController.php:245
+msgid "Not owner"
+msgstr "N'eo ket ar perc'henn"
+
+#: src/Controller/Site/SelectionController.php:252
+msgid "Invalid action"
+msgstr "Oberiadenn direizh"
+
+#: src/Controller/Site/TraitDbController.php:170
+msgid "Cannot add a new selection when selection id is specified."
+msgstr "N'haller ket ouzhpennañ un dibab nevez pa vez spisaet ID an dibab."
+
+#: src/Controller/Site/TraitDbController.php:175
+#: src/Controller/Site/TraitDbController.php:279
+msgid "No label"
+msgstr "Label ebet"
+
+#: src/Controller/Site/TraitDbController.php:188
+#: src/Controller/Site/TraitDbController.php:287
+msgid "The label is already used for another selection."
+msgstr "Implijet e vez dija an etikedenn evit un dibab all."
+
+#: src/Controller/Site/TraitDbController.php:256
+msgid "Cannot edit a selection when selection id is not specified."
+msgstr "N'haller ket kemmañ un dibab pa n'eo ket spisaet ID an dibab."
+
+#: src/Controller/Site/TraitDbController.php:297
+msgid "No change."
+msgstr "Ne cheñch netra."
+
+#: src/Controller/Site/TraitDbController.php:326
+msgid "Cannot delete a selection when the selection id is not specified."
+msgstr "N'haller ket diverkañ un dibab pa n'eo ket spisaet ID an dibab."
+
+#: src/Controller/Site/TraitDbController.php:395
+#: src/Controller/Site/TraitDbController.php:1144
+#: src/Controller/Site/TraitSessionController.php:124
+msgid "Already in"
+msgstr "Diouzh an tu all"
+
+#: src/Controller/Site/TraitDbController.php:1438
+#: src/Controller/Site/TraitSessionController.php:648
+msgid "Favorites"
+msgstr "Morbidi"
+
+#: src/Controller/Site/TraitSessionController.php:26
+msgid ""
+"It is not possible to browse multiple selections without an account for now."
+msgstr "Evit ar poent, n'haller ket furchal e meur a zibab hep ur gont."
+
+#: src/Controller/Site/TraitSessionController.php:75
+msgid "It is not possible to add a selection without an account for now."
+msgstr "Evit ar poent, n'haller ket ouzhpennañ un dibab hep ur gont."
+
+#: src/Controller/Site/TraitSessionController.php:80
+msgid "It is not possible to edit a selection without an account for now."
+msgstr "Evit ar poent, n'haller ket aozañ un dibab hep ur gont."
+
+#: src/Controller/Site/TraitSessionController.php:85
+msgid "It is not possible to delete a selection without an account for now."
+msgstr "Evit ar poent, n'haller ket diverkañ un dibab hep ur gont."
+
+#: src/View/Helper/SelectionAnonymousAddDialog.php:55
+msgid ""
+"<p>The resource has been added to your favorites.</p>\n"
+"<p>Warning: it will only be available as long as you do not clear your "
+"browser cookies.</p>\n"
+"<p><strong>Want to keep your favorites and access more features?</strong></"
+"p>\n"
+"<p><a href=\"{url_login}\">Log in</a> or <a href=\"{url_register}\">create "
+"an account</a>.</p>"
+msgstr ""
+"Ouzhpennet eo bet ar vammenn da'z muiañ-karet.\n"
+"Diwallit : ne vo hegerz nemet keit ha na ziverkit ket kukiou ho merdeer.\n"
+"C'hoant ho peus mirout ho penndibaboù ha kaout muioc'h a arc'hwelioù ?\n"
+"<a href=\"{url_login}\">En em gevreañ pe <a href=\"{url_register}\">krouiñ "
+"ur gont"
+
+#: src/View/Helper/SelectionAnonymousAddDialog.php:68
+msgid "Added to favorites"
+msgstr "Ouzhpennet d'ar muiañ-karet"
+
+#: src/View/Helper/SelectionAnonymousAddDialog.php:70
+msgid "OK"
+msgstr "Mat eo"
+
+#: src/View/Helper/SelectionBrowse.php:51
+#: view/selection/site/selection/index.phtml:45
+msgid "User selections"
+msgstr "Dibaboù an implijer"
+
+#: src/View/Helper/SelectionButtonToGroup.php:95
+#: src/View/Helper/SelectionButtonToSelect.php:84
+msgid "The selection has been updated."
+msgstr "Hizivaet eo bet an dibab."
+
+#: src/View/Helper/SelectionButtonToGroup.php:96
+#: src/View/Helper/SelectionButtonToSelect.php:85
+msgid "The selection could not be updated."
+msgstr "N'eo ket bet tu hizivaat an dibab."
+
+#: src/View/Helper/SelectionButtonToGroup.php:97
+#: src/View/Helper/SelectionButtonToSelect.php:86
+#: view/common/selection-button-to-group.phtml:50
+#: view/common/selection-button-to-select.phtml:40
+msgid "Choose a selection"
+msgstr "Dibabit un dibab"
+
+#: src/View/Helper/SelectionContainer.php:50
+#: src/View/Helper/SelectionContainer.php:131
+#: src/View/Helper/SelectionContainer.php:132
+#: view/common/selection-button-simple.phtml:35
+#: view/selection/site/selection/favorites.phtml:37
+msgid "My favorites"
+msgstr "Ma re wellañ"
+
+#: view/common/dialog/selection-send-message.phtml:23
+msgid "Send message to selection owner"
+msgstr "Kas ur gemennadenn da berc'henn an dibab"
+
+#: view/common/selection-browse.phtml:34
+#: view/selection/site/selection/index.phtml:38
+msgid "No media"
+msgstr "Media ebet"
+
+#: view/common/selection-browse.phtml:76
+#: view/selection/site/selection/index.phtml:73
+msgid "[anonymous]"
+msgstr "[Dianav]"
+
+#: view/common/selection-button-simple.phtml:31
+#: view/common/selection-button-simple.phtml:33
+msgid "Add to my favorites"
+msgstr "Ouzhpennañ da'm muiañ-karet"
+
+#: view/common/selection-button-simple.phtml:32
+#: view/common/selection-button-simple.phtml:33
+msgid "Remove from my favorites"
+msgstr "Lakaat er-maez eus ma re muiañ-karet"
+
+#: view/common/selection-button-to-group.phtml:34
+#: view/common/selection-button-to-select.phtml:33
+#: view/common/selection-button.phtml:32
+#: view/common/selection-link-browse.phtml:18
+#: view/common/selection-list.phtml:25 view/common/selection-reset.phtml:18
+#: view/common/selection-resource.phtml:28
+msgid "Log in to add to selection"
+msgstr "Kevrediñ evit ouzhpennañ d'an dibab"
+
+#: view/common/selection-button-to-group.phtml:54
+#: view/common/selection-button-to-select.phtml:46
+msgid "Add to a selection"
+msgstr "Ouzhpennañ d'un dibab"
+
+#: view/common/selection-button-to-group.phtml:58
+msgid "Store without group"
+msgstr "Miret hep strollad"
+
+#: view/common/selection-button-to-group.phtml:65
+msgid "Create a new group for selection"
+msgstr "Krouiñ ur strollad nevez evit an dibab"
+
+#: view/common/selection-button-to-group.phtml:66
+#: view/common/selection-button.phtml:40 view/common/selection-list.phtml:35
+#: view/selection/site/selection/list-flat.phtml:73
+#: view/selection/site/selection/list-grouped.phtml:77
+#: view/selection/site/selection/list-hierarchy.phtml:76
+msgid "Remove from selection"
+msgstr "Tennañ diouzh an dibab"
+
+#: view/common/selection-button-to-select.phtml:54
+#: view/selection/site/selection/browse.phtml:73
+#: view/selection/site/selection/convert-dialog.phtml:46
+msgid "Create a new selection"
+msgstr "Krouiñ un dibab nevez"
+
+#: view/common/selection-button.phtml:39
+msgid "Add to selection"
+msgstr "Ouzhpennañ d'an dibab"
+
+#: view/common/selection-list.phtml:41
+msgid "Selected resources"
+msgstr "Danvezioù dibabet"
+
+#: view/common/selection-reset.phtml:29
+msgid "Clear all selections"
+msgstr "Dilemel an holl zibaboù"
+
+#: view/guest/site/guest/widget/selection.phtml:16
+msgid "My selection"
+msgstr "Ma dibab"
+
+#: view/selection/admin/selection/browse.phtml:54
+msgid "Selections"
+msgstr "Diuzadennoù"
+
+#: view/selection/admin/selection/browse.phtml:58
+msgid "Quick filter"
+msgstr "Sil buan"
+
+#: view/selection/admin/selection/browse.phtml:82
+#: view/selection/admin/selection/show-details.phtml:37
+msgid "[no owner]"
+msgstr "[Perc'henn ebet]"
+
+#: view/selection/admin/selection/browse.phtml:88
+msgid "Select selection"
+msgstr "Diuzit an diuzadenn"
+
+#: view/selection/admin/selection/browse.phtml:91
+#, php-format
+msgid "%d resources"
+msgstr "%d danvez"
+
+#: view/selection/admin/selection/browse.phtml:100
+msgid "Toggle public/private"
+msgstr "Cheñch etre foran ha prevez"
+
+#: view/selection/admin/selection/browse.phtml:120
+msgid "Toggle validation status"
+msgstr "Cheñch statud ar gwiriekadur"
+
+#: view/selection/admin/selection/browse.phtml:131
+msgid "Send a message to the owner"
+msgstr "Kas ur gemennadenn d'ar perc'henn"
+
+#: view/selection/admin/selection/browse.phtml:138
+#: view/selection/admin/selection/show-details.phtml:127
+msgid "View items in admin"
+msgstr "Gwelet an elfennoù er mererezh"
+
+#: view/selection/admin/selection/browse.phtml:145
+#: view/selection/admin/selection/show-details.phtml:134
+msgid "View in public site"
+msgstr "Gwelet war al lec'hienn foran"
+
+#: view/selection/admin/selection/browse.phtml:201
+#: view/selection/admin/selection/browse.phtml:219
+msgid "Delete selections"
+msgstr "Dilemel an dibaboù"
+
+#: view/selection/admin/selection/browse.phtml:202
+msgid "Are you sure you would like to delete the selected selections?"
+msgstr "Ha sur oc'h e fell deoc'h diverkañ an dibaboù diuzet ?"
+
+#: view/selection/admin/selection/browse.phtml:204
+#: view/selection/admin/selection/browse.phtml:222
+#, php-format
+msgid ""
+"%1$s: this action will permanently delete %2$s selections and cannot be "
+"undone."
+msgstr ""
+"%1$s: an ober-mañ a ziverko da viken an dibaboù %2$s ha ne c'haller ket e "
+"zizober."
+
+#: view/selection/admin/selection/browse.phtml:220
+msgid ""
+"Are you sure you would like to delete all selections on all pages of this "
+"result?"
+msgstr ""
+"Ha sur oc'h e fell deoc'h diverkañ an holl zibaboù war holl bajennoù an "
+"disoc'h-mañ ?"
+
+#: view/selection/admin/selection/browse.phtml:237
+msgid "Omeka could not find any selections."
+msgstr "N'eo ket bet kavet dibab ebet gant Omeka."
+
+#: view/selection/admin/selection/browse.phtml:247
+msgid "Filter selections"
+msgstr "Silañ an dibaboù"
+
+#: view/selection/admin/selection/show-details.phtml:54
+#, php-format
+msgid "Total: %d"
+msgstr "Hollad: %d"
+
+#: view/selection/admin/selection/show-details.phtml:96
+msgid "Dynamic selection"
+msgstr "Dibab dinamek"
+
+#: view/selection/admin/selection/show-details.phtml:96
+msgid "Static selection"
+msgstr "Dibab statik"
+
+#: view/selection/admin/selection/show-details.phtml:102
+msgid "Dates"
+msgstr "Deiziadoù"
+
+#: view/selection/admin/selection/show-details.phtml:123
+msgid "Links"
+msgstr "Liammoù"
+
+#: view/selection/site/selection/actions.phtml:21
+#: view/selection/site/selection/browse.phtml:100
+msgid "Visible to the public"
+msgstr "Gwelus d'an holl"
+
+#: view/selection/site/selection/actions.phtml:22
+#: view/selection/site/selection/browse.phtml:101
+msgid "Invisible to the public"
+msgstr "Dizwelus d'an dud"
+
+#: view/selection/site/selection/actions.phtml:23
+#: view/selection/site/selection/browse.phtml:102
+msgid "Is validated"
+msgstr "Gwiriet eo"
+
+#: view/selection/site/selection/actions.phtml:24
+#: view/selection/site/selection/browse.phtml:103
+msgid "Is rejected"
+msgstr "Distaolet eo"
+
+#: view/selection/site/selection/actions.phtml:25
+#: view/selection/site/selection/browse.phtml:104
+msgid "Validation in progress"
+msgstr "Kadarnaat war-raok"
+
+#: view/selection/site/selection/actions.phtml:26
+#: view/selection/site/selection/browse.phtml:105
+msgid "Publish"
+msgstr "Embann"
+
+#: view/selection/site/selection/actions.phtml:27
+#: view/selection/site/selection/browse.phtml:106
+msgid "Unpublish"
+msgstr "Dizembann"
+
+#: view/selection/site/selection/actions.phtml:29
+#: view/selection/site/selection/browse.phtml:108
+msgid ""
+"Do you want to make this selection visible to the public? It will be "
+"moderated."
+msgstr ""
+"Ha c'hoant hoc'h eus lakaat an dibab-mañ da vezañ gwelus d'an holl? Moderet "
+"e vo."
+
+#: view/selection/site/selection/actions.phtml:30
+#: view/selection/site/selection/browse.phtml:109
+msgid "Do you want to make this selection visible to the public?"
+msgstr "Ha c'hoant hoc'h eus lakaat an dibab-mañ da vezañ gwelus d'an holl?"
+
+#: view/selection/site/selection/actions.phtml:31
+#: view/selection/site/selection/browse.phtml:110
+msgid "Do you want to make this selection invisible to the public?"
+msgstr "Ha c'hoant hoc'h eus lakaat an dibab-mañ da vezañ diwelus d'an holl?"
+
+#: view/selection/site/selection/actions.phtml:50
+#: view/selection/site/selection/group-resource.phtml:64
+#: view/selection/site/selection/group.phtml:38
+msgid "Actions"
+msgstr "Oberoù"
+
+#: view/selection/site/selection/actions.phtml:54
+msgid "Set the new name of the selection"
+msgstr "Termeniñ anv nevez an dibab"
+
+#: view/selection/site/selection/actions.phtml:54
+msgid "Rename"
+msgstr "Adanvañ"
+
+#: view/selection/site/selection/actions.phtml:63
+#: view/selection/site/selection/group.phtml:50
+msgid "Export resources"
+msgstr "Ezhornata danvezioù"
+
+#: view/selection/site/selection/actions.phtml:75
+msgid "Delete this selection"
+msgstr "Dilemel an dibab-mañ"
+
+#: view/selection/site/selection/actions.phtml:75
+#: view/selection/site/selection/group.phtml:47
+msgid "Delete selection"
+msgstr "Dilemel an dibab"
+
+#: view/selection/site/selection/browse.phtml:66
+#, php-format
+msgid "(%d resources max by selection)"
+msgstr "(%d danvez d'ar muiañ dre zibab)"
+
+#: view/selection/site/selection/browse.phtml:73
+msgid "Set title of the new selection"
+msgstr "Termeniñ titl an dibab nevez"
+
+#: view/selection/site/selection/browse.phtml:80
+#: view/selection/site/selection/favorites.phtml:55
+#: view/selection/site/selection/view.phtml:72
+msgid ""
+"This selection is stored in the session cookie. It will be lost if the "
+"cookie is cleared."
+msgstr ""
+"Miret e vez an dibab-mañ er c'hookie sesion. Kollet e vo ma vez diverket ar "
+"c'hookie."
+
+#: view/selection/site/selection/convert-dialog.phtml:28
+msgid "Your anonymous favorites"
+msgstr "Ho penndibaboù dizanv"
+
+#: view/selection/site/selection/convert-dialog.phtml:41
+msgid "Items will be added to your favorites."
+msgstr "Ouzhpennet e vo an elfennoù da'z re wellañ."
+
+#: view/selection/site/selection/convert-dialog.phtml:57
+msgid "Add to an existing selection"
+msgstr "Ouzhpennañ d'un dibab a zo anezhañ dija"
+
+#: view/selection/site/selection/convert-dialog.phtml:73
+msgid "Add to favorites"
+msgstr "Ouzhpennañ d'ar muiañ-karet"
+
+#: view/selection/site/selection/convert-dialog.phtml:74
+#: view/selection/site/selection/convert-dialog.phtml:78
+msgid "Discard favorites"
+msgstr "Lakaat a-gostez ar re muiañ-karet"
+
+#: view/selection/site/selection/convert-dialog.phtml:77
+msgid "Later"
+msgstr "Diwezhatoc'h"
+
+#: view/selection/site/selection/favorites.phtml:64
+msgid "No favorites yet."
+msgstr "Favorit ebet evit c'hoazh."
+
+#: view/selection/site/selection/group.phtml:41
+msgid "Add a sub-selection"
+msgstr "Ouzhpennañ un is-diuzadenn"
+
+#: view/selection/site/selection/group.phtml:43
+msgid "Rename selection"
+msgstr "Adanvañ an dibab"
+
+#: view/selection/site/selection/group.phtml:45
+msgid "Move selection"
+msgstr "Dilenn an dilec'hiañ"
+
+#: view/selection/site/selection/group.phtml:48
+msgid "Move resources"
+msgstr "Dilec'hiañ ar peadra"
+
+#: view/selection/site/selection/list-flat.phtml:72
+msgid "Remove from favorites"
+msgstr "Lakaat er-maez eus ar muiañ-karet"
+
+#: view/selection/site/selection/list-flat.phtml:91
+#: view/selection/site/selection/list-grouped.phtml:97
+#: view/selection/site/selection/list-hierarchy.phtml:96
+msgid "The selection is empty."
+msgstr "Goullo eo an dibab."
+
+#: view/selection/site/selection/list-flat.phtml:142
+#: view/selection/site/selection/list-grouped.phtml:158
+#: view/selection/site/selection/list-hierarchy.phtml:154
+msgid "Select resources and download metadata"
+msgstr "Diuzit danvezioù ha pellgargit ar metaroadennoù"
+
+#: view/selection/site/selection/list-flat.phtml:157
+#: view/selection/site/selection/list-grouped.phtml:172
+#: view/selection/site/selection/list-hierarchy.phtml:168
+msgid "Select resources and send an email"
+msgstr "Diuzit danvezioù ha kasit ur postel"
+
+#: view/selection/site/selection/list-grouped.phtml:76
+#: view/selection/site/selection/list-hierarchy.phtml:75
+msgid "Move"
+msgstr "Fiñv"
+
+#: view/selection/site/selection/list-grouped.phtml:104
+#: view/selection/site/selection/list-grouped.phtml:113
+#: view/selection/site/selection/list-hierarchy.phtml:103
+#: view/selection/site/selection/list-hierarchy.phtml:112
+msgid "Set selection name"
+msgstr "Termeniñ anv an dibab"
+
+#: view/selection/site/selection/list-grouped.phtml:104
+#: view/selection/site/selection/list-hierarchy.phtml:103
+msgid "Create a selection"
+msgstr "Krouiñ un dibab"
+
+#: view/selection/site/selection/list-grouped.phtml:132
+msgid "No resource"
+msgstr "N'eus danvez ebet"
+
+#: view/selection/site/selection/show.phtml:60
+msgid "[Selection without title]"
+msgstr "[Diuzadenn hep titl]"
+
+#: view/selection/site/selection/show.phtml:62
+msgid "[Anonymous]"
+msgstr "Dianav"
+
+#: data/scripts/upgrade.php:149
+msgid ""
+"Helpers and templates were renamed. Old ones will be removed in a future "
+"version."
+msgstr ""
+"Adanvet eo bet ar skoazellerien hag ar patromoù. Lamet e vo ar re gozh en ur "
+"stumm da zont."
+
+#: data/scripts/upgrade.php:204
+msgid "It is now possible to organize selected resources in a structured way."
+msgstr "Bremañ eo posupl aozañ danvezioù dibabet en un doare frammet."
+
+#: data/scripts/upgrade.php:208
+msgid "The structure is not available for anonymous visitors yet."
+msgstr "N'eo ket hegerz ar framm evit ar weladennerien dizanv evit ar poent."
+
+#: data/scripts/upgrade.php:212
+msgid ""
+"Some url routes have been updated to use query arguments. Check your theme "
+"if needed."
+msgstr ""
+"Hentoù URL zo zo bet hizivaet evit implijout arguzennoù reked. Gwiriit ho "
+"tem ma'z eo ezhomm."
+
+#: data/scripts/upgrade.php:253
+msgid ""
+"The option \"selection_visitor_allow\" was renamed "
+"\"selection_disable_anonymous\" and \"selection_open\" as "
+"\"selection_resource_show_open\". Update your theme if you customized it."
+msgstr ""
+"An dibab \"selection_visitor_allow\" zo bet adanvet "
+"\"selection_disable_anonymous\" hag an dibab \"selection_open\" zo bet "
+"adanvet \"selection_resource_show_open\". Hizivaat ho tem ma hoc'h eus "
+"personelaet anezhañ."
+
+#: data/scripts/upgrade.php:258
+msgid "The views were restructured, so check your theme if you customized it."
+msgstr ""
+"Adframmet eo bet an arvezioù, neuze gwiriekait ho tem m'hoc'h eus "
+"personelaet anezhañ."
+
+#: data/scripts/upgrade.php:263
+msgid ""
+"A new option in site settings and in block settings allows to display the "
+"selection flat, by default, or hierarchically."
+msgstr ""
+"Un dibab nevez e pennadoù ar lec'hienn hag e re ar bloc'hoù a ro an tu da "
+"ziskouez an dibab plaen, dre ziouer, pe en un doare urzhiel."
+
+#: data/scripts/upgrade.php:268
+msgid ""
+"A new option in site settings allows to define selectable resources (items, "
+"medias, item sets)."
+msgstr ""
+"Un dibab nevez e parañdoù al lec'hienn a ro an tu da dermeniñ danvezioù "
+"dibab (elfennoù, mediaoù, strolladoù elfennoù)."
+
+#: data/scripts/upgrade.php:273
+msgid ""
+"The resource block \"Selection\" was split into a block \"Selection\" and a "
+"block \"Selection list\"."
+msgstr ""
+"Rannet eo bet ar bloc'had danvez \"Dibab\" en ur bloc'had \"Dibab\" hag ur "
+"bloc'had \"Roll an diboù\"."
+
+#: data/scripts/upgrade.php:278
+msgid ""
+"Modules {link_1}Bulk Export{link_end} and {link_2}Contact Us{link_end} are "
+"fully integrated in the selection page."
+msgstr ""
+"Ar moduloù {link_1}Eksport a-vras{link_end} ha {link_2}Darempred{link_end} a "
+"zo enframmet penn-da-benn er bajenn dibab."
+
+#: data/scripts/upgrade.php:361
+msgid ""
+"The setting \"heading\" was removed from block Selection. New blocks "
+"\"Heading\" or \"Html\" were prepended to all blocks that had a filled "
+"heading. You may check pages for styles: {json}"
+msgstr ""
+"Lamet eo bet an arventenn \"titl\" eus an dibab bloc'h. Bloc'hoù nevez "
+"\"Titl\" pe \"Html\" a zo bet lakaet dirak an holl vloc'hoù o doa un titl "
+"leuniet. Gallout a rit gwiriañ ar pajennoù evit ar stiloù : {json}"
+
+#: data/scripts/upgrade.php:371
+msgid ""
+"The setting \"template\" was moved to the new block layout settings "
+"available since Omeka S v4.1. You may check pages for styles: {json}"
+msgstr ""
+"An arventenn \"stumm-doue\" a zo bet dilec'hiet d'an arventennoù nevez evit "
+"aozadur ar bloc'hoù, a c'haller kaout abaoe Omeka S v4.1. Gallout a rit "
+"gwiriañ ar pajennoù evit ar stiloù : {json}"
+
+#: data/scripts/upgrade.php:378
+msgid ""
+"The template files for the block Selection should be moved from \"view/"
+"common/block-layout\" to \"view/common/block-template\" in your themes. You "
+"may check your themes for pages: {json}"
+msgstr ""
+"Rankout a raio restroù patrom an dibab bloc'hoù bezañ dilec'hiet eus \"view/"
+"common/block-layout\" da \"view/common/block-template\" en ho temoù. Gallout "
+"a rit gwiriañ ho temoù evit ar pajennoù: {json}"
+
+#: data/scripts/upgrade.php:413
+msgid ""
+"A new option is added to display selection button and list before, after or "
+"via resource blocks. See site settings."
+msgstr ""
+"Ouzhpennet ez eus un dibab nevez evit diskouez ar bouton dibab hag al "
+"listenn a-raok, goude pe dre vlockoù danvez. Gwelet arventennoù al lec'hienn."
+
+#: data/scripts/upgrade.php:443
+msgid ""
+"The view helpers \"selectionButtonToggle\", \"showSelectionLink\", "
+"\"updateSelectionLink\" , and \"containerSelection\" were renamed "
+"\"selectionButton\", \"selectionList\", \"selectionLinkBrowse\", and "
+"\"selectionContainer\". You should update your theme. Matching templates: "
+"{json}"
+msgstr ""
+"Skoazellerien ar gwel \"selectionButtonToggle\", \"showSelectionLink\", "
+"\"updateSelectionLink\", ha \"containerSelection\" zo bet adanvet "
+"\"selectionButton\", \"selectionList\", \"selectionLinkBrowse\", ha "
+"\"selectionContainer\". Ezhomm zo deoc'h hizivaat ho tem. Patromoù a glot : "
+"{json}"
+
+#: data/scripts/upgrade.php:489
+msgid ""
+"The js \"selection.js\" was simplified to use \"common-dialog.js\", that "
+"should be added to the templates. You should check your theme. Matching "
+"templates: {json}"
+msgstr ""
+"Simplennet eo bet ar js \"selection.js\" evit implijout \"common-"
+"dialog.js\", a rank bezañ ouzhpennet d'ar patromoù. Gwiriekait ho tem. "
+"Patromoù a glot : {json}"
+
+#: data/scripts/upgrade.php:496
+msgid ""
+"The js \"selection.js\" was simplified to use \"common-dialog.js\", that "
+"should be added to the templates. You should check your theme."
+msgstr ""
+"Simplennet eo bet ar skript \"selection.js\" evit implijout \"common-"
+"dialog.js\", a rank bezañ ouzhpennet d'ar patromoù. Gwiriekait ho tem."
+
+#: data/scripts/upgrade.php:519
+msgid ""
+"It is now possible to display a flat list of named selections of resources."
+msgstr "Bremañ eo posupl diskouez ur roll plaen a zibaboù anvet a ziazezoù."
+
+#: data/scripts/upgrade.php:557
+msgid ""
+"It is now possible to define the main mode of process by site: the user can "
+"manage a single selection or multiple selections."
+msgstr ""
+"Bremañ eo posupl termeniñ ar mod pennañ evit ar prosesus dre lec'hienn : "
+"gallout a ra an implijer merañ un dibab hepken pe meur a hini."
+
+#: data/scripts/upgrade.php:562
+msgid "It is now possible to publish selection and to moderate them."
+msgstr "Bremañ e c'haller embann an dibaboù ha o moderañ."
+
+#: data/scripts/upgrade.php:567
+msgid ""
+"Many urls for selections was modified, so check the menu and the theme if "
+"customized."
+msgstr ""
+"Kalz a URLoù evit an dibaboù zo bet kemmet, neuze gwiriit al lañser hag an "
+"tem ma'z int bet personelaet."
+
+#: data/scripts/upgrade.php:600
+msgid ""
+"A \"default\" flag has been added on selections to designate the favorites "
+"basket for each user. The oldest selection of each user has been promoted as "
+"default."
+msgstr ""
+"Ur banniel \"dre ziouer\" a zo bet ouzhpennet war an dibaboù evit merkañ "
+"paner an dibaboù muiañ-karet evit pep implijer. Dibab koshañ pep implijer a "
+"zo bet lakaet da zre ziouer."
+
+#: data/scripts/upgrade.php:620
+msgid ""
+"The selection modes and labels for visitors and users are now configured "
+"separately in site settings."
+msgstr ""
+"Ar modoù dibab hag an etikedennoù evit ar weladennerien hag an implijerien a "
+"zo kefluniet bremañ a-zisrann e kefluniadurioù al lec'hienn."
+
+#: data/scripts/upgrade.php:675
+msgid ""
+"Selection options now use two orthogonal axes per role: \"Favorites\" "
+"(single basket) and \"Selections\" (multiple named lists). Existing settings "
+"have been migrated. Review them in site settings."
+msgstr ""
+"An dibarzhioù dibab a implij bremañ div ahel ortogonal dre roll : "
+"\"Morbidi\" (ur paner hepken) ha \"Dibarzhioù\" (listennadoù lies anvet). "
+"Arventennoù a oa dija zo bet treuzkaset. Adwelit anezho e arventennoù al "
+"lec'hienn."
+
+#: data/scripts/upgrade.php:685
+msgid ""
+"Selection routes have been clarified: the personal area is now exclusively "
+"under \"/guest/selection\" and \"/guest/favorites\". Update your bookmarks, "
+"theme overrides and external links accordingly."
+msgstr ""
+"Resisaet eo bet an hentoù dibab : bremañ emañ an takad personel nemetken "
+"dindan \"/guest/selection\" ha \"/guest/favorites\". Hizivaat ho merkoù-"
+"pajenn, ho temoù dreistlakaet hag ho liammoù diavaez diouzh se."
+
+#: Module.php:294
+msgid ""
+"The module Basket is present. Upgrade from it was removed since version "
+"3.4.7. Install the previous version if you want to upgrade it."
+msgstr ""
+"Ar modul Basket a zo. Lamet eo bet an hizivadur anezhañ abaoe ar stumm "
+"3.4.7. Stalit ar stumm kent ma fell deoc'h e hizivaat."
+
+#: view/common/advanced-search/selections.phtml:30
+msgid "[none]"
+msgstr "[netra]"
+
+#: view/common/advanced-search/selections.phtml:40
+msgid "Select selections…"
+msgstr "Diuzit diuzadennoù…"
+
+#: view/selection/site/selection/convert-dialog.phtml:34
+#, php-format
+msgid "You have %d item in your favorites."
+msgstr "Ho peus %d elfenn en ho pennoù-karet."
+
+#: view/selection/site/selection/convert-dialog.phtml:35
+#, php-format
+msgid "You have %d items in your favorites."
+msgstr "Ho peus %d elfenn en ho pennoù-karet."
+
+#: src/Form/SiteSettingsFieldset.php:20
+msgid "Selection module"
+msgstr "Modul dibab"
+
+#: src/Form/SiteSettingsFieldset.php:25
+msgid "Selection (other)"
+msgstr "Dibab (all)"
+
+#: src/Form/SiteSettingsFieldset.php:26
+msgid "Old themes"
+msgstr "Temoù kozh"
+
+#: src/Form/SiteSettingsFieldset.php:40
+msgid "Enable favorites for anonymous visitors"
+msgstr "Gweredekaat ar muiañ-karet evit ar weladennerien dizanv"
+
+#: src/Form/SiteSettingsFieldset.php:41
+msgid ""
+"Add a star button on resources and a /favorites page. Stored in the visitor "
+"session cookie."
+msgstr ""
+"Ouzhpennañ ur bouton steredenn war ar mammennoù hag ur bajenn /favoritoù. "
+"Miret er c'hookie sesion ar gweladenner."
+
+#: src/Form/SiteSettingsFieldset.php:52
+msgid "Enable favorites for authenticated users"
+msgstr "Gweredekaat ar muiañ-karet evit an implijerien gwiriet"
+
+#: src/Form/SiteSettingsFieldset.php:53
+msgid ""
+"Add a star button on resources and a /favorites page. A default selection "
+"holds the favorites."
+msgstr ""
+"Ouzhpennañ ur bouton steredenn war ar mammennoù hag ur bajenn /favoritoù. Un "
+"dibab dre ziouer a zalc'h ar re wellañ-karet."
+
+#: src/Form/SiteSettingsFieldset.php:64
+msgid "Label for the favorites page"
+msgstr "Etikedenn evit pajenn ar muiañ-karet"
+
+#: src/Form/SiteSettingsFieldset.php:75
+msgid "Enable multi-selections for anonymous visitors"
+msgstr "Gweredekaat an lies-diuzadennoù evit ar weladennerien dizanv"
+
+#: src/Form/SiteSettingsFieldset.php:76
+msgid ""
+"Allow visitors to create multiple named lists. Independent of favorites."
+msgstr ""
+"Aotren ar weladennerien da grouiñ meur a listenn anvet. Dizalc'h diouzh ar "
+"muiañ-karet."
+
+#: src/Form/SiteSettingsFieldset.php:87
+msgid "Enable multi-selections for authenticated users"
+msgstr "Gweredekaat an lies-dibab evit an implijerien gwiriet"
+
+#: src/Form/SiteSettingsFieldset.php:88
+msgid "Allow users to create multiple named lists. Independent of favorites."
+msgstr ""
+"Aotren an implijerien da grouiñ meur a listenn anvet. Dizalc'h diouzh ar "
+"muiañ-karet."
+
+#: src/Form/SiteSettingsFieldset.php:99
+msgid "Label for the selections page"
+msgstr "Etikedenn evit pajenn an dibaboù"
+
+#: src/Form/SiteSettingsFieldset.php:110
+msgid "Auto-convert anonymous favorites on login"
+msgstr "Treiñ ent emgefre ar muiañ-karet dianav pa gevreer"
+
+#: src/Form/SiteSettingsFieldset.php:111
+msgid ""
+"This setting is used only when both favorites and selections are enabled for "
+"the user. When enabled, the anonymous basket is appended silently to the "
+"user default favorites at login. When disabled, a dialog asks the user where "
+"to put them."
+msgstr ""
+"N'eus nemet pa vez gweredekaet war un dro ar muiañ-karet hag an dibaboù gant "
+"an implijer e vez implijet an arventenn-mañ. Pa vez gweredekaet, e vez "
+"ouzhpennet didrouz ar baner dizanv da vuiañ-karet dre ziouer an implijer pa "
+"gevre. Pa vez dizgweredekaet, e c'houlenn ur voest diviz digant an implijer "
+"pelec'h lakaat anezho."
+
+#: src/Form/SiteSettingsFieldset.php:123
+msgid "Default layout of resources inside a single selection"
+msgstr "Stumm dre ziouer an danvezioù e-barzh un dibab hepken"
+
+#: src/Form/SiteSettingsFieldset.php:125
+msgid "Flat: plain list of resources"
+msgstr "Plat : roll eeun an danvezioù"
+
+#: src/Form/SiteSettingsFieldset.php:126
+msgid "Grouped: resources grouped into manual named groups"
+msgstr "Strolladet: danvezioù strolladet e strolladoù anvet gant an dorn"
+
+#: src/Form/SiteSettingsFieldset.php:127
+msgid "Hierarchy: nested tree of groups and resources"
+msgstr "Hentadur: gwezenn neizhet a strolladoù hag a ziazezoù"
+
+#: src/Form/SiteSettingsFieldset.php:139
+msgid "Show favorites basket inside the selections list"
+msgstr "Diskouez ar baner muiañ-karet e-barzh roll an dibaboù"
+
+#: src/Form/SiteSettingsFieldset.php:140
+msgid ""
+"Only applies when both favorites and selections are enabled for the user, on "
+"page /guest/selection."
+msgstr ""
+"Ne dalv nemet pa vez gweredekaet ar muiañ-karet hag an dibaboù evit an "
+"implijer, war ar bajenn /guest/selection."
+
+#: src/Form/SiteSettingsFieldset.php:142
+msgid "Hide (favorites only accessible via /guest/favorites)"
+msgstr "Kuzhat (ne c'haller tizhout ar muiañ-karet nemet dre /guest/favorites)"
+
+#: src/Form/SiteSettingsFieldset.php:143
+msgid "Show at the top of the list"
+msgstr "Diskouez e laez ar roll"
+
+#: src/Form/SiteSettingsFieldset.php:144
+msgid "Show as root in hierarchy disposition only"
+msgstr "Diskouez evel gwrizienn en aozadur dre renk hepken"
+
+#: src/Form/SiteSettingsFieldset.php:157
+msgid "Allow users to share their own selections"
+msgstr "Aotren an implijerien da rannañ o dibaboù dezho"
+
+#: src/Form/SiteSettingsFieldset.php:159
+msgid "Only admins can publish"
+msgstr "N'eus nemet ar verourien a c'hall embann"
+
+#: src/Form/SiteSettingsFieldset.php:160
+msgid "Any user may request publication; an admin must validate"
+msgstr ""
+"Gallout a ra forzh peseurt implijer goulenn embann; un admin a rank gwiriañ"
+
+#: src/Form/SiteSettingsFieldset.php:161
+msgid "Any user may publish without validation"
+msgstr "Gallout a ra forzh peseurt implijer embann hep gwiriekadur"
+
+#: src/Form/SiteSettingsFieldset.php:173
+msgid "Redirect public dynamic selection page"
+msgstr "Adheñchañ pajenn dibab dinamek foran"
+
+#: src/Form/SiteSettingsFieldset.php:174
+msgid ""
+"A dynamic selection is a saved search query. This option controls the page "
+"used to replay the query when the public selection url is opened."
+msgstr ""
+"Un dibab dinamek a zo ur goulennadenn enklask enrollet. An dibab-mañ a reol "
+"ar bajenn a vez implijet da adc'hoari ar goulennadenn pa vez digoret URL "
+"publik an dibab."
+
+#: src/Form/SiteSettingsFieldset.php:176
+msgid "Default selection page (no redirect)"
+msgstr "Pajenn an dibab dre ziouer (hep adkas)"
+
+#: src/Form/SiteSettingsFieldset.php:177
+msgid "Items browse page of the site"
+msgstr "Pajenn broustañ elfennoù al lec'hienn"
+
+#: src/Form/SiteSettingsFieldset.php:178
+msgid "Advanced search page of the site"
+msgstr "Pajenn klask araokaet al lec'hienn"
+
+#: src/Form/SiteSettingsFieldset.php:192
+msgid "Hide login button for anonymous visitors"
+msgstr "Kuzhat ar bouton kevreañ evit ar weladennerien dizanv"
+
+#: src/Form/SiteSettingsFieldset.php:193
+msgid ""
+"By default, when anonymous selection is disabled, a login button is shown to "
+"invite visitors to sign in. Enable this option to hide this login button."
+msgstr ""
+"Dre ziouer, pa vez diweredekaet an dibab dizanv, e vez diskouezet ur bouton "
+"kevreañ evit pediñ ar weladennerien da gevreañ. Gweredekaat an dibab-mañ "
+"evit kuzhat ar bouton kevreañ-se."
+
+#: src/Form/SiteSettingsFieldset.php:205
+msgid "Resource types that can be added to favorites or selections"
+msgstr ""
+"Seurtoù danvezioù a c'haller ouzhpennañ d'ar muiañ-karet pe d'an dibaboù"
+
+#: src/Form/SiteSettingsFieldset.php:206
+msgid ""
+"Only checked resource types will display the favorite or selection button on "
+"their page. Default is items only."
+msgstr ""
+"N'eus nemet ar seurtadoù danvezioù gwiriet a ziskouezo ar bouton 'karetañ' "
+"pe 'dibab' war o fajenn. Dre ziouer, n'eus nemet an elfennoù."
+
+#: src/Form/SiteSettingsFieldset.php:209
+msgid "Medias"
+msgstr "Kelaouennoù"
+
+#: src/Form/SiteSettingsFieldset.php:211
+msgid "Digital objects"
+msgstr "Traoù niverel"
+
+#: src/Form/SiteSettingsFieldset.php:224
+msgid "Maximum number of resources per selection"
+msgstr "Niver brasañ a zailhioù dre zibab"
+
+#: src/Form/SiteSettingsFieldset.php:238
+msgid "Number of resources per page"
+msgstr "Niver a zailhoù dre bajenn"
+
+#: src/Form/SiteSettingsFieldset.php:239
+msgid "Pagination size for /guest/favorites and the public show page."
+msgstr ""
+"Ment ar pajennaozañ evit /guest/favorites hag ar bajenn diskouez foran."
+
+#: src/Form/SiteSettingsFieldset.php:254
+msgid "Auto-insert the selection button on resource pages"
+msgstr "Enstaliañ a-unan ar bouton dibab war pajennoù ar mammennoù"
+
+#: src/Form/SiteSettingsFieldset.php:256 src/Form/SiteSettingsFieldset.php:278
+msgid "Item: Top"
+msgstr "Elfenenn: Krec'h"
+
+#: src/Form/SiteSettingsFieldset.php:257 src/Form/SiteSettingsFieldset.php:279
+msgid "Media: Top"
+msgstr "Mediaoù: Uhel"
+
+#: src/Form/SiteSettingsFieldset.php:258 src/Form/SiteSettingsFieldset.php:280
+msgid "Item set: Top"
+msgstr "Strollad elfenn : Krec'h"
+
+#: src/Form/SiteSettingsFieldset.php:259 src/Form/SiteSettingsFieldset.php:281
+msgid "Digital object: Top"
+msgstr "Objed niverel: Krec'h"
+
+#: src/Form/SiteSettingsFieldset.php:260 src/Form/SiteSettingsFieldset.php:282
+msgid "Item: Bottom"
+msgstr "Elfenenn: traoñ"
+
+#: src/Form/SiteSettingsFieldset.php:261 src/Form/SiteSettingsFieldset.php:283
+msgid "Media: Bottom"
+msgstr "Media: traoñ"
+
+#: src/Form/SiteSettingsFieldset.php:262 src/Form/SiteSettingsFieldset.php:284
+msgid "Item set: Bottom"
+msgstr "Strollad elfenn : traoñ"
+
+#: src/Form/SiteSettingsFieldset.php:263 src/Form/SiteSettingsFieldset.php:285
+msgid "Digital object: Bottom"
+msgstr "Objed niverel: traoñ"
+
+#: src/Form/SiteSettingsFieldset.php:276
+msgid "Auto-insert the user selection list on resource pages"
+msgstr ""
+"Enstaliañ ent emgefre listenn dibab an implijer war pajennoù ar mammennoù"
+
+#: src/Form/SiteSettingsFieldset.php:298
+msgid "Open the selection block by default on resource pages"
+msgstr "Digoriñ ar bloc'had dibab dre ziouer war pajennoù ar mammennoù"
+
+#: src/Form/SiteSettingsFieldset.php:299
+msgid ""
+"When the resource-page block \"Selection\" is collapsible, this option "
+"controls whether it is open or closed on first display."
+msgstr ""
+"Pa c'haller plegañ ar bloc'had pajennad danvez \"Dibab\", an dibab-mañ a "
+"reol hag-eñ e vo digor pe serret pa vez diskouezet evit ar wech kentañ."
+
+#: src/Form/SiteSettingsFieldset.php:310
+msgid "Open the user selection list by default on resource pages"
+msgstr "Digoriñ dre ziouer roll dibab an implijerien war pajennoù ar mammennoù"
+
+#: src/Form/SiteSettingsFieldset.php:311
+msgid ""
+"Same as above for the resource-page block that displays the user list of "
+"selections."
+msgstr ""
+"Heñvel ouzh an hini a-us evit ar bloc'had pajenn-danvezioù a ziskouez "
+"listenn an dibaboù graet gant an implijer."
+
+#: src/Form/SiteSettingsFieldset.php:322
+msgid ""
+"Show per-resource checkboxes on the selection page for Bulk Export and "
+"Contact Us"
+msgstr ""
+"Diskouez kazelloù da askañ dre vammenn war ar bajenn dibab evit Ezporzhiañ a-"
+"vras ha Daremprediñ ac'hanomp"
+
+#: src/Form/SiteSettingsFieldset.php:323
+msgid ""
+"Adds a checkbox next to each resource of a selection so the user can pick a "
+"subset before exporting (Bulk Export) or contacting (Contact Us)."
+msgstr ""
+"Ouzhpennañ ur voest da askañ e-kichen pep danvez eus un dibab, evit ma "
+"c'hallfe an implijer dibab un is-strollad a-raok ezporzhiañ (Ezporzhiañ a-"
+"vras) pe mont e darempred (Darempredit ac'hanomp)."
+
+#: src/Form/SiteSettingsFieldset.php:325
+msgid ""
+"Auto: only when Bulk Export or Contact Us is installed and active on the page"
+msgstr ""
+"Emgefre : nemet pa vez staliet hag oberiant war ar bajenn Ezporzhiañ a-vras "
+"pe Darempred ganeomp"
+
+#: src/Form/SiteSettingsFieldset.php:326
+msgid "Never show the checkboxes"
+msgstr "Na ziskouez morse ar c'hasedoù da askañ"
+
+#: src/Form/SiteSettingsFieldset.php:327
+msgid "Always show the checkboxes"
+msgstr "Diskouez atav ar c'hasedoù da asantiñ"
+
+#: src/Form/SiteSettingsFieldset.php:339
+msgid ""
+"Add a checkbox on items in browse and search results pages to select them "
+"individually"
+msgstr ""
+"Ouzhpennañ ur voest da askañ war an elfennoù e pajennoù ar merdeiñ hag an "
+"enklaskoù evit o diuzañ unan-hag-unan"
+
+#: src/Form/SiteSettingsFieldset.php:340
+msgid ""
+"Currently only effective when the module Advanced Search is installed and "
+"used on the page."
+msgstr ""
+"Evit ar poent, n'eo efedus nemet pa vez staliet hag implijet ar modul Klask "
+"araokaet war ar bajenn."
+
+#: src/Form/SiteSettingsFieldset.php:351
+msgid "Label of the navigation link displayed in the guest account"
+msgstr "Etiked al liamm merdeiñ diskouezet er gont kouviad"
+
+#: src/Form/SiteSettingsFieldset.php:352
+msgid ""
+"Text used for the link that points to the personal selection page in the "
+"guest account navigation menu."
+msgstr ""
+"Testenn implijet evit al liamm a gas da bajenn an dibab personel e lañser "
+"merdeiñ ar gont kouviad."
+
+#: src/Form/SiteSettingsFieldset.php:363
+msgid "Warning message shown above the selection page for anonymous visitors"
+msgstr ""
+"Kemenadenn evezhiañ diskouezet a-us da bajenn an dibab evit ar weladennerien "
+"dizanv"
+
+#: src/Form/SiteSettingsFieldset.php:364
+msgid ""
+"Reminds anonymous visitors that their selection is stored in the session "
+"cookie and lost when the cookie is cleared."
+msgstr ""
+"Lakaat soñj d'ar weladennerien dizanv eo enrollet o dibab er c'hokig dalc'h "
+"hag e vo kollet pa vo diverket ar c'hokig."
+
+#: src/Form/SiteSettingsFieldset.php:375
+msgid "Show a dialog when an anonymous visitor adds a resource"
+msgstr "Diskouez ur voest diviz pa ouzhpenn ur gweladenner dizanv ur vammenn"
+
+#: src/Form/SiteSettingsFieldset.php:376
+msgid ""
+"A modal dialog appears the first time of the session, inviting the visitor "
+"to log in or register to keep favorites."
+msgstr ""
+"Ur voest diviz model a zeu war wel da gentañ gwech ar sesioun, o pediñ ar "
+"gweladenner da gevreañ pe da en em enskrivañ evit mirout e zibaboù."
+
+#: src/Form/SiteSettingsFieldset.php:387
+msgid "Dialog message for anonymous visitor"
+msgstr "Kemenadenn an diviz evit ar gweladenner dizanv"
+
+#: src/Form/SiteSettingsFieldset.php:388
+msgid "Placeholders: {url_login}, {url_register}."
+msgstr "Plasdermenoù: {url_login}, {url_register}."
+
+#: src/Form/SettingsFieldset.php:14
+msgid "Selection moderation"
+msgstr "Moderezh an dibab"
+
+#: src/Form/SettingsFieldset.php:28
+msgid "Subject of the approval email to the owner"
+msgstr "Danvez ar postel aprouiñ d'ar perc'henn"
+
+#: src/Form/SettingsFieldset.php:29 src/Form/SettingsFieldset.php:41
+msgid ""
+"Placeholders: {main_title}, {main_url}, {selection_label}, {selection_url}."
+msgstr ""
+"Plasdermenoù: {main_title}, {main_url}, {selection_label}, {selection_url}."
+
+#: src/Form/SettingsFieldset.php:40
+msgid "Default approval message to the owner"
+msgstr "Kemenadenn aprouiñ dre ziouer d'ar perc'henn"
+
+#: src/Form/SettingsFieldset.php:53
+msgid "Subject of the rejection email to the owner"
+msgstr "Danvez ar postel distaol d'ar perc'henn"
+
+#: src/Form/SettingsFieldset.php:54 src/Form/SettingsFieldset.php:66
+msgid "Placeholders: {main_title}, {main_url}, {selection_label}."
+msgstr "Plasdermennoù: {main_title}, {main_url}, {selection_label}."
+
+#: src/Form/SettingsFieldset.php:65
+msgid "Default rejection message to the owner"
+msgstr "Kemenadenn nac'hadenn dre ziouer d'ar perc'henn"
+
+#: src/Form/SettingsFieldset.php:78
+msgid "Reply-to address of the emails to the owner"
+msgstr "Chomlec'h respont posteloù ar perc'henn"
+
+#: src/Form/SettingsFieldset.php:79
+msgid ""
+"Address set as reply-to. If empty, the reply-to is the email of the "
+"connected admin. The sender (from) remains the unique installation address."
+msgstr ""
+"Chomlec'h lakaet evel chomlec'h an respont. Ma'z eo goullo, e vo chomlec'h "
+"an respont postel ar merour kevreet. Kaser (eus) a chom chomlec'h unel ar "
+"staliadur."
+
+#: src/Form/QuickSearchForm.php:34
+msgid "User by id"
+msgstr "Implijer dre ID"
+
+#: src/Form/QuickSearchForm.php:63
+msgid "Dynamic"
+msgstr "Dinamik"
+
+#: src/Form/SendMessageForm.php:41
+msgid "Message"
+msgstr "Kemenadenn"
+
+#: src/Form/SendMessageForm.php:53
+msgid "Copy to me"
+msgstr "Eilskrid din"
+
+#: src/Form/SendMessageForm.php:55
+msgid "No copy"
+msgstr "N'eus eilskrid ebet"
+
+#: src/Form/SendMessageForm.php:56
+msgid "Copy (cc)"
+msgstr "Eilañ (skridenn)"
+
+#: src/Form/SendMessageForm.php:57
+msgid "Hidden copy (bcc)"
+msgstr "Eilskrid kuzh (bcc)"
+
+#: src/Form/SendMessageForm.php:69
+msgid "Send message"
+msgstr "Kas ur gemennadenn"
+
+#: src/Form/SelectionFieldset.php:22
+msgid "Disposition"
+msgstr "Dispozision"
+
+#: src/Form/SelectionFieldset.php:24
+msgid "List"
+msgstr "Roll"
+
+#: src/Form/SelectionFieldset.php:25
+msgid "Grouped"
+msgstr "Strolladet"
+
+#: src/Form/SelectionFieldset.php:26
+msgid "Hierarchy"
+msgstr "Renkadurezh"
+
+#: src/Form/SelectionFieldset.php:37
+msgid "Add individual checkboxes for modules Bulk Export and Contact Us"
+msgstr ""
+"Ouzhpennañ boestoù da asantiñ hiniennel evit ar moduloù Ezporzhiañ a-vras ha "
+"Daremprediñ ac'hanomp"
+
+#: src/Form/SelectionFieldset.php:39
+msgid "When needed"
+msgstr "Pa vez ezhomm"
+
+#: src/Api/Adapter/SelectionAdapter.php:251
+msgid "A selection must have an owner."
+msgstr "Ur zibab a rank kaout ur perc'henn."
+
+#: src/Api/Adapter/SelectionAdapter.php:256
+msgid "A selection must have a label."
+msgstr "Ur zibab a rank kaout un dikedenn."
+
+#: src/Api/Adapter/SelectionAdapter.php:258
+msgid "The label is already taken by the owner."
+msgstr "An etikedenn zo bet kemeret dija gant ar perc'henn."
+
+#: src/Api/Adapter/SelectionAdapter.php:262
+msgid "The selection cannot have selection resources when a query is set."
+msgstr "Ne c'hall ket an dibab kaout danvezioù dibab pa vez lakaet ur reked."
+
+#: src/Api/Adapter/SelectionAdapter.php:268
+msgid "Only one default selection is allowed per owner."
+msgstr "N'eus nemet un dibab dre ziouer aotreet dre berc'henn."
+
+#: src/Api/Adapter/SelectionResourceAdapter.php:257
+msgid "A selection resource must have an owner."
+msgstr "Ur vammenn dibab a rank kaout ur perc'henn."
+
+#: src/Api/Adapter/SelectionResourceAdapter.php:261
+msgid "A selection resource must have a resource."
+msgstr "Ur resourc'h dibab a rank kaout ur resourc'h."
+
+#: src/Api/Adapter/SelectionResourceAdapter.php:267
+msgid "A selection resource must have the same owner than the selection."
+msgstr "Ret eo d'ur vammenn dibab kaout an hevelep perc'henn hag an dibab."
+
+#: src/Api/Adapter/SelectionResourceAdapter.php:274
+msgid "A resource must be unique inside a selection."
+msgstr "Ur resurs a rank bezañ dibar en un dibab."
+
+#: src/Api/Adapter/SelectionResourceAdapter.php:277
+msgid ""
+"A selection resource must be unique for the owner when there is no selection."
+msgstr ""
+"Ur vammenn dibab a rank bezañ unel evit ar perc'henn pa ne vez dibab ebet."
+
+#: src/Controller/Admin/SelectionController.php:113
+msgid "selection"
+msgstr "dibab"
+
+#: src/Controller/Admin/SelectionController.php:130
+msgid "Selection successfully deleted"
+msgstr "Dilemel ar zibab graet gant berzh"
+
+#: src/Controller/Admin/SelectionController.php:147
+msgid "You must select at least one selection to batch delete."
+msgstr "Ret eo deoc'h dibab un dibab da nebeutañ evit diverkañ a-stroll."
+
+#: src/Controller/Admin/SelectionController.php:156
+msgid "Selections successfully deleted"
+msgstr "Dilemellet an dibaboù gant berzh"
+
+#: src/Controller/Admin/SelectionController.php:181
+msgid "Deleting selections. This may take a while."
+msgstr "Dilemel an dibaboù. Gallout a ra padout ur pennadig."
+
+#: src/Controller/Admin/SelectionController.php:415
+msgid "Message successfully sent to {email}."
+msgstr "Kelaouenn kaset gant berzh da {email}."
+
+#: src/Controller/Site/TraitSessionController.php:350
+#: src/Controller/Site/TraitDbController.php:745
+msgid "The destination group is not in the list of groups."
+msgstr "N'emañ ket ar strollad pal e listenn ar strolladoù."
+
+#: src/Controller/Site/TraitDbController.php:838
+msgid "No resources selected."
+msgstr "Neus forzh pe danvez dibabet."
+
+#: src/Controller/Site/TraitDbController.php:853
+msgid "No selections selected."
+msgstr "Hollad dibabet."
+
+#: src/Controller/Site/TraitDbController.php:861
+#: src/Controller/Site/SelectionController.php:26
+msgid "Selection not found."
+msgstr "N'eus ket bet kavet an dibab."
+
+#: src/Controller/Site/TraitDbController.php:919
+msgid "Error when updating selection: {exception}"
+msgstr "Fazi pa vez hizivaet an dibab : {exception}"
+
+#: src/Controller/Site/TraitDbController.php:940
+msgid "Error when adding resource to selection: {exception}"
+msgstr "Fazi pa ouzhpennor ur vammenn d'an dibab : {exception}"
+
+#: src/Controller/Site/SelectionController.php:46
+msgid "Selection not accessible."
+msgstr "N'haller ket tizhout an dibab."
+
+#: src/Controller/Site/AbstractSelectionController.php:412
+msgid "The selection is not set."
+msgstr "N'eo ket lakaet an dibab."
+
+#: src/Controller/Site/AbstractSelectionController.php:468
+#: src/Controller/Site/AbstractSelectionController.php:475
+msgid "The destination group \"{name}\" does not exist."
+msgstr "Ne zo ket eus ar strollad pal \"{name}\"."
+
+#: src/Controller/Site/AbstractSelectionController.php:527
+#: src/Controller/Site/AbstractSelectionController.php:626
+msgid "The group name contains invalid characters ({characters})."
+msgstr "En anv ar strollad ez eus arouezennoù n'int ket reizh ({characters})."
+
+#: src/Controller/Site/AbstractSelectionController.php:1148
+msgid "Selection limit reached. Maximum {max} resources allowed."
+msgstr ""
+"Tizhet eo ar vevenn dibab. Tizhet eo ar vevenn uhelañ {max} a zailhoù "
+"aotreet."
+
+#: src/Site/ResourcePageBlockLayout/SelectionButtonToSelect.php:13
+msgid "Selection: Button to select"
+msgstr "Dibab : Botoñs da zibab"
+
+#: src/Site/ResourcePageBlockLayout/SelectionButtonFavorite.php:13
+msgid "Selection: Button favorite"
+msgstr "Dibab: Botoñs muiañ-karet"
+
+#: src/Site/ResourcePageBlockLayout/SelectionButton.php:13
+msgid "Selection: button"
+msgstr "Dibab: bouton"
+
+#: src/Site/ResourcePageBlockLayout/SelectionList.php:13
+msgid "Selection: List"
+msgstr "Dibab: Roll"
+
+#: src/Site/ResourcePageBlockLayout/SelectionButtonToGroup.php:13
+msgid "Selection: Button to group"
+msgstr "Dibab: Botoñs da strollañ"
+
+#: config/module.config.php:328
+msgid "Date added"
+msgstr "Deiziad ouzhpennet"
+
+#: config/module.config.php:334
+msgid "Are you sure you want to delete this group?"
+msgstr "Ha sur oc'h e fell deoc'h diverkañ ar strollad-mañ ?"
+
+#: config/module.config.php:335
+msgid "Enter new group name"
+msgstr "Roit anv ar strollad nevez"
+
+#: config/module.config.php:336
+msgid "Enter new selection name"
+msgstr "Roit anv an dibab nevez"
+
+#: config/module.config.php:337
+msgid "Remove from selection?"
+msgstr "Lakaat er-maez eus an dibab ?"
+
+#: config/module.config.php:338
+msgid "Resource updated for selections."
+msgstr "Hizivaet eo bet ar vammenn evit an dibaboù."
+
+#: config/module.config.php:339
+#, php-format
+msgid "Selection limit reached. Maximum %d resources allowed."
+msgstr "Tizhet eo ar vevenn dibab. %d a ziazezoù d'ar muiañ aotreet."
+
+#: config/module.config.php:343
+msgid "Your selection has been approved on {main_title}"
+msgstr "Aprouet eo bet ho tibab war {main_title}"
+
+#: config/module.config.php:344
+msgid ""
+"Hello,\n"
+"\n"
+"Your selection \"{selection_label}\" on {main_title} has been approved and "
+"is now publicly available.\n"
+"\n"
+"You can view it at: {selection_url}\n"
+"\n"
+"Sincerely,"
+msgstr ""
+"Demat,\n"
+"\n"
+"Ho tibab \"{selection_label}\" war {main_title} a zo bet aprouet ha bremañ "
+"eo hegerz d'an holl.\n"
+"\n"
+"Gallout a rit e welet e: {selection_url}\n"
+"\n"
+"A-youl-vat,"
+
+#: config/module.config.php:353
+msgid "Your selection on {main_title}"
+msgstr "Ho tibab war {main_title}"
+
+#: config/module.config.php:354
+msgid ""
+"Hello,\n"
+"\n"
+"Your selection \"{selection_label}\" on {main_title} could not be approved "
+"for publication.\n"
+"\n"
+"Please contact us if you have any question.\n"
+"\n"
+"Sincerely,"
+msgstr ""
+"Demat,\n"
+"\n"
+"Ho tibab \"{selection_label}\" war {main_title} n'eo ket bet aprouet evit "
+"bezañ embannet.\n"
+"\n"
+"Mar plij, kit e darempred ganeomp ma'z eus goulennoù ganeoc'h.\n"
+"\n"
+"A-youl-vat,"

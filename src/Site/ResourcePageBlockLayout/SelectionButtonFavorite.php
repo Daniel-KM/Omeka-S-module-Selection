@@ -10,7 +10,7 @@ class SelectionButtonFavorite implements ResourcePageBlockLayoutInterface
 {
     public function getLabel(): string
     {
-        return 'Selection: favorite button'; // @translate
+        return 'Selection: Button favorite'; // @translate
     }
 
     public function getCompatibleResourceNames(): array
