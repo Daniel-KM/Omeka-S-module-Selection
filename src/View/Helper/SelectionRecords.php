@@ -29,6 +29,8 @@ class SelectionRecords extends AbstractHelper
             return [];
         }
 
+        $explicitResources = $selectionResources !== null;
+
         /** @var \Selection\Api\Representation\SelectionResourceRepresentation[] $selectionResources */
         $selectionResources ??= $selection->selectionResources();
         if (!$selectionResources) {
@@ -51,7 +53,10 @@ class SelectionRecords extends AbstractHelper
         }
 
         // Locally stored selection for anonymous: visible only to anonymous.
-        if (!$selection && $user) {
+        // When $selectionResources is provided explicitly (e.g. by the
+        // SelectionContainer helper for a logged-in user), the call is valid
+        // and must not be short-circuited.
+        if (!$selection && $user && !$explicitResources) {
             return [];
         }
 

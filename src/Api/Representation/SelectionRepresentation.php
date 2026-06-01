@@ -280,6 +280,7 @@ class SelectionRepresentation extends AbstractEntityRepresentation
             \Omeka\Entity\Item::class => 'items',
             \Omeka\Entity\ItemSet::class => 'item_sets',
             \Omeka\Entity\Media::class => 'media',
+            \DigitalObject\Entity\DigitalObject::class => 'digital_objects',
             \Annotate\Entity\Annotation::class => 'annotations',
         ];
 
@@ -388,6 +389,7 @@ class SelectionRepresentation extends AbstractEntityRepresentation
             \Omeka\Entity\Item::class => 'items',
             \Omeka\Entity\ItemSet::class => 'item_sets',
             \Omeka\Entity\Media::class => 'media',
+            \DigitalObject\Entity\DigitalObject::class => 'digital_objects',
         ];
 
         if (class_exists(\Annotate\Entity\Annotation::class, false)) {

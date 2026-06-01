@@ -208,6 +208,7 @@ class SiteSettingsFieldset extends Fieldset
                         'items' => 'Items', // @translate
                         'media' => 'Medias', // @translate
                         'item_sets' => 'Item sets', // @translate
+                        'digital_objects' => 'Digital objects', // @translate
                         // 'annotations' => 'Annotations',
                     ],
                 ],
@@ -255,9 +256,11 @@ class SiteSettingsFieldset extends Fieldset
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
                         'before/item_sets' => 'Item set: Top', // @translate
+                        'before/digital_objects' => 'Digital object: Top', // @translate
                         'after/items' => 'Item: Bottom', // @translate
                         'after/media' => 'Media: Bottom', // @translate
                         'after/item_sets' => 'Item set: Bottom', // @translate
+                        'after/digital_objects' => 'Digital object: Bottom', // @translate
                     ],
                 ],
                 'attributes' => [
@@ -275,9 +278,11 @@ class SiteSettingsFieldset extends Fieldset
                         'before/items' => 'Item: Top', // @translate
                         'before/media' => 'Media: Top', // @translate
                         'before/item_sets' => 'Item set: Top', // @translate
+                        'before/digital_objects' => 'Digital object: Top', // @translate
                         'after/items' => 'Item: Bottom', // @translate
                         'after/media' => 'Media: Bottom', // @translate
                         'after/item_sets' => 'Item set: Bottom', // @translate
+                        'after/digital_objects' => 'Digital object: Bottom', // @translate
                     ],
                 ],
                 'attributes' => [

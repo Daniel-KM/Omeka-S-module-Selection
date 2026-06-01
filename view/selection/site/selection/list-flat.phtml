@@ -65,7 +65,7 @@ if ($structureOrder && $currentRecords) {
 }
 
 $recordsByType = array_column($currentRecords, 'resource_name', 'id');
-$countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'annotations' => 0];
+$countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'digital_objects' => 0, 'annotations' => 0];
 
 $selectText = $escapeAttr($translate('Select resource'));
 $deleteText = $escapeAttr($isFavorites

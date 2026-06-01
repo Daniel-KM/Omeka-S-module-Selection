@@ -79,7 +79,7 @@ $selectedRecordModel = [
 ];
 
 $recordsByType = array_column($currentRecords, 'resource_name', 'id');
-$countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'annotations' => 0];
+$countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0, 'item_sets' => 0, 'digital_objects' => 0, 'annotations' => 0];
 
 // TODO Get the resources one time via api (currently only needed for thumbnail, not prepared early).
 // $resources = $selectedRecords ? $api->search('items', ['id' => array_keys($selectedRecords)])->getContent() : [];

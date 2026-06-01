@@ -36,6 +36,7 @@ $selectionButtonFavorite = $plugins->get('selectionButtonFavorite');
 
 $selectables = $siteSetting('selection_selectable_resources', ['items']);
 $isMediaSelectable = in_array('media', $selectables);
+$isDigitalObjectSelectable = in_array('digital_objects', $selectables);
 
 $this->headLink()
     ->appendStylesheet($this->assetUrl('css/common-dialog.css', 'Common'))
