@@ -143,18 +143,17 @@ return  [
         'routes' => [
             'site' => [
                 'child_routes' => [
-                    // TODO Clarify routes.
-                    // When the visitor is anonymous, the url is /selection/xxx/view.
-                    // When the user is logged, the url is /guest/selection/xxx/view (view can be omitted).
-                    // When the selection is published, the url is /selection/xxx/show (show can be omitted).
-                    // The publication is done via edit. The moderation is done via validate.
+                    // Public area: /selection lists public selections from all
+                    // users. AJAX/ops endpoints (add, toggle, include, ...)
+                    // share the same prefix. Personal area lives under
+                    // /guest/* (see below) regardless of the Guest module.
                     'selection' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
                             'route' => '/selection[/:action]',
                             'constraints' => [
-                                // Set groups first for regex.
-                                'action' => 'index|browse|add-group|rename-group|move-group|delete-group|include|exclude|move|reorder|reset|toggle|update|add|convert-dialog|convert',
+                                // Public list (index) + AJAX/ops endpoints.
+                                'action' => 'index|add|add-group|rename-group|move-group|delete-group|include|exclude|move|reorder|reset|toggle|update|convert-dialog|convert',
                             ],
                             'defaults' => [
                                 '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -163,26 +162,14 @@ return  [
                             ],
                         ],
                     ],
-                    'favorites' => [
-                        'type' => \Laminas\Router\Http\Literal::class,
-                        'options' => [
-                            'route' => '/favorites',
-                            'defaults' => [
-                                '__NAMESPACE__' => 'Selection\Controller\Site',
-                                'controller' => 'Selection',
-                                'action' => 'favorites',
-                            ],
-                        ],
-                    ],
                     'selection-id' => [
                         'type' => \Laminas\Router\Http\Segment::class,
                         'options' => [
                             'route' => '/selection/:id[/:action]',
                             'constraints' => [
-                                // "show" is used for public display of a selection.
-                                // "view" is used for internal display when the
-                                // selection is not public.
-                                'action' => 'browse|delete|edit|show|view|validate|add-group|rename-group|move-group|remove-group|include|exclude|move|reorder|reset|toggle|update',
+                                // "show" is the public display of a selection.
+                                // Personal "view" lives under /guest/selection.
+                                'action' => 'show|edit|delete|validate|add-group|rename-group|move-group|remove-group|include|exclude|move|reorder|reset|toggle|update',
                                 'id' => '\d+',
                             ],
                             'defaults' => [
@@ -192,11 +179,12 @@ return  [
                             ],
                         ],
                     ],
-                    // The js urls uses routes above.
+                    // Personal area (own selections + favorites). Works for
+                    // both authenticated users (db) and anonymous visitors
+                    // (session). The /guest/ prefix is kept for URL stability
+                    // and module Guest interoperability; it does not require
+                    // module Guest to be installed.
                     'guest' => [
-                        // The default values for the guest user route are kept
-                        // to avoid issues for visitors when an upgrade of
-                        // module Guest occurs or when it is disabled.
                         'type' => \Laminas\Router\Http\Literal::class,
                         'options' => [
                             'route' => '/guest',
@@ -208,7 +196,7 @@ return  [
                                 'options' => [
                                     'route' => '/selection[/:action]',
                                     'constraints' => [
-                                        'action' => 'browse|reset|view',
+                                        'action' => 'browse|reset',
                                     ],
                                     'defaults' => [
                                         '__NAMESPACE__' => 'Selection\Controller\Site',
@@ -222,7 +210,7 @@ return  [
                                 'options' => [
                                     'route' => '/selection/:id[/:action]',
                                     'constraints' => [
-                                        'action' => 'browse|reset|view',
+                                        'action' => 'view|reset',
                                         'id' => '\d+',
                                     ],
                                     'defaults' => [

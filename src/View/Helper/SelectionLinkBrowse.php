@@ -31,9 +31,7 @@ class SelectionLinkBrowse extends AbstractHelper
         $view = $this->getView();
 
         $user = $view->identity();
-        $urlBrowse = $this->isGuestActive && $user
-            ? $view->url('site/guest/selection', ['action' => 'browse'], true)
-            : $view->url('site/selection', ['action' => 'browse'], true);
+        $urlBrowse = $view->url('site/guest/selection', ['action' => 'browse'], true);
 
         $template = $options['template'] ?? self::PARTIAL_NAME;
         unset($options['template']);

@@ -2,47 +2,26 @@
 
 namespace Selection\Controller\Site;
 
+/**
+ * Personal area for the visitor or user: browse own selections, view a
+ * single selection, list favorites, reset. Routed under /guest/* so the
+ * URLs remain stable across module Guest installations or removals; the
+ * controller does not require module Guest to be installed.
+ *
+ * Anonymous visitors are served from session storage; authenticated users
+ * from the database.
+ */
 class GuestController extends AbstractSelectionController
 {
     protected $isGuestActive = true;
 
     /**
-     * Unlike selection controller, there is no index for guest.
-     *
-     * Anonymous visitors are redirected to login since the Guest controller
-     * is restricted to authenticated users by the ACL.
-     *
-     * {@inheritDoc}
-     * @see \Selection\Controller\Site\AbstractSelectionController::indexAction()
+     * No public index here: redirect to /guest/selection (own browse).
      */
     public function indexAction()
     {
-        if (!$this->identity()) {
-            return $this->redirectAnonymousToLogin();
-        }
-        $params = $this->params()->fromRoute();
-        $params['action'] = 'browse';
-        return $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
-    }
-
-    public function browseAction()
-    {
-        $user = $this->identity();
-        if (!$user) {
-            return $this->redirectAnonymousToLogin();
-        }
-        // Toujours afficher la liste des sélections (et non la vue d'une
-        // sélection unique imposée par parent::browseAction en mode simple),
-        // pour correspondre à la page « compte utilisateur ».
-        return $this->browseDb($user);
-    }
-
-    private function redirectAnonymousToLogin()
-    {
-        return $this->redirect()->toRoute(
-            'site/guest/anonymous',
-            ['site-slug' => $this->params('site-slug'), 'action' => 'login'],
-            ['query' => ['redirect' => $this->getRequest()->getRequestUri()]]
-        );
+        return $this->redirect()->toRoute('site/guest/selection', [
+            'site-slug' => $this->params('site-slug'),
+        ]);
     }
 }

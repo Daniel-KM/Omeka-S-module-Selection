@@ -85,46 +85,41 @@ abstract class AbstractSelectionController extends AbstractActionController
     }
 
     /**
-     * Browse means to browse own selections.
-     * Use "index" and "show" to browse all selections.
+     * Browse own selections (db-backed for users, session for anonymous).
+     * Routed via /guest/selection. Public list of all selections is the
+     * indexAction routed via /selection.
      */
     public function browseAction()
     {
-        $user = $this->identity();
         $favorites = $this->selectionFavoritesEnabled();
         $selections = $this->selectionSelectionsEnabled();
         if (!$favorites && !$selections) {
             throw new \Omeka\Api\Exception\PermissionDeniedException();
         }
 
-        // Favorites-only: redirect /selection to the dedicated /favorites view.
+        // Favorites-only: redirect to the dedicated /guest/favorites view.
         if ($favorites && !$selections) {
-            $params = $this->params()->fromRoute();
-            $params['action'] = 'favorites';
-            return $user
-                ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
-                : $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
+            return $this->redirect()->toRoute('site/guest/favorites', [
+                'site-slug' => $this->params('site-slug'),
+            ]);
         }
 
+        $user = $this->identity();
         return $user
             ? $this->browseDb($user)
             : $this->browseSession();
     }
 
     /**
-     * Show a published selection.
-     * Use view to show own selections.
-     * A published selection means user, so an anonymous cannot publish one.
-     * This method is overridden in SelectionController to publish a selection.
+     * Show a published selection. Public view is implemented in
+     * SelectionController::showAction(). Personal view (own selection) is
+     * routed at /guest/selection/{id} which dispatches to viewAction.
      */
     public function showAction()
     {
         $params = $this->params()->fromRoute();
         $params['action'] = 'view';
-        $user = $this->identity();
-        return $user
-            ? $this->forward()->dispatch('Selection\Controller\Site\Selection', $params)
-            : $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
+        return $this->forward()->dispatch('Selection\Controller\Site\Guest', $params);
     }
 
     public function viewAction()

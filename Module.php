@@ -163,53 +163,22 @@ class Module extends AbstractModule
                 ],
                 ['create', 'search', 'read', 'update', 'delete', 'batch_update', 'batch_delete', 'view-all', 'validate'],
             )
-            // Controller.
+            // Controller. Public area (/selection) exposes the public list
+            // and AJAX/ops; personal area (/guest/*) is open to anonymous
+            // session and authenticated users alike.
             ->allow(
                 null,
                 [
                     'Selection\Controller\Site\Selection',
                 ],
                 [
-                    // TODO Clarify acl rule for browse.
                     'index',
-                    'browse',
                     'show',
-                    'view',
-                    'favorites',
-                ]
-            )
-            // Allow "index" and "browse" on Guest controller for anonymous so
-            // those actions can redirect to login (otherwise the ACL throws a
-            // 500 before the controller code runs). The /guest/selection
-            // route defaults to action "browse".
-            ->allow(
-                null,
-                [
-                    'Selection\Controller\Site\Guest',
-                ],
-                [
-                    'index',
-                    'browse',
-                ]
-            )
-            ->allow(
-                $roles,
-                [
-                    'Selection\Controller\Site\Selection',
-                    'Selection\Controller\Site\Guest',
-                ],
-                [
-                    'index',
-                    'browse',
-                    'show',
-                    'view',
-                    'favorites',
                     'add',
-                    'edit',
-                    'delete',
                     'include',
                     'exclude',
                     'move',
+                    'reorder',
                     'reset',
                     'toggle',
                     'update',
@@ -217,6 +186,60 @@ class Module extends AbstractModule
                     'rename-group',
                     'move-group',
                     'delete-group',
+                    'convert-dialog',
+                    'convert',
+                ]
+            )
+            ->allow(
+                null,
+                [
+                    'Selection\Controller\Site\Guest',
+                ],
+                [
+                    'index',
+                    'browse',
+                    'view',
+                    'favorites',
+                    'reset',
+                ]
+            )
+            ->allow(
+                $roles,
+                [
+                    'Selection\Controller\Site\Selection',
+                ],
+                [
+                    'index',
+                    'show',
+                    'add',
+                    'edit',
+                    'delete',
+                    'include',
+                    'exclude',
+                    'move',
+                    'reorder',
+                    'reset',
+                    'toggle',
+                    'update',
+                    'add-group',
+                    'rename-group',
+                    'move-group',
+                    'delete-group',
+                    'convert-dialog',
+                    'convert',
+                ]
+            )
+            ->allow(
+                $roles,
+                [
+                    'Selection\Controller\Site\Guest',
+                ],
+                [
+                    'index',
+                    'browse',
+                    'view',
+                    'favorites',
+                    'reset',
                 ]
             )
             ->allow(
