@@ -377,6 +377,9 @@ return  [
             'selection_convert_auto' => true,
             // Per-list rendering for selections (flat / grouped / hierarchy).
             'selection_disposition' => 'flat',
+            // How to show the favorites basket within /guest/selection when
+            // both axes are enabled: hide / top / hierarchy_root.
+            'selection_show_favorites_in_list' => 'hide',
             'selection_share' => '',
             'selection_share_redirect' => '',
             'selection_share_redirect_search' => '',

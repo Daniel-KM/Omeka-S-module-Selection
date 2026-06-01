@@ -108,7 +108,7 @@ class SiteSettingsFieldset extends Fieldset
                 'options' => [
                     'element_group' => 'selection',
                     'label' => 'Auto-convert anonymous favorites on login', // @translate
-                    'info' => 'When enabled, the anonymous favorites are appended silently to the user default selection at login, without showing the convert dialog.', // @translate
+                    'info' => 'This setting is used only when both favorites and selections are enabled for the user. When enabled, the anonymous basket is appended silently to the user default favorites at login. When disabled, a dialog asks the user where to put them.', // @translate
                 ],
                 'attributes' => [
                     'id' => 'selection_convert_auto',
@@ -129,6 +129,23 @@ class SiteSettingsFieldset extends Fieldset
                 ],
                 'attributes' => [
                     'id' => 'selection_disposition',
+                ],
+            ])
+            ->add([
+                'name' => 'selection_show_favorites_in_list',
+                'type' => CommonElement\OptionalRadio::class,
+                'options' => [
+                    'element_group' => 'selection',
+                    'label' => 'Show favorites basket inside the selections list', // @translate
+                    'info' => 'Only applies when both favorites and selections are enabled for the user, on page /guest/selection.', // @translate
+                    'value_options' => [
+                        'hide' => 'Hide (favorites only accessible via /guest/favorites)', // @translate
+                        'top' => 'Show at the top of the list', // @translate
+                        'hierarchy_root' => 'Show as root in hierarchy disposition only', // @translate
+                    ],
+                ],
+                'attributes' => [
+                    'id' => 'selection_show_favorites_in_list',
                 ],
             ])
 

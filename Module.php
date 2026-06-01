@@ -419,13 +419,17 @@ class Module extends AbstractModule
     /**
      * Convert anonymous session favorites/selections to user account on login.
      *
-     * Flow:
-     *   - If user has favorites enabled and session has resources, merge them
-     *     silently into the user default favorites basket.
-     *   - Else, if user has selections enabled and session has resources,
-     *     either flag a pending dialog or auto-create a new selection
-     *     (selection_convert_auto).
-     *   - Else (neither enabled), discard the session.
+     * Semantics of selection_convert_auto:
+     *   - Only meaningful when BOTH favorites and selections are enabled for
+     *     the user. It then decides where the anonymous basket lands at login:
+     *       true → silent merge into the user default favorites basket false →
+     *       dialog asks the user (favorites vs new named selection)
+     *   - When only favorites are enabled: always silent merge (setting
+     *   ignored). - When only selections are enabled: always show the dialog
+     *   (setting
+     *     ignored). Auto-creation of a new selection without dialog is not
+     *     implemented in this path.
+     *   - When neither axis is enabled: the session is discarded.
      */
     public function onUserLogin(Event $event): void
     {

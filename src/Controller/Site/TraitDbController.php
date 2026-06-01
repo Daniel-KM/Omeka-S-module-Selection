@@ -36,16 +36,51 @@ trait TraitDbController
         $query = $this->params()->fromQuery();
         $query['site_id'] = $site->id();
 
-        // The selection is always the one of the user here for now.
-        // In the user view, limit to the selections of the user.
-        // For now, it is always the case.
+        // The selection is always the one of the user here for now. In the user
+        // view, limit to the selections of the user. For now, it is always the
+        // case.
         if ($this->isGuestActive && $user) {
             $query['owner_id'] = $user->getId();
+        }
+
+        // When the favorites axis is separate, decide whether to show the
+        // default selection (favorites) inside the named selections list: hide
+        // / top / hierarchy_root (only relevant in hierarchy disposition).
+        $favoritesEnabled = $this->selectionFavoritesEnabled();
+        $selectionsEnabled = $this->selectionSelectionsEnabled();
+        $showFavoritesInList = 'hide';
+        if ($favoritesEnabled && $selectionsEnabled && $user) {
+            $showFavoritesInList = (string) $this->siteSettings()->get('selection_show_favorites_in_list', 'hide');
+            $disposition = $this->currentDisposition($query);
+            if ($showFavoritesInList === 'hierarchy_root' && $disposition !== 'hierarchy') {
+                $showFavoritesInList = 'hide';
+            }
+        }
+        if ($favoritesEnabled && $showFavoritesInList === 'hide') {
+            $query['is_default'] = 0;
         }
 
         $response = $this->api()->search('selections', $query);
         $this->paginator($response->getTotalResults());
         $selections = $response->getContent();
+
+        // For "top": ensure favorites is first even if pagination/sort would
+        // demote it. For "hierarchy_root": leave order as is, view renders it
+        // as the implicit root.
+        if ($favoritesEnabled && $showFavoritesInList === 'top') {
+            $favoritesSelection = $this->api()->searchOne('selections', [
+                'owner_id' => $user->getId(),
+                'is_default' => true,
+            ])->getContent();
+            if ($favoritesSelection) {
+                $favoritesId = $favoritesSelection->id();
+                $selections = array_values(array_filter(
+                    $selections,
+                    fn ($s) => $s->id() !== $favoritesId
+                ));
+                array_unshift($selections, $favoritesSelection);
+            }
+        }
 
         $selectionShare = $this->siteSettings()->get('selection_share');
 
@@ -60,6 +95,7 @@ trait TraitDbController
             'isSession' => false,
             'mode' => $this->effectiveMode(),
             'disposition' => $this->currentDisposition($query),
+            'showFavoritesInList' => $showFavoritesInList,
             'allowIndividualSelect' => $this->allowIndividualSelect(),
             'selectionShare' => $selectionShare,
             'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
