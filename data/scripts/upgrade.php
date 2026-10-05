@@ -725,3 +725,17 @@ if (version_compare($oldVersion, '3.4.19', '<')) {
     );
     $messenger->addWarning($message);
 }
+
+if (version_compare($oldVersion, '3.4.20', '<')) {
+    // The default maximum number of resources per selection was raised from 50
+    // to 100. Bump sites that still use the previous default (50), but keep any
+    // value a site explicitly customized.
+    $siteIds = array_keys($api->search('sites', [], ['returnScalar' => 'id'])->getContent());
+    foreach ($siteIds as $siteId) {
+        $siteSettings->setTargetId($siteId);
+        $maxResources = $siteSettings->get('selection_max_resources');
+        if ($maxResources !== null && (int) $maxResources === 50) {
+            $siteSettings->set('selection_max_resources', 100);
+        }
+    }
+}
