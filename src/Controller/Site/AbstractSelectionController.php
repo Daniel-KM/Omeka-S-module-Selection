@@ -346,7 +346,7 @@ abstract class AbstractSelectionController extends AbstractActionController
             'isSession' => $isSession,
             'mode' => $mode,
             'disposition' => 'flat',
-            'allowIndividualSelect' => false,
+            'allowIndividualSelect' => $this->allowIndividualSelect(),
             'totalResults' => $total,
             'sortBy' => $sortBy,
             'sortOrder' => $sortOrder,
