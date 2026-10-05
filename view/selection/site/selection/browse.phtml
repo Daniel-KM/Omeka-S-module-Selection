@@ -65,6 +65,7 @@ $this->htmlElement('body')->appendAttribute('class', 'selection resource browse'
 <div class="warning-max-resources">
 	<p><?= $escape(sprintf($translate('(%d resources max by selection)'), $maxResources)) ?></p>
 </div>
+<?php endif; ?>
 
 <?php if ($this->userIsAllowed(\Selection\Entity\Selection::class, 'create')): ?>
 <div class="selection-list-actions">
