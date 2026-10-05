@@ -1,14 +1,9 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: Solr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 00:00+0000\n"
-"PO-Revision-Date: 2026-06-01 00:00+0000\n"
+"POT-Creation-Date: 2026-11-02 00:00+0000\n"
+"PO-Revision-Date: 2026-11-02 00:00+0000\n"
 "Last-Translator: Daniel Berthereau <Daniel.fr@Berthereau.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
@@ -18,8 +13,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.6\n"
 
-#: data/scripts/upgrade.php:33 data/scripts/upgrade.php:45 Module.php:264
-#: Module.php:275
+#: data/scripts/upgrade.php:33 data/scripts/upgrade.php:45 Module.php:281
+#: Module.php:292
 #, php-format
 msgid "The module %1$s should be upgraded to version %2$s or later."
 msgstr "Le module %1$s doit être mis à niveau à la version %2$s ou supérieure."
@@ -28,17 +23,17 @@ msgstr "Le module %1$s doit être mis à niveau à la version %2$s ou supérieur
 msgid "Missing requirement. Unable to upgrade."
 msgstr "Pré-requis absent. Impossible de mettre à jour."
 
-#: data/scripts/upgrade.php:200 Module.php:752 Module.php:979
-#: src/Controller/Site/TraitDbController.php:1443
+#: data/scripts/upgrade.php:220 Module.php:769 Module.php:996
+#: src/Controller/Site/TraitDbController.php:1446
 #: view/common/advanced-search/selections.phtml:17
 msgid "Selection"
 msgstr "Sélection"
 
-#: Module.php:755
+#: Module.php:772
 msgid "Invalid selection"
 msgstr "Sélection incorrecte"
 
-#: Module.php:758 view/common/selection-list.phtml:55
+#: Module.php:775 view/common/selection-list.phtml:55
 msgid "No selection"
 msgstr "Pas de sélection"
 
@@ -186,62 +181,57 @@ msgstr "Pas propriétaire"
 msgid "Invalid action"
 msgstr "Action incorrecte"
 
-#: src/Controller/Site/TraitDbController.php:170
+#: src/Controller/Site/TraitDbController.php:180
 msgid "Cannot add a new selection when selection id is specified."
 msgstr ""
 "Impossible d’ajouter une nouvelle sélection quand l’id n’est pas indiquée."
 
-#: src/Controller/Site/TraitDbController.php:175
-#: src/Controller/Site/TraitDbController.php:279
+#: src/Controller/Site/TraitDbController.php:185
+#: src/Controller/Site/TraitDbController.php:289
 msgid "No label"
 msgstr "Pas de libellé"
 
-#: src/Controller/Site/TraitDbController.php:188
-#: src/Controller/Site/TraitDbController.php:287
+#: src/Controller/Site/TraitDbController.php:198
+#: src/Controller/Site/TraitDbController.php:297
 msgid "The label is already used for another selection."
 msgstr "Le libellé existe déjà pour une autre sélection."
 
-#: src/Controller/Site/TraitDbController.php:256
+#: src/Controller/Site/TraitDbController.php:266
 msgid "Cannot edit a selection when selection id is not specified."
 msgstr "Impossible de modifier la sélection quand l’id n’est pas indiquée."
 
-#: src/Controller/Site/TraitDbController.php:297
+#: src/Controller/Site/TraitDbController.php:307
 msgid "No change."
 msgstr "Pas de changement."
 
-#: src/Controller/Site/TraitDbController.php:326
+#: src/Controller/Site/TraitDbController.php:336
 msgid "Cannot delete a selection when the selection id is not specified."
 msgstr "Impossible de supprimer une sélection quand l’id n’est pas indiquée."
 
-#: src/Controller/Site/TraitDbController.php:395
-#: src/Controller/Site/TraitDbController.php:1144
-#: src/Controller/Site/TraitSessionController.php:124
+#: src/Controller/Site/TraitDbController.php:405
+#: src/Controller/Site/TraitDbController.php:1154
+#: src/Controller/Site/TraitSessionController.php:131
 msgid "Already in"
 msgstr "Déjà ajouté"
 
-#: src/Controller/Site/TraitDbController.php:1438
-#: src/Controller/Site/TraitSessionController.php:648
-msgid "Favorites"
-msgstr "Favoris"
-
-#: src/Controller/Site/TraitSessionController.php:26
+#: src/Controller/Site/TraitSessionController.php:27
 msgid ""
 "It is not possible to browse multiple selections without an account for now."
 msgstr ""
 "Il n’est pas possible de parcourir plusieurs sélections sans compte "
 "actuellement."
 
-#: src/Controller/Site/TraitSessionController.php:75
+#: src/Controller/Site/TraitSessionController.php:82
 msgid "It is not possible to add a selection without an account for now."
 msgstr ""
 "Il n’est pas possible d’ajouter une sélection sans compte actuellement."
 
-#: src/Controller/Site/TraitSessionController.php:80
+#: src/Controller/Site/TraitSessionController.php:87
 msgid "It is not possible to edit a selection without an account for now."
 msgstr ""
 "Il n’est pas possible de modifier une sélection sans compte actuellement."
 
-#: src/Controller/Site/TraitSessionController.php:85
+#: src/Controller/Site/TraitSessionController.php:92
 msgid "It is not possible to delete a selection without an account for now."
 msgstr ""
 "Il n’est pas possible de supprimer une sélection sans compte actuellement."
@@ -357,7 +347,7 @@ msgid "Remove from selection"
 msgstr "Retirer de la sélection"
 
 #: view/common/selection-button-to-select.phtml:54
-#: view/selection/site/selection/browse.phtml:73
+#: view/selection/site/selection/browse.phtml:74
 #: view/selection/site/selection/convert-dialog.phtml:46
 msgid "Create a new selection"
 msgstr "Créer une sélection"
@@ -370,9 +360,104 @@ msgstr "Ajouter à la sélection"
 msgid "Selected resources"
 msgstr "Ressources sélectionnées"
 
+#: view/common/selection-publish-button.phtml:38
+#: view/selection/site/selection/actions.phtml:29
+#: view/selection/site/selection/browse.phtml:109
+msgid ""
+"Do you want to make this selection visible to the public? It will be "
+"moderated."
+msgstr ""
+"Voulez-vous rendre cette sélection visible pour le public ? Elle sera "
+"modérée."
+
+#: view/common/selection-publish-button.phtml:39
+#: view/selection/site/selection/actions.phtml:30
+#: view/selection/site/selection/browse.phtml:110
+msgid "Do you want to make this selection visible to the public?"
+msgstr "Voulez-vous rendre cette sélection visible pour le public ?"
+
+#: view/common/selection-publish-button.phtml:42
+#: view/selection/site/selection/actions.phtml:26
+#: view/selection/site/selection/browse.phtml:106
+msgid "Publish"
+msgstr "Publier"
+
+#: view/common/selection-publish-button.phtml:42
+#: view/selection/site/selection/actions.phtml:27
+#: view/selection/site/selection/browse.phtml:107
+msgid "Unpublish"
+msgstr "Dépublier"
+
+#: view/common/selection-publish-button.phtml:42
+#: view/selection/site/selection/actions.phtml:31
+#: view/selection/site/selection/browse.phtml:111
+msgid "Do you want to make this selection invisible to the public?"
+msgstr "Voulez-vous rendre cette sélection invisible pour le public ?"
+
 #: view/common/selection-reset.phtml:29
 msgid "Clear all selections"
 msgstr "Supprimer toutes les sélections"
+
+#: view/common/selection-share-buttons.phtml:54
+msgid "Publish the selection to share it"
+msgstr "Publier la sélection pour la partager"
+
+#: view/common/selection-share-buttons.phtml:54
+#: view/common/selection-share-buttons.phtml:64
+msgid "Share"
+msgstr "Partager"
+
+#: view/common/selection-share-buttons.phtml:56
+msgid "Publish the selection to share it."
+msgstr "Publier la sélection pour la partager."
+
+#: view/common/selection-share-buttons.phtml:64
+msgid "Share this record on social networks"
+msgstr "Partager cette notice sur les réseaux sociaux"
+
+#: view/common/selection-share-buttons.phtml:75
+msgid "Share on Twitter"
+msgstr "Partager sur Twitter"
+
+#: view/common/selection-share-buttons.phtml:75
+msgid "Twitter"
+msgstr "Twitter"
+
+#: view/common/selection-share-buttons.phtml:80
+msgid "Share on Pinterest"
+msgstr "Partager sur Pinterest"
+
+#: view/common/selection-share-buttons.phtml:80
+msgid "Pinterest"
+msgstr "Pinterest"
+
+#: view/common/selection-share-buttons.phtml:85
+msgid "Share on Tumblr"
+msgstr "Partager sur Tumblr"
+
+#: view/common/selection-share-buttons.phtml:85
+msgid "Tumblr"
+msgstr "Tumblr"
+
+#: view/common/selection-share-buttons.phtml:90
+msgid "Share to Instagram Stories"
+msgstr "Partager sur Instagram Stories"
+
+#: view/common/selection-share-buttons.phtml:90
+msgid "Instagram"
+msgstr "Instagram"
+
+#: view/common/selection-share-buttons.phtml:95
+msgid "Share on LinkedIn"
+msgstr "Partager sur LinkedIn"
+
+#: view/common/selection-share-buttons.phtml:95
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+#: view/common/selection-share-buttons.phtml:105
+msgid "Get embed code"
+msgstr "Voir le code pour embarquer"
 
 #: view/guest/site/guest/widget/selection.phtml:16
 msgid "My selection"
@@ -479,58 +564,29 @@ msgid "Links"
 msgstr "Liens"
 
 #: view/selection/site/selection/actions.phtml:21
-#: view/selection/site/selection/browse.phtml:100
+#: view/selection/site/selection/browse.phtml:101
 msgid "Visible to the public"
 msgstr "Visible pour le public"
 
 #: view/selection/site/selection/actions.phtml:22
-#: view/selection/site/selection/browse.phtml:101
+#: view/selection/site/selection/browse.phtml:102
 msgid "Invisible to the public"
 msgstr "Invisible pour le public"
 
 #: view/selection/site/selection/actions.phtml:23
-#: view/selection/site/selection/browse.phtml:102
+#: view/selection/site/selection/browse.phtml:103
 msgid "Is validated"
 msgstr "Est validé"
 
 #: view/selection/site/selection/actions.phtml:24
-#: view/selection/site/selection/browse.phtml:103
+#: view/selection/site/selection/browse.phtml:104
 msgid "Is rejected"
 msgstr "Est rejeté"
 
 #: view/selection/site/selection/actions.phtml:25
-#: view/selection/site/selection/browse.phtml:104
+#: view/selection/site/selection/browse.phtml:105
 msgid "Validation in progress"
 msgstr "En cours de modération"
-
-#: view/selection/site/selection/actions.phtml:26
-#: view/selection/site/selection/browse.phtml:105
-msgid "Publish"
-msgstr "Publier"
-
-#: view/selection/site/selection/actions.phtml:27
-#: view/selection/site/selection/browse.phtml:106
-msgid "Unpublish"
-msgstr "Dépublier"
-
-#: view/selection/site/selection/actions.phtml:29
-#: view/selection/site/selection/browse.phtml:108
-msgid ""
-"Do you want to make this selection visible to the public? It will be "
-"moderated."
-msgstr ""
-"Voulez-vous rendre cette sélection visible pour le public ? Elle sera "
-"modérée."
-
-#: view/selection/site/selection/actions.phtml:30
-#: view/selection/site/selection/browse.phtml:109
-msgid "Do you want to make this selection visible to the public?"
-msgstr "Voulez-vous rendre cette sélection visible pour le public ?"
-
-#: view/selection/site/selection/actions.phtml:31
-#: view/selection/site/selection/browse.phtml:110
-msgid "Do you want to make this selection invisible to the public?"
-msgstr "Voulez-vous rendre cette sélection invisible pour le public ?"
 
 #: view/selection/site/selection/actions.phtml:50
 #: view/selection/site/selection/group-resource.phtml:64
@@ -546,16 +602,16 @@ msgstr "Indiquer le nouveau nom de la sélection"
 msgid "Rename"
 msgstr "Renommer"
 
-#: view/selection/site/selection/actions.phtml:63
+#: view/selection/site/selection/actions.phtml:64
 #: view/selection/site/selection/group.phtml:50
 msgid "Export resources"
 msgstr "Exporter les ressources"
 
-#: view/selection/site/selection/actions.phtml:75
+#: view/selection/site/selection/actions.phtml:76
 msgid "Delete this selection"
 msgstr "Supprimer la sélection"
 
-#: view/selection/site/selection/actions.phtml:75
+#: view/selection/site/selection/actions.phtml:76
 #: view/selection/site/selection/group.phtml:47
 msgid "Delete selection"
 msgstr "Supprimer la sélection"
@@ -565,13 +621,13 @@ msgstr "Supprimer la sélection"
 msgid "(%d resources max by selection)"
 msgstr "(%d ressources maximum par sélection)"
 
-#: view/selection/site/selection/browse.phtml:73
+#: view/selection/site/selection/browse.phtml:74
 msgid "Set title of the new selection"
 msgstr "Indiquer un titre pour la nouvelle sélection"
 
-#: view/selection/site/selection/browse.phtml:80
+#: view/selection/site/selection/browse.phtml:81
 #: view/selection/site/selection/favorites.phtml:55
-#: view/selection/site/selection/view.phtml:72
+#: view/selection/site/selection/view.phtml:70
 msgid ""
 "This selection is stored in the session cookie. It will be lost if the "
 "cookie is cleared."
@@ -636,18 +692,19 @@ msgstr "La sélection est vide."
 
 #: view/selection/site/selection/list-flat.phtml:142
 #: view/selection/site/selection/list-grouped.phtml:158
-#: view/selection/site/selection/list-hierarchy.phtml:154
+#: view/selection/site/selection/list-hierarchy.phtml:167
 msgid "Select resources and download metadata"
 msgstr "Choisir les ressources et téléchargez les métadonnées"
 
 #: view/selection/site/selection/list-flat.phtml:157
 #: view/selection/site/selection/list-grouped.phtml:172
-#: view/selection/site/selection/list-hierarchy.phtml:168
+#: view/selection/site/selection/list-hierarchy.phtml:181
 msgid "Select resources and send an email"
 msgstr "Choisir des ressources et envoyer un mail"
 
 #: view/selection/site/selection/list-grouped.phtml:76
 #: view/selection/site/selection/list-hierarchy.phtml:75
+#: view/selection/site/selection/list-hierarchy.phtml:157
 msgid "Move"
 msgstr "Déplacer"
 
@@ -664,6 +721,7 @@ msgid "Create a selection"
 msgstr "Créer une sélection"
 
 #: view/selection/site/selection/list-grouped.phtml:132
+#: view/selection/site/selection/list-hierarchy.phtml:131
 msgid "No resource"
 msgstr "Pas de ressource"
 
@@ -683,19 +741,19 @@ msgstr ""
 "Les assistants de vue et les modèles doivent être renommés. Les anciens "
 "seront supprimés dans une version prochaine."
 
-#: data/scripts/upgrade.php:204
+#: data/scripts/upgrade.php:243
 msgid "It is now possible to organize selected resources in a structured way."
 msgstr ""
 "Il est désormais possible d’organiser les ressources choisies de manière "
 "structurée."
 
-#: data/scripts/upgrade.php:208
+#: data/scripts/upgrade.php:247
 msgid "The structure is not available for anonymous visitors yet."
 msgstr ""
 "Le classement des sélections dans une structure n’est pas encore disponible "
 "pour les visiteurs anonymes."
 
-#: data/scripts/upgrade.php:212
+#: data/scripts/upgrade.php:251
 msgid ""
 "Some url routes have been updated to use query arguments. Check your theme "
 "if needed."
@@ -703,7 +761,7 @@ msgstr ""
 "Certaines urls ont été mises à jour pour utiliser des arguments. Vérifiez "
 "votre thème si nécessaire."
 
-#: data/scripts/upgrade.php:253
+#: data/scripts/upgrade.php:292
 msgid ""
 "The option \"selection_visitor_allow\" was renamed "
 "\"selection_disable_anonymous\" and \"selection_open\" as "
@@ -714,13 +772,13 @@ msgstr ""
 "« selection_resource_show_open ». Mettez à jour le thème s’il a été "
 "personnalisé."
 
-#: data/scripts/upgrade.php:258
+#: data/scripts/upgrade.php:297
 msgid "The views were restructured, so check your theme if you customized it."
 msgstr ""
 "Les vues ont été restructurées. Il est donc recommandé de vérifier le thème "
 "si vous l’avez personnalisé."
 
-#: data/scripts/upgrade.php:263
+#: data/scripts/upgrade.php:302
 msgid ""
 "A new option in site settings and in block settings allows to display the "
 "selection flat, by default, or hierarchically."
@@ -729,7 +787,7 @@ msgstr ""
 "bloc permet d’afficher la liste de sélection à plat, par défaut, ou en "
 "arborescence."
 
-#: data/scripts/upgrade.php:268
+#: data/scripts/upgrade.php:307
 msgid ""
 "A new option in site settings allows to define selectable resources (items, "
 "medias, item sets)."
@@ -737,7 +795,7 @@ msgstr ""
 "Une nouvelle option dans les paramètres de site permet de définir les "
 "ressources sélectionnables (contenus, médias et collections)."
 
-#: data/scripts/upgrade.php:273
+#: data/scripts/upgrade.php:312
 msgid ""
 "The resource block \"Selection\" was split into a block \"Selection\" and a "
 "block \"Selection list\"."
@@ -745,7 +803,7 @@ msgstr ""
 "Le bloc « Sélection » a été scindé en un blocs « Sélection » et en un bloc "
 "« Liste des sélections »."
 
-#: data/scripts/upgrade.php:278
+#: data/scripts/upgrade.php:317
 msgid ""
 "Modules {link_1}Bulk Export{link_end} and {link_2}Contact Us{link_end} are "
 "fully integrated in the selection page."
@@ -753,7 +811,7 @@ msgstr ""
 "Les modules {link_1}Bulk Export{link_end} et {link_2}Contact Us{link_end} "
 "sont désormais entièrement intégrés dans la page de sélection."
 
-#: data/scripts/upgrade.php:361
+#: data/scripts/upgrade.php:400
 msgid ""
 "The setting \"heading\" was removed from block Selection. New blocks "
 "\"Heading\" or \"Html\" were prepended to all blocks that had a filled "
@@ -763,7 +821,7 @@ msgstr ""
 "« Titre » ou « Html » ont été ajoutés à tous les blocs qui avaient un titre. "
 "Vous pouvez vérifier les pages pour les styles : {json}"
 
-#: data/scripts/upgrade.php:371
+#: data/scripts/upgrade.php:410
 msgid ""
 "The setting \"template\" was moved to the new block layout settings "
 "available since Omeka S v4.1. You may check pages for styles: {json}"
@@ -771,7 +829,7 @@ msgstr ""
 "Le paramètre « template » a été déplacé dans les nouveaux paramètres de bloc "
 "depuis Omeka S v4.1. Vous pouvez vérifier les pages pour les styles : {json}"
 
-#: data/scripts/upgrade.php:378
+#: data/scripts/upgrade.php:417
 msgid ""
 "The template files for the block Selection should be moved from \"view/"
 "common/block-layout\" to \"view/common/block-template\" in your themes. You "
@@ -781,7 +839,7 @@ msgstr ""
 "common/block-layout » à « view/common/block-template » dans vos thèmes. Vous "
 "pouvez vérifier vos thèmes pour les pages : {json}"
 
-#: data/scripts/upgrade.php:413
+#: data/scripts/upgrade.php:452
 msgid ""
 "A new option is added to display selection button and list before, after or "
 "via resource blocks. See site settings."
@@ -789,7 +847,7 @@ msgstr ""
 "Une nouvelle option permet d’afficher la bouton et la liste de sélection "
 "avant, après ou via les blocs de ressources dans les paramètres de site."
 
-#: data/scripts/upgrade.php:443
+#: data/scripts/upgrade.php:482
 msgid ""
 "The view helpers \"selectionButtonToggle\", \"showSelectionLink\", "
 "\"updateSelectionLink\" , and \"containerSelection\" were renamed "
@@ -803,7 +861,7 @@ msgstr ""
 "« selectionContainer ». Vous devez mettre à jour votre thème. Vues "
 "correspondantes : {json}"
 
-#: data/scripts/upgrade.php:489
+#: data/scripts/upgrade.php:528
 msgid ""
 "The js \"selection.js\" was simplified to use \"common-dialog.js\", that "
 "should be added to the templates. You should check your theme. Matching "
@@ -813,7 +871,7 @@ msgstr ""
 "qui doit être ajouté aux modèles. Vous devez vérifier votre thème. Modèles "
 "correspondants : {json}"
 
-#: data/scripts/upgrade.php:496
+#: data/scripts/upgrade.php:535
 msgid ""
 "The js \"selection.js\" was simplified to use \"common-dialog.js\", that "
 "should be added to the templates. You should check your theme."
@@ -821,13 +879,13 @@ msgstr ""
 "Le js \"selection.js\" a été simplifié pour utiliser \"common-dialog.js\", "
 "qui doit être ajouté aux gabarits. Vous devez vérifier votre thème."
 
-#: data/scripts/upgrade.php:519
+#: data/scripts/upgrade.php:558
 msgid ""
 "It is now possible to display a flat list of named selections of resources."
 msgstr ""
 "Il est désormais possible d’afficher une liste plate de sélections nommées."
 
-#: data/scripts/upgrade.php:557
+#: data/scripts/upgrade.php:596
 msgid ""
 "It is now possible to define the main mode of process by site: the user can "
 "manage a single selection or multiple selections."
@@ -835,11 +893,11 @@ msgstr ""
 "Il est désormais possible de définir le mode principal de traitement par "
 "site : l’utilisateur peut gérer une sélection unique ou plusieurs selections."
 
-#: data/scripts/upgrade.php:562
+#: data/scripts/upgrade.php:601
 msgid "It is now possible to publish selection and to moderate them."
 msgstr "Il est désormais possible de publier une sélection et de la modérer."
 
-#: data/scripts/upgrade.php:567
+#: data/scripts/upgrade.php:606
 msgid ""
 "Many urls for selections was modified, so check the menu and the theme if "
 "customized."
@@ -847,7 +905,7 @@ msgstr ""
 "De nombreuses urls ont été modifiées pour les sélections. Vous devez "
 "vérifier le menu et le thème si vous les avez personnalisés."
 
-#: data/scripts/upgrade.php:600
+#: data/scripts/upgrade.php:639
 msgid ""
 "A \"default\" flag has been added on selections to designate the favorites "
 "basket for each user. The oldest selection of each user has been promoted as "
@@ -857,7 +915,7 @@ msgstr ""
 "favoris pour chaque utilisateur. La plus ancienne sélection de chaque "
 "utilisateur a été définie par défaut."
 
-#: data/scripts/upgrade.php:620
+#: data/scripts/upgrade.php:659
 msgid ""
 "The selection modes and labels for visitors and users are now configured "
 "separately in site settings."
@@ -865,7 +923,7 @@ msgstr ""
 "Les modes de sélection et les labels pour les visiteurs et les utilisateurs "
 "sont désormais configurés séparément dans les paramètres de chaque site."
 
-#: data/scripts/upgrade.php:675
+#: data/scripts/upgrade.php:714
 msgid ""
 "Selection options now use two orthogonal axes per role: \"Favorites\" "
 "(single basket) and \"Selections\" (multiple named lists). Existing settings "
@@ -876,7 +934,7 @@ msgstr ""
 "multiples). Les paramètres existants ont été migrés. Vérifiez les dans les "
 "paramètres de chaque site."
 
-#: data/scripts/upgrade.php:685
+#: data/scripts/upgrade.php:724
 msgid ""
 "Selection routes have been clarified: the personal area is now exclusively "
 "under \"/guest/selection\" and \"/guest/favorites\". Update your bookmarks, "
@@ -886,7 +944,7 @@ msgstr ""
 "désormais \"/guest/selection\" et \"/guest/favorites\". Mettez-à jour vos "
 "favoris, thèmes et liens externes."
 
-#: Module.php:294
+#: Module.php:311
 msgid ""
 "The module Basket is present. Upgrade from it was removed since version "
 "3.4.7. Install the previous version if you want to upgrade it."
@@ -916,6 +974,10 @@ msgstr "Vous avez %d contenus dans vos favoris."
 #: src/Form/SiteSettingsFieldset.php:20
 msgid "Selection module"
 msgstr "Sélection (module)"
+
+#: src/Form/SiteSettingsFieldset.php:23
+msgid "Favorites"
+msgstr "Favoris"
 
 #: src/Form/SiteSettingsFieldset.php:25
 msgid "Selection (other)"
@@ -1314,13 +1376,16 @@ msgstr "Message de rejet par défaut au propriétaire"
 
 #: src/Form/SettingsFieldset.php:78
 msgid "Reply-to address of the emails to the owner"
-msgstr ""
+msgstr "Adresse de réponse des mails destinés au propriétaire"
 
 #: src/Form/SettingsFieldset.php:79
 msgid ""
 "Address set as reply-to. If empty, the reply-to is the email of the "
 "connected admin. The sender (from) remains the unique installation address."
 msgstr ""
+"Adresse définie comme adresse de réponse. Si vide, c'est celle de "
+"l'administrateur connecté. L'expéditeur (champ « De ») reste l'adresse "
+"unique de l'installation."
 
 #: src/Form/QuickSearchForm.php:34
 msgid "User by id"
@@ -1330,27 +1395,27 @@ msgstr "Utilisateur par id"
 msgid "Dynamic"
 msgstr "Dynamique"
 
-#: src/Form/SendMessageForm.php:41
+#: src/Form/SendMessageForm.php:42
 msgid "Message"
 msgstr "Message"
 
-#: src/Form/SendMessageForm.php:53
+#: src/Form/SendMessageForm.php:54
 msgid "Copy to me"
-msgstr ""
-
-#: src/Form/SendMessageForm.php:55
-msgid "No copy"
-msgstr ""
+msgstr "Copie à moi-même"
 
 #: src/Form/SendMessageForm.php:56
-msgid "Copy (cc)"
-msgstr ""
+msgid "No copy"
+msgstr "Pas de copie"
 
 #: src/Form/SendMessageForm.php:57
-msgid "Hidden copy (bcc)"
-msgstr ""
+msgid "Copy (cc)"
+msgstr "Copie (cc)"
 
-#: src/Form/SendMessageForm.php:69
+#: src/Form/SendMessageForm.php:58
+msgid "Hidden copy (bcc)"
+msgstr "Copie cachée (ccc)"
+
+#: src/Form/SendMessageForm.php:70
 msgid "Send message"
 msgstr "Envoyer le message"
 
@@ -1450,29 +1515,31 @@ msgstr "Suppressions des sélections. Cela peut prendre un moment."
 msgid "Message successfully sent to {email}."
 msgstr "Message envoyé avec succès à {email}."
 
-#: src/Controller/Site/TraitSessionController.php:350
-#: src/Controller/Site/TraitDbController.php:745
-msgid "The destination group is not in the list of groups."
-msgstr "Le groupe destination n’est pas dans la liste des groupes."
-
-#: src/Controller/Site/TraitDbController.php:838
-msgid "No resources selected."
-msgstr "Pas de ressource choisie."
-
-#: src/Controller/Site/TraitDbController.php:853
-msgid "No selections selected."
-msgstr "Aucune sélection choisie."
-
-#: src/Controller/Site/TraitDbController.php:861
+#: src/Controller/Site/TraitSessionController.php:50
+#: src/Controller/Site/TraitDbController.php:129
+#: src/Controller/Site/TraitDbController.php:871
 #: src/Controller/Site/SelectionController.php:26
 msgid "Selection not found."
 msgstr "Sélection non trouvée."
 
-#: src/Controller/Site/TraitDbController.php:919
+#: src/Controller/Site/TraitSessionController.php:357
+#: src/Controller/Site/TraitDbController.php:755
+msgid "The destination group is not in the list of groups."
+msgstr "Le groupe destination n’est pas dans la liste des groupes."
+
+#: src/Controller/Site/TraitDbController.php:848
+msgid "No resources selected."
+msgstr "Pas de ressource choisie."
+
+#: src/Controller/Site/TraitDbController.php:863
+msgid "No selections selected."
+msgstr "Aucune sélection choisie."
+
+#: src/Controller/Site/TraitDbController.php:929
 msgid "Error when updating selection: {exception}"
 msgstr "Erreur lors de la mise à jour de la sélection : {exception}"
 
-#: src/Controller/Site/TraitDbController.php:940
+#: src/Controller/Site/TraitDbController.php:950
 msgid "Error when adding resource to selection: {exception}"
 msgstr "Erreur lors de l’ajout de la ressource dans la sélection : {exception}"
 
@@ -1534,24 +1601,24 @@ msgstr "Indiquer un nouveau nom de groupe"
 msgid "Enter new selection name"
 msgstr "Indiquer le nouveau nom de la sélection"
 
-#: config/module.config.php:337
+#: config/module.config.php:338
 msgid "Remove from selection?"
 msgstr "Retirer de la sélection ?"
 
-#: config/module.config.php:338
+#: config/module.config.php:339
 msgid "Resource updated for selections."
 msgstr "Sélection mise à jour avec la ressource."
 
-#: config/module.config.php:339
+#: config/module.config.php:341
 #, php-format
 msgid "Selection limit reached. Maximum %d resources allowed."
 msgstr "Taille maximale atteinte. %d ressources autorisées."
 
-#: config/module.config.php:343
+#: config/module.config.php:345
 msgid "Your selection has been approved on {main_title}"
 msgstr "La sélection a été approuvée pour {main_title}"
 
-#: config/module.config.php:344
+#: config/module.config.php:346
 msgid ""
 "Hello,\n"
 "\n"
@@ -1571,11 +1638,11 @@ msgstr ""
 "\n"
 "Cordialement,"
 
-#: config/module.config.php:353
+#: config/module.config.php:355
 msgid "Your selection on {main_title}"
 msgstr "Votre sélection pour {main_title}"
 
-#: config/module.config.php:354
+#: config/module.config.php:356
 msgid ""
 "Hello,\n"
 "\n"
