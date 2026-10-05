@@ -474,6 +474,7 @@
                 .val(button.closest('.selection-group').data('path'))
                 .attr('data-url', button.data('url'));
             selector
+                .removeAttr('hidden')
                 .addClass('selector-group-move')
                 .removeClass('inactive')
                 .show();
@@ -636,6 +637,10 @@
         $(document).on('change', '.selector-group select', function(e) {
             const select = $(this);
             const selector = select.closest('.selector-group');
+            // The selector to move groups and resources has its own handler.
+            if (selector.hasClass('selector-group-move')) {
+                return;
+            }
             const resourceId = selector.data('resource-id');
             const selectionId = selector.data('id') && selector.data('id') !== '' ? selector.data('id') : null;
 

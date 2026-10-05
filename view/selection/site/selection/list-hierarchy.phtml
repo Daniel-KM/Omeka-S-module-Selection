@@ -149,6 +149,16 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
 
     <?php $this->trigger('view.browse.after'); ?>
 
+    <?php // Selector cloned by the buttons to move groups and resources. ?>
+    <div id="selector-group" class="selector-group inactive" hidden="hidden">
+        <select name="group" aria-label="<?= $escapeAttr($translate('Move')) ?>">
+            <option value="">/</option>
+            <?php foreach (array_keys($selection['structure'] ?? []) as $groupFullPath): ?>
+            <option value="<?= $escapeAttr($groupFullPath) ?>"><?= $escape(strtr($groupFullPath, ['/' => ' / '])) ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
     <?php
     if ($currentRecords && $bulkExport) { // Does not support mixed types for now.
         echo '<h4>' . $translate('Select resources and download metadata') . '</h4>';
