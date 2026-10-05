@@ -446,7 +446,7 @@ class SelectionRepresentation extends AbstractEntityRepresentation
             if ($resource instanceof \Omeka\Entity\Media) {
                 return $this->getAdapter('media')->getRepresentation($resource);
             }
-            if (class_exists(\DigitalObject\Entity\DigitalObject::class)
+            if (class_exists('DigitalObject\Module', false)
                 && $resource instanceof \DigitalObject\Entity\DigitalObject
             ) {
                 return $this->getAdapter('digital_objects')->getRepresentation($resource);
