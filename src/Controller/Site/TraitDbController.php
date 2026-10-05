@@ -101,7 +101,7 @@ trait TraitDbController
             'selectionShare' => $selectionShare,
             'canPublishAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'publish'),
             'canValidateAll' => $user && $this->userIsAllowed(\Selection\Api\Adapter\SelectionAdapter::class, 'validate'),
-            'maxResources' => (int) $this->siteSettings()->get('selection_max_resources'),
+            'maxResources' => (int) $this->siteSettings()->get('selection_max_resources', 100),
         ]);
 
         return $view

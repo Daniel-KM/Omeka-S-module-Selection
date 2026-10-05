@@ -78,7 +78,7 @@ class SelectionButton extends AbstractHelper
             'urlButton' => $selectionId
                 ? $url('site/selection-id', ['site-slug' => $siteSlug, 'action' => $options['action'] ?? 'toggle', 'id' => $selectionId], ['query' => ['id' => $resourceId]])
                 : $url('site/selection', ['site-slug' => $siteSlug, 'action' => $options['action'] ?? 'toggle'], ['query' => ['id' => $resourceId]]),
-            'maxResources' => (int) $siteSetting('selection_max_resources', 50),
+            'maxResources' => (int) $siteSetting('selection_max_resources', 100),
             'currentCount' => $currentCount,
             'template' => self::PARTIAL_NAME,
         ];

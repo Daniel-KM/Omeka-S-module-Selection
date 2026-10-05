@@ -387,7 +387,7 @@ return  [
             'selection_selectable_resources' => [
                 'items',
             ],
-            'selection_max_resources' => 50,
+            'selection_max_resources' => 100,
             'selection_per_page' => 25,
             'selection_placement_button' => [],
             'selection_placement_list' => [],

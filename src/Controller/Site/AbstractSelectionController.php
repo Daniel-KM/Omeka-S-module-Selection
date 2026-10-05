@@ -1127,7 +1127,7 @@ abstract class AbstractSelectionController extends AbstractActionController
      */
     protected function checkSelectionLimit(int $currentCount, int $addCount = 1): bool
     {
-        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 50);
+        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 100);
         // 0 means unlimited.
         if ($maxResources === 0) {
             return true;
@@ -1140,7 +1140,7 @@ abstract class AbstractSelectionController extends AbstractActionController
      */
     protected function jsonSelectionLimitExceeded(): JsonModel
     {
-        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 50);
+        $maxResources = (int) $this->siteSettings()->get('selection_max_resources', 100);
         return $this->jSend(
             JSend::FAIL,
             ['max_resources' => $maxResources],
