@@ -7,6 +7,12 @@
  */
 
 (function() {
+    // Omeka.jsTranslate() exists only when the theme calls the view helper
+    // jsTranslate(), so fallback to the original string.
+    const jsTranslate = (str) => typeof Omeka !== 'undefined' && typeof Omeka.jsTranslate === 'function'
+        ? Omeka.jsTranslate(str)
+        : str;
+
     /**
      * Show the anonymous-add dialog once per session via CommonDialog. The
      * config is injected server-side as window.SelectionAnonymousAddDialog only
@@ -91,7 +97,7 @@
              const button = $(this);
              const msg = button.data('msg-selection-name') ? button.data('msg-selection-name') : button.text();
              CommonDialog.dialogPrompt({
-                 heading: Omeka.jsTranslate('Selection'),
+                 heading: jsTranslate('Selection'),
                  message: msg,
              })
                  .then(function(name) {
@@ -126,7 +132,7 @@
              const selection = button.closest('.selection.resource[data-id]');
              const currentName = selection.find('.resource-name:first').text();
              CommonDialog.dialogPrompt({
-                 heading: Omeka.jsTranslate('Selection'),
+                 heading: jsTranslate('Selection'),
                  message: msg,
                  defaultValue: currentName,
              })
@@ -162,7 +168,7 @@
             const selection = button.closest('.selection.resource[data-id]');
             const msg = button.hasClass('publish') ? button.data('msg-publish-confirm') : button.data('msg-unpublish-confirm');
             CommonDialog.dialogConfirm({
-                heading: Omeka.jsTranslate('Selection'),
+                heading: jsTranslate('Selection'),
                 message: msg,
             })
                 .then(function(confirmed) {
@@ -218,7 +224,7 @@
              const selection = button.closest('.selection.resource[data-id]');
              const msg = button.data('msg-selection-name') ? button.data('msg-selection-name') : button.text();
              CommonDialog.dialogConfirm({
-                 heading: Omeka.jsTranslate('Selection'),
+                 heading: jsTranslate('Selection'),
                  message: msg,
              })
                  .then(function(confirmed) {
@@ -339,7 +345,7 @@
             const button = $(this);
             const msg = button.closest('.selection-structure').data('msg-group-name') ? button.closest('.selection-structure').data('msg-group-name') : button.text();
             CommonDialog.dialogPrompt({
-                heading: Omeka.jsTranslate('Selection'),
+                heading: jsTranslate('Selection'),
                 message: msg,
             })
                 .then(function(group) {
@@ -391,7 +397,7 @@
             const button = $(this);
             const msg = button.closest('.selection-structure').data('msg-group-name') ? button.closest('.selection-structure').data('msg-group-name') : button.text();
             CommonDialog.dialogPrompt({
-                heading: Omeka.jsTranslate('Selection'),
+                heading: jsTranslate('Selection'),
                 message: msg,
             })
                 .then(function(groupDestination) {
@@ -428,9 +434,9 @@
             e.preventDefault();
             e.stopPropagation();
             const button = $(this);
-            const msg = Omeka.jsTranslate('Are you sure you want to delete this group?');
+            const msg = jsTranslate('Are you sure you want to delete this group?');
             CommonDialog.dialogConfirm({
-                heading: Omeka.jsTranslate('Selection'),
+                heading: jsTranslate('Selection'),
                 message: msg,
             })
                 .then(function(confirmed) {
@@ -596,9 +602,9 @@
                 return true;
             }
             if (currentCount + addCount > maxResources) {
-                const msg = Omeka.jsTranslate('Selection limit reached. Maximum %d resources allowed.').replace('%d', maxResources);
+                const msg = jsTranslate('Selection limit reached. Maximum %d resources allowed.').replace('%d', maxResources);
                 CommonDialog.dialogAlert({
-                    heading: Omeka.jsTranslate('Selection'),
+                    heading: jsTranslate('Selection'),
                     message: msg,
                 });
                 return false;
@@ -656,8 +662,8 @@
 
             if (action === 'add') {
                 CommonDialog.dialogPrompt({
-                    heading: Omeka.jsTranslate('Selection'),
-                    message: Omeka.jsTranslate('Enter new selection name'),
+                    heading: jsTranslate('Selection'),
+                    message: jsTranslate('Enter new selection name'),
                 })
                     .then(function(name) {
                         if (name && name.trim().length) {
@@ -706,8 +712,8 @@
                     });
             } else if (action === 'add-group') {
                 CommonDialog.dialogPrompt({
-                    heading: Omeka.jsTranslate('Selection'),
-                    message: Omeka.jsTranslate('Enter new group name'),
+                    heading: jsTranslate('Selection'),
+                    message: jsTranslate('Enter new group name'),
                 })
                     .then(function(name) {
                         if (name && name.trim().length) {
