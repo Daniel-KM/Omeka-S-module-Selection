@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
  *
  * 3.4.18: legacy single-mode → mode_visitor / mode_user.
  * 3.4.19: mode_* + my_favorites → favorites_* + selections_* (two-axis).
+ * 3.4.20: max_resources 50 (previous default) → 100.
  */
 class UpgradeMappingTest extends TestCase
 {
@@ -84,6 +85,14 @@ class UpgradeMappingTest extends TestCase
         $siteSettings->delete('selection_my_favorites');
         $siteSettings->delete('selection_label_visitor');
         $siteSettings->delete('selection_label_user');
+    }
+
+    private function runMapping3420(SiteSettings $siteSettings): void
+    {
+        $maxResources = $siteSettings->get('selection_max_resources');
+        if ($maxResources !== null && (int) $maxResources === 50) {
+            $siteSettings->set('selection_max_resources', 100);
+        }
     }
 
     public function testDisabledAnonymousMapsVisitorToNone(): void
@@ -221,5 +230,40 @@ class UpgradeMappingTest extends TestCase
         $this->assertArrayNotHasKey('selection_my_favorites', $this->store);
         $this->assertArrayNotHasKey('selection_label_visitor', $this->store);
         $this->assertArrayNotHasKey('selection_label_user', $this->store);
+    }
+
+    public function testMaxResourcesPreviousDefaultBumped(): void
+    {
+        $this->store = ['selection_max_resources' => 50];
+        $this->runMapping3420($this->makeSettings());
+        $this->assertSame(100, $this->store['selection_max_resources']);
+    }
+
+    public function testMaxResourcesPreviousDefaultAsStringBumped(): void
+    {
+        $this->store = ['selection_max_resources' => '50'];
+        $this->runMapping3420($this->makeSettings());
+        $this->assertSame(100, $this->store['selection_max_resources']);
+    }
+
+    public function testMaxResourcesCustomValueKept(): void
+    {
+        $this->store = ['selection_max_resources' => 75];
+        $this->runMapping3420($this->makeSettings());
+        $this->assertSame(75, $this->store['selection_max_resources']);
+    }
+
+    public function testMaxResourcesUnlimitedKept(): void
+    {
+        $this->store = ['selection_max_resources' => 0];
+        $this->runMapping3420($this->makeSettings());
+        $this->assertSame(0, $this->store['selection_max_resources']);
+    }
+
+    public function testMaxResourcesUnsetNotStored(): void
+    {
+        $this->store = [];
+        $this->runMapping3420($this->makeSettings());
+        $this->assertArrayNotHasKey('selection_max_resources', $this->store);
     }
 }

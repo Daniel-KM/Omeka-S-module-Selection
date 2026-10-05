@@ -179,10 +179,16 @@ trait SelectionTestTrait
      */
     protected function createSelectionResource(int $selectionId, int $resourceId): SelectionResourceRepresentation
     {
-        $response = $this->api()->create('selection_resources', [
+        // The owner must be the selection owner, not the current user.
+        $owner = $this->api()->read('selections', $selectionId)->getContent()->owner();
+        $data = [
             'o:selection' => ['o:id' => $selectionId],
             'o:resource' => ['o:id' => $resourceId],
-        ]);
+        ];
+        if ($owner) {
+            $data['o:owner'] = ['o:id' => $owner->id()];
+        }
+        $response = $this->api()->create('selection_resources', $data);
         $selectionResource = $response->getContent();
         $this->createdSelectionResources[] = $selectionResource->id();
 

@@ -14,7 +14,8 @@ require dirname(__DIR__, 3) . '/modules/Common/tests/Bootstrap.php';
 \CommonTest\Bootstrap::bootstrap(
     // ?DigitalObject: registered globally via STI on resource, its table must
     // exist for resource value queries (linked resources).
-    ['Common', 'Selection', '?DigitalObject'],
+    // ?Sharing: sharing buttons of a selection.
+    ['Common', 'Selection', '?DigitalObject', '?Sharing'],
     'SelectionTest',
     __DIR__ . '/SelectionTest'
 );
