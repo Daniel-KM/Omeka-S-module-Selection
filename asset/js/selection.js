@@ -378,6 +378,7 @@
                                 (data.data.group.path && data.data.group.path.length ? '<span>' + data.data.group.path.substring(1).replaceAll('/', '</span><span>') + '</span>' : '')
                                 + '<span>' + data.data.group.id + '</span>'
                             )
+                            .replace('__GROUP_COUNT_RESOURCES__', jsTranslate('No resource'))
                             .replace('__GROUP_RESOURCES__', '')
                         );
                         $(document).trigger('o:selection-updated', data);

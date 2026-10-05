@@ -126,6 +126,9 @@ $countsByType = array_count_values($recordsByType) + ['items' => 0, 'media' => 0
                 '__GROUP_LEVEL__' => substr_count($groupFullPath, '/'),
                 '__GROUP_PATH__' => $escapeAttr($groupFullPath),
                 '__GROUP_NAME__' => '<span>' . strtr(ltrim($groupFullPath, '/'), ['/' => '</span><span>']) . '</span>',
+                '__GROUP_COUNT_RESOURCES__' => ($c = count($selectedRecordModels))
+                    ? sprintf($translatePlural('%d resource', '%d resources', $c), $c)
+                    : $translate('No resource'),
                 '__GROUP_RESOURCES__' => $selectedRecordModels
                     ? $partialLoop('selection/site/selection/group-resource', $selectedRecordModels)
                     : '',
