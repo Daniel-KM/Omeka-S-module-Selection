@@ -172,32 +172,71 @@ if (version_compare($oldVersion, '3.3.4.5', '<')) {
         SQL;
     $selectionResources = $connection->executeQuery($sql)->fetchAllKeyValue();
 
-    // Create a new selection for all selections, even if the user has one.
+    // Create one new selection by owner, even if the user has one.
     if ($selectionResources) {
-        // Append "id" to avoid issue with the unique index.
         $sql = <<<'SQL'
             INSERT INTO selection (owner_id, label, created)
-            SELECT DISTINCT owner_id, CONCAT('__SELECTION__ ', id), NOW()
-            FROM selection_resource
-            WHERE selection_id IS NULL;
+            SELECT DISTINCT sr.owner_id, '__SELECTION__', NOW()
+            FROM selection_resource sr
+            WHERE sr.selection_id IS NULL
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM selection s
+                    WHERE s.owner_id = sr.owner_id
+                        AND s.label = '__SELECTION__'
+                );
             SQL;
         $connection->executeStatement($sql);
         $sql = <<<'SQL'
             UPDATE selection_resource
             JOIN selection
-                ON selection.owner_id =  selection_resource.owner_id
-                    AND selection.label LIKE "\_\_SELECTION\_\_%"
+                ON selection.owner_id = selection_resource.owner_id
+                    AND selection.label = '__SELECTION__'
             SET selection_id = selection.id
             WHERE selection_id IS NULL;
             SQL;
         $connection->executeStatement($sql);
-        $sql = <<<'SQL'
-            UPDATE selection
-            SET label = "%s"
-            WHERE label LIKE "\_\_SELECTION\_\_%";
-            SQL;
-        $translate = $services->get('ControllerPluginManager')->get('translate');
-        $connection->executeStatement(sprintf($sql, $translate('Selection'))); // @translate
+    }
+
+    // Rename temporary selections, included the ones "__SELECTION__ {id}"
+    // created by a previous failed upgrade, with a label unique by owner. The
+    // failed upgrade created one selection by resource, so remove empty ones.
+    $sql = <<<'SQL'
+        DELETE selection
+        FROM selection
+        LEFT JOIN selection_resource ON selection_resource.selection_id = selection.id
+        WHERE selection.label LIKE '\_\_SELECTION\_\_%'
+            AND selection_resource.id IS NULL;
+        SQL;
+    $connection->executeStatement($sql);
+    $sql = <<<'SQL'
+        SELECT id, owner_id
+        FROM selection
+        WHERE label LIKE '\_\_SELECTION\_\_%'
+        ORDER BY owner_id ASC, id ASC;
+        SQL;
+    $temporarySelections = $connection->executeQuery($sql)->fetchAllKeyValue();
+    if ($temporarySelections) {
+        $label = (string) $translate('Selection'); // @translate
+        $usedLabels = [];
+        foreach ($temporarySelections as $selectionId => $ownerId) {
+            if (!isset($usedLabels[$ownerId])) {
+                $usedLabels[$ownerId] = array_flip($connection->executeQuery(
+                    'SELECT label FROM selection WHERE owner_id = :owner_id',
+                    ['owner_id' => $ownerId]
+                )->fetchFirstColumn());
+            }
+            $newLabel = $label;
+            $index = 1;
+            while (isset($usedLabels[$ownerId][$newLabel])) {
+                $newLabel = $label . ' ' . ++$index;
+            }
+            $usedLabels[$ownerId][$newLabel] = true;
+            $connection->executeStatement(
+                'UPDATE selection SET label = :label WHERE id = :id',
+                ['label' => $newLabel, 'id' => $selectionId]
+            );
+        }
     }
 
     $message = new PsrMessage(
