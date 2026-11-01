@@ -31,6 +31,13 @@ The module [Common] must be installed first.
 The optional module [Guest] can be used, but Selection is available for
 anonymous users too. The module is integrated with module [Bulk Export] too.
 
+When the module [Sharing] is installed, a public selection can be shared with
+the sharing methods enabled for the site. A private selection is not shared.
+
+When the module [Digital Object] is installed, digital objects can be selected
+too, and an item without media but linked to a digital object uses it as
+thumbnail.
+
 If you use an old theme, you can install [Blocks Disposition] too.
 
 You may use the release zip to install it or clone the source via git.
@@ -97,7 +104,7 @@ visitor and authenticated user):
 
 | Axis        | Site setting                       | Default (visitor / user) | What it does |
 |-------------|------------------------------------|--------------------------|--------------|
-| Favorites   | `selection_favorites_visitor` / `_user` | off / on            | Single starred basket per role. Star button on resources, dedicated `/favorites` page. |
+| Favorites   | `selection_favorites_visitor` / `_user` | off / on            | Single starred basket per role. Star button on resources, dedicated `/guest/favorites` page. |
 | Selections  | `selection_selections_visitor` / `_user` | off / on            | Multiple named lists. Multi-select dropdown on resources, `/selection` index page. |
 
 Other related settings:
@@ -108,6 +115,7 @@ Other related settings:
 | `selection_convert_auto`         | `true`         | Silent merge of anonymous data on login. See below. |
 | `selection_label_favorites`      | `My favorites` | Title of `/guest/favorites` page. |
 | `selection_label_selections`     | `Selections`   | Title of `/selection` index page. |
+| `selection_max_resources`        | `100`          | Maximum number of resources by selection (`0` for unlimited). |
 
 ### Use cases
 
@@ -165,11 +173,13 @@ Legacy settings are migrated on upgrade:
 - 3.4.19: `selection_mode_visitor` / `selection_mode_user` /
   `selection_my_favorites` / `selection_label_visitor` / `selection_label_user`
   → the two-axis settings above. Disposition is bumped to `hierarchy` when the
-  legacy mode was `nested`.
-- 3.4.20: routes were clarified. The personal area is now exclusively under
-  `/guest/selection` and `/guest/favorites`. Top-level `/favorites` and
-  `/selection/browse` were removed. Update bookmarks, theme overrides and
-  external links accordingly. Site settings are not affected.
+  legacy mode was `nested`. Routes were clarified too: the personal area is now
+  exclusively under `/guest/selection` and `/guest/favorites`. Top-level
+  `/favorites` and `/selection/browse` were removed. Update bookmarks, theme
+  overrides and external links accordingly.
+- 3.4.20: the default maximum number of resources by selection was raised from
+  50 to 100. Sites that still use the previous default 50 are updated; a
+  customized value is kept.
 
 No manual action is required for site settings, but theme overrides that
 emitted legacy URLs must be adapted.
@@ -254,8 +264,9 @@ curl -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -
 ```php
 $selectedResource = $this->api()->create('selection_resources', [
     'o:owner' => ['o:id' => 1],
+    'o:resource' => ['o:id' => 2],
     'o:selection' => ['o:label' => 'test'],
-)->getContent();
+])->getContent();
 ```
 
 3. Create a dynamic selection
@@ -268,8 +279,8 @@ $selectedResource = $this->api()->create('selections', [
     'o:owner' => ['o:id' => 1],
     'o:label' => 'my query',
     'o:comment' => 'a comment',
-    'o:search_query' => 'resource_class_id=1'
-)->getContent();
+    'o:search_query' => 'resource_class_id=1',
+])->getContent();
 ```
 
   Important: when a selection is converted into a search query, all selection
@@ -313,10 +324,10 @@ $selection = $this->api()->update('selections', 1, [
         // Add this selection of resources to the selection.
         'append' => [6, 7, 8],
         // Remove these resources from the selection.
-        'remove' => [9, 10]
+        'remove' => [9, 10],
         // Toggle the resources: if a resource is in a selection, it is removed,
         // else it is added.
-        'toggle' => [11, 12]
+        'toggle' => [11, 12],
     ],
 ```
 
@@ -407,6 +418,10 @@ and restructured and improved for various projects, like [Collections de la Mais
 [Common]: https://gitlab.com/Daniel-KM/Omeka-S-module-Common
 [Guest]: https://gitlab.com/Daniel-KM/Omeka-S-module-Guest
 [Bulk Export]: https://gitlab.com/Daniel-KM/Omeka-S-module-BulkExport
+[Sharing]: https://omeka.org/s/modules/Sharing/
+[Digital Object]: https://gitlab.com/Daniel-KM/Omeka-S-module-DigitalObject
+[Blocks Disposition]: https://gitlab.com/Daniel-KM/Omeka-S-module-BlocksDisposition
+[Selection.zip]: https://gitlab.com/Daniel-KM/Omeka-S-module-Selection/-/releases
 [installing a module]: https://omeka.org/s/docs/user-manual/modules/#installing-modules
 [module issues]: https://gitlab.com/Daniel-KM/Omeka-S-module-Selection/-/issues
 [CeCILL v2.1]: https://www.cecill.info/licences/Licence_CeCILL_V2.1-en.html
