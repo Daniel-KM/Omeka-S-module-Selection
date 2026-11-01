@@ -334,8 +334,10 @@ return  [
         'Are you sure you want to delete this group?', // @translate
         'Enter new group name', // @translate
         'Enter new selection name', // @translate
+        'No resource', // @translate
         'Remove from selection?', // @translate
         'Resource updated for selections.', // @translate
+        'Selection', // @translate
         'Selection limit reached. Maximum %d resources allowed.', // @translate
     ],
     'selection' => [
