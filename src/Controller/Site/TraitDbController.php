@@ -6,6 +6,7 @@ use Common\Mvc\Controller\Plugin\JSend;
 use Common\Stdlib\PsrMessage;
 use Exception;
 use Laminas\View\Model\ViewModel;
+use Omeka\Api\Exception\NotFoundException;
 use Omeka\Entity\User;
 use Selection\Api\Representation\SelectionRepresentation;
 
@@ -117,11 +118,20 @@ trait TraitDbController
         $query = $this->params()->fromQuery();
         // $query['owner_id'] = $user->getId();
 
-        // Most of the time, the selection is not defined, so take the first or
-        // create a static one.
-        $selectionId = empty($query['selection_id']) ? 0 : (int) $query['selection_id'];
-        $selection = $this->getSelectionStaticOrFirstStaticOrCreate($selectionId, $user);
-        $selectionId = $selection->id();
+        // The selection id is set in the route (/guest/selection/{id}) or in
+        // the query. Most of the time, the selection is not defined, so take
+        // the first or create a static one.
+        $selectionId = (int) $this->params()->fromRoute('id')
+            ?: (empty($query['selection_id']) ? 0 : (int) $query['selection_id']);
+        if ($selectionId) {
+            $selection = $this->getSelectionStatic($selectionId, $user);
+            if (!$selection) {
+                throw new NotFoundException('Selection not found.'); // @translate
+            }
+        } else {
+            $selection = $this->getSelectionStaticOrFirstStaticOrCreate(null, $user);
+            $selectionId = $selection->id();
+        }
 
         // Fill selection from session.
         /** @var \Laminas\Session\Container $selectionContainer */
@@ -134,7 +144,7 @@ trait TraitDbController
         $view = new ViewModel([
             'site' => $this->currentSite(),
             'user' => $user,
-            'selection' => null,
+            'selection' => $selection,
             'resource' => null,
             'selectionId' => $selectionId,
             'selections' => $selectionContainer->selections,

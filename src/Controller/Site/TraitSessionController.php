@@ -6,6 +6,7 @@ use Common\Mvc\Controller\Plugin\JSend;
 use Common\Stdlib\PsrMessage;
 use Laminas\Session\Container;
 use Laminas\View\Model\ViewModel;
+use Omeka\Api\Exception\NotFoundException;
 use Omeka\Mvc\Exception\RuntimeException;
 
 /**
@@ -41,7 +42,13 @@ trait TraitSessionController
          */
         $selectionContainer = $this->selectionContainer();
 
-        $selectionId = empty($query['selection_id']) ? 0 : (int) $query['selection_id'];
+        // The selection id is set in the route (/guest/selection/{id}) or in
+        // the query. The default selection (1) is created when missing.
+        $selectionId = (int) $this->params()->fromRoute('id')
+            ?: (empty($query['selection_id']) ? 0 : (int) $query['selection_id']);
+        if ($selectionId > 1 && !isset($selectionContainer->selections[$selectionId])) {
+            throw new NotFoundException('Selection not found.'); // @translate
+        }
         $selection = $this->getSelectionFromSessionOrInit($selectionContainer, $selectionId);
         $selectionId = $selection['id'];
 

@@ -47,11 +47,9 @@ if (isset($selection) && is_object($selection)) {
     $selectionId = $selection->id();
     $owner = $selection->owner();
 } else {
-    $selection = $selections[$selectionId];
+    $selection = $selections[$selectionId] ?? [];
     $owner = null;
 }
-
-$owner = $selection->owner();
 
 $labelSelection = $this->selectionLabel('selections');
 ?>
