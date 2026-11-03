@@ -76,7 +76,7 @@ $labelSelection = $this->selectionLabel('selections');
 </p>
 <?php endif; ?>
 
-<?php if (is_object($selection) && $user && ($canValidateAll || ($owner && $user->getId() === $owner->getId()))): // Display the actions button only when useful. ?>
+<?php if (is_object($selection) && $user && ($canValidateAll || ($owner && $user->getId() === $owner->id()))): // Display the actions button only when useful. ?>
 <?= $partial('selection/site/selection/actions') ?>
 <?php endif; ?>
 

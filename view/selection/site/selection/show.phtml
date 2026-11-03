@@ -74,7 +74,7 @@ $owner = $selection->owner();
 <?= $selection->isPublic() ? $partial('common/selection-share-buttons', ['selection' => $selection, 'site' => $site]) : '' ?>
 </div>
 
-<?php if ($user && ($canValidateAll || ($owner && $user->getId() === $owner->getId()))): // Display the actions button only when useful. ?>
+<?php if ($user && ($canValidateAll || ($owner && $user->getId() === $owner->id()))): // Display the actions button only when useful. ?>
 <?= $partial('selection/site/selection/actions') ?>
 <?php endif; ?>
 

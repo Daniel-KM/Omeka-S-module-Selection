@@ -36,7 +36,7 @@ $baseUrl = $selection->siteUrl($siteSlug);
 
 $owner = $selection->owner();
 $canPublish = $canPublishAll
-    || ($user && $owner && in_array($selectionShare, ['moderate', 'open']) && $user->getId() === $owner->getId());
+    || ($user && $owner && in_array($selectionShare, ['moderate', 'open']) && $user->getId() === $owner->id());
 $requireModeration = $selectionShare === 'moderate';
 
 $isPublic = $selection->isPublic();
