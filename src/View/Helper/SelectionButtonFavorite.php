@@ -8,8 +8,8 @@ use Omeka\Api\Representation\AbstractResourceEntityRepresentation;
 /**
  * Render a single favorite (star) toggle button for a resource.
  *
- * Independent of selection_mode_user/visitor: always renders the favorite
- * button, regardless of the configured site mode. Works for both anonymous
+ * Independent of the selections axis: always renders the favorite button,
+ * regardless of the configured site settings. Works for both anonymous
  * visitors (session) and authenticated users (DB).
  */
 class SelectionButtonFavorite extends AbstractHelper

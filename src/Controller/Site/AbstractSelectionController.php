@@ -262,8 +262,8 @@ abstract class AbstractSelectionController extends AbstractActionController
     /**
      * Display the user favorites (default selection) or the visitor session
      * favorites as a single flat list. The page is private and not shareable.
-     * Available only when the favorites feature is enabled (mode "simple" or
-     * site setting "selection_my_favorites").
+     * Available only when the favorites feature is enabled (site settings
+     * "selection_favorites_visitor" and "selection_favorites_user").
      */
     public function favoritesAction()
     {

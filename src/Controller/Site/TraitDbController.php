@@ -1436,27 +1436,18 @@ trait TraitDbController
     }
 
     /**
-     * Get default selection, the first non-dynamic one or a new one when none.
+     * Create a new selection: the favorites basket when favorites are enabled.
      */
     protected function createSelectionStatic(User $user): SelectionRepresentation
     {
-        $siteSettings = $this->siteSettings();
-        $myFavorites = (bool) $siteSettings->get('selection_my_favorites', true);
-        if ($myFavorites) {
-            $label = trim((string) $siteSettings->get('selection_label_visitor', ''));
-            if ($label === '') {
-                $label = (string) $this->translate('Favorites'); // @translate
-            }
-        } else {
-            $label = trim((string) $siteSettings->get('selection_label_user', ''));
-            if ($label === '') {
-                $label = (string) $this->translate('Selection'); // @translate
-            }
-        }
+        $isFavorites = $this->selectionFavoritesEnabled();
+        $label = $isFavorites
+            ? (string) $this->translate($this->selectionLabel('favorites'))
+            : (string) $this->translate('Selection'); // @translate
         return $this->api()->create('selections', [
             'o:owner' => ['o:id' => $user->getId()],
             'o:label' => $label,
-            'o:is_default' => $myFavorites,
+            'o:is_default' => $isFavorites,
         ])->getContent();
     }
 }

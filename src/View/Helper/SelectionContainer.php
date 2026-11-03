@@ -68,8 +68,8 @@ class SelectionContainer extends AbstractHelper
 
     /**
      * Simplify selections for views. Ensure the default favorites basket exists
-     * when site setting "selection_my_favorites" is enabled, and place it first
-     * so simple favorite buttons target it consistently.
+     * when site setting "selection_favorites_user" is enabled, and place it
+     * first so simple favorite buttons target it consistently.
      */
     protected function normalizeSelections(User $user): array
     {
