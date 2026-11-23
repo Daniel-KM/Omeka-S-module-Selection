@@ -43,6 +43,13 @@ if (isset($selection) && is_object($selection)) {
     $selectionId = $selection->id();
     $selectionRecords = $plugins->get('selectionRecords');
     $records = $selectionRecords($selection);
+    // The partials read the selection as an array, like in the session.
+    $selection = [
+        'id' => $selectionId,
+        'label' => $selection->label(),
+        'structure' => $selection->structure(),
+        'is_default' => $selection->isDefault(),
+    ];
 } else {
     $selection = $selections[$selectionId];
 }
