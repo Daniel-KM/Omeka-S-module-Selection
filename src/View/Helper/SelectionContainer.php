@@ -3,6 +3,8 @@
 namespace Selection\View\Helper;
 
 use Exception;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\Mvc\MvcEvent;
 use Laminas\Session\Container;
 use Laminas\View\Helper\AbstractHelper;
 use Omeka\Api\Manager as ApiManager;
@@ -15,9 +17,15 @@ class SelectionContainer extends AbstractHelper
      */
     protected $api;
 
-    public function __construct(ApiManager $api)
+    /**
+     * @var \Laminas\EventManager\EventManagerInterface
+     */
+    protected $events;
+
+    public function __construct(ApiManager $api, EventManagerInterface $events)
     {
         $this->api = $api;
+        $this->events = $events;
     }
 
     /**
@@ -54,6 +62,10 @@ class SelectionContainer extends AbstractHelper
                 $container->init = true;
                 $container->selections = [1 => $defaultSelection];
                 $container->records = [];
+                // The default selection is useless to keep when the visitor
+                // selected nothing, so no session is saved for the visitors
+                // who only browse the site.
+                $this->events->attach(MvcEvent::EVENT_FINISH, [$this, 'removeUnusedSelection'], 200);
             } else {
                 $container->selections ??= [];
                 $container->records ??= [];
@@ -64,6 +76,22 @@ class SelectionContainer extends AbstractHelper
         }
 
         return $container;
+    }
+
+    /**
+     * Remove the default selection of a visitor when nothing was selected.
+     */
+    public function removeUnusedSelection(): void
+    {
+        $container = new Container('Selection');
+        $selections = (array) $container->selections;
+        $selection = reset($selections);
+        if (empty(array_filter((array) $container->records))
+            && count($selections) <= 1
+            && empty($selection['structure'])
+        ) {
+            $container->getManager()->getStorage()->clear('Selection');
+        }
     }
 
     /**
