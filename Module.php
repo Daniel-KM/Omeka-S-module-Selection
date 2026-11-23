@@ -917,6 +917,12 @@ class Module extends AbstractModule
 
     public function handleShowSelectionButton(Event $event): void
     {
+        // The theme manages the resource page blocks, so the blocks of the
+        // module are used instead.
+        $currentTheme = $this->getServiceLocator()->get('Omeka\Site\ThemeManager')->getCurrentTheme();
+        if (method_exists($currentTheme, 'isConfigurableResourcePageBlocks') && $currentTheme->isConfigurableResourcePageBlocks()) {
+            return;
+        }
         /**
          * @var \Omeka\Settings\SiteSettings $siteSettings
          * @var \Laminas\View\Renderer\PhpRenderer $view
@@ -959,6 +965,12 @@ class Module extends AbstractModule
 
     public function handleShowSelectionList(Event $event): void
     {
+        // The theme manages the resource page blocks, so the blocks of the
+        // module are used instead.
+        $currentTheme = $this->getServiceLocator()->get('Omeka\Site\ThemeManager')->getCurrentTheme();
+        if (method_exists($currentTheme, 'isConfigurableResourcePageBlocks') && $currentTheme->isConfigurableResourcePageBlocks()) {
+            return;
+        }
         /**
          * @var \Omeka\Settings\SiteSettings $siteSettings
          * @var \Laminas\View\Renderer\PhpRenderer $view
