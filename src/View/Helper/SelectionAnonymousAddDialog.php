@@ -47,18 +47,25 @@ class SelectionAnonymousAddDialog extends AbstractHelper
         // Build the urls with the route, and not with a hard coded "/s/",
         // because the module CleanUrl allows to rename this prefix or to skip
         // it for the main site.
-        $urlLogin = $site
+        // The routes of the module Guest exist only when it is active.
+        $hasGuest = $site && $plugins->has('guestWidget');
+        $urlLogin = $hasGuest
             ? $url('site/guest/anonymous', ['site-slug' => $site->slug(), 'action' => 'login'])
-            : $url('forgot-password');
-        $urlRegister = $site
+            : $url('login');
+        $urlRegister = $hasGuest
             ? $url('site/guest/anonymous', ['site-slug' => $site->slug(), 'action' => 'register'])
             : $urlLogin;
 
-            $defaultMessage = $translate(<<<'TXT'
+        $defaultMessage = $hasGuest
+            ? $translate(<<<'TXT'
                 <p>The resource has been added to your favorites.</p>
                 <p>Warning: it will only be available as long as you do not clear your browser cookies.</p>
                 <p><strong>Want to keep your favorites and access more features?</strong></p>
                 <p><a href="{url_login}">Log in</a> or <a href="{url_register}">create an account</a>.</p>
+                TXT)
+            : $translate(<<<'TXT'
+                <p>The resource has been added to your favorites.</p>
+                <p>Warning: it will only be available as long as you do not clear your browser cookies.</p>
                 TXT);
         $message = (string) $this->siteSettings->get('selection_anonymous_add_message') ?: $defaultMessage;
         $message = strtr($message, [
