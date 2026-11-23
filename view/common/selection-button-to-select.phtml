@@ -49,7 +49,15 @@ $placeholder = $escapeAttr($placeholder ?? $translate('Choose a selection'));
             <?php // Required for chosen. When there are multiple select, it cannot be without any select. ?>
             <option value=""></option>
             <?php foreach ($valueOptions as $key => $label): ?>
+            <?php if (is_array($label)): ?>
+            <optgroup label="<?= $escapeAttr($label['label']) ?>">
+                <?php foreach ($label['options'] as $subKey => $subLabel): ?>
+                <option value="<?= $escapeAttr($subKey) ?>"<?= in_array($subKey, $selecteds) ? ' selected="selected"' : '' ?>><?= $escape($subLabel) ?></option>
+                <?php endforeach; ?>
+            </optgroup>
+            <?php else: ?>
             <option value="<?= $key ?>"<?= in_array($key, $selecteds) ? ' selected="selected"' : '' ?>><?= $escape($label) ?></option>
+            <?php endif; ?>
             <?php endforeach ?>
             <option class="selection-action" data-action="add" value="00"><?= $translate('Create a new selection') ?></option>
         </select>
