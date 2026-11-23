@@ -77,6 +77,38 @@ class SelectionViewTest extends AbstractHttpControllerTestCase
         $this->assertQueryContentContains('h2', 'Viewed selection');
     }
 
+    public function dispositionProvider(): array
+    {
+        return [
+            'grouped' => ['grouped'],
+            'hierarchy' => ['hierarchy'],
+        ];
+    }
+
+    /**
+     * @dataProvider dispositionProvider
+     */
+    public function testOwnerViewsSelectionWithGroups(string $disposition): void
+    {
+        $siteSettings = $this->getServiceLocator()->get('Omeka\Settings\Site');
+        $siteSettings->setTargetId($this->site->id());
+        $siteSettings->set('selection_disposition', $disposition);
+        $selection = $this->createOwnedSelection('Grouped selection');
+        $this->api()->update('selections', $selection->id(), [
+            'o:structure' => [
+                '/Folder A' => ['id' => 'Folder A', 'path' => '/', 'resources' => []],
+                '/Folder A/Sub' => ['id' => 'Sub', 'path' => '/Folder A'],
+            ],
+        ], [], ['isPartial' => true]);
+
+        $this->loginAs($this->owner->id());
+        $this->dispatch('/s/view-test/guest/selection/' . $selection->id());
+
+        $this->assertResponseStatusCode(200);
+        $this->assertQueryContentContains('h2', 'Grouped selection');
+        $this->assertStringContainsString('Folder A', $this->getResponse()->getContent());
+    }
+
     public function testUnknownSelectionIsNotFound(): void
     {
         $this->loginAs($this->owner->id());
