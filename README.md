@@ -135,7 +135,8 @@ Other related settings:
   no automatic dispatch — pick the buttons that match the configured axes.
 
 The same view helpers are exposed as resource-page block layouts:
-`selectionButtonFavorite` and `selectionButton`.
+`selectionButtonFavorite` and `selectionButton`, and also `selection`,
+`selectionButtonToGroup`, `selectionButtonToSelect` and `selectionList`.
 
 ### Pages
 
@@ -180,6 +181,9 @@ Legacy settings are migrated on upgrade:
 - 3.4.20: the default maximum number of resources by selection was raised from
   50 to 100. Sites that still use the previous default 50 are updated; a
   customized value is kept.
+- 3.4.21: when the theme manages the resource page blocks, the module is no more
+  displayed via the events in the resource pages, so its blocks should be placed
+  in the theme settings. The upgrade lists the sites where they are missing.
 
 No manual action is required for site settings, but theme overrides that
 emitted legacy URLs must be adapted.
