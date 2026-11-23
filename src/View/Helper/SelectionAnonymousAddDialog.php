@@ -40,16 +40,18 @@ class SelectionAnonymousAddDialog extends AbstractHelper
 
         $plugins = $view->getHelperPluginManager();
         $url = $plugins->get('url');
-        $basePath = $plugins->get('basePath');
         $currentSite = $plugins->get('currentSite');
         $translate = $plugins->get('translate');
         $site = $currentSite();
 
+        // Build the urls with the route, and not with a hard coded "/s/",
+        // because the module CleanUrl allows to rename this prefix or to skip
+        // it for the main site.
         $urlLogin = $site
-            ? $basePath() . '/s/' . $site->slug() . '/guest/login'
+            ? $url('site/guest/anonymous', ['site-slug' => $site->slug(), 'action' => 'login'])
             : $url('forgot-password');
         $urlRegister = $site
-            ? $basePath() . '/s/' . $site->slug() . '/guest/register'
+            ? $url('site/guest/anonymous', ['site-slug' => $site->slug(), 'action' => 'register'])
             : $urlLogin;
 
             $defaultMessage = $translate(<<<'TXT'
