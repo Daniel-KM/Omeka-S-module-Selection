@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-    $(document).ready(function() {
+    $(function() {
 
         // Display the dialog to send a message.
         $('#content').on('click', '.selection .send-message', function(e) {

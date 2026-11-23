@@ -41,7 +41,7 @@
         } catch (err) { /* ignore */ }
     }
 
-    $(document).ready(function() {
+    $(function() {
 
         $(document).on('click', 'summary.selection-summary', function() {
             this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
@@ -130,7 +130,7 @@
              const button = $(this);
              const msg = button.data('msg') ? button.data('msg') : button.text();
              const selection = button.closest('.selection.resource[data-id]');
-             const currentName = selection.find('.resource-name:first').text();
+             const currentName = selection.find('.resource-name').first().text();
              CommonDialog.dialogPrompt({
                  heading: jsTranslate('Selection'),
                  message: msg,
@@ -150,7 +150,7 @@
                      })
                      .done(function(data) {
                          if (data.status === 'success') {
-                             selection.find('.resource-name:first').text(name.trim());
+                             selection.find('.resource-name').first().text(name.trim());
                              $(document).trigger('o:selection-updated', data);
                          }
                      })
